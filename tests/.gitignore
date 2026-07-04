@@ -1,0 +1,21 @@
+.gradle/
+build/
+.idea/
+.vscode/
+*.iml
+demo/
+
+# Frontend preview symlink (rule frontend-preview — не e2e config)
+app-path-local
+
+# E2e env profiles — локальная матрица stand×layer (regen: scripts/gen-env-layer-configs.py)
+src/test/resources/config/*.properties
+!src/test/resources/config/_ethalon.properties
+!src/test/resources/config/_new.properties
+!src/test/resources/config/_modified.properties
+!src/test/resources/config/default.properties
+
+allure-results/
+bin/
+node_modules/
+package-lock.json

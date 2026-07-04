@@ -1,0 +1,91 @@
+<!-- Param id label + select -->
+<label class="plaque-field plaque-field--divided" data-testid="plaque-field-select">
+  <span class="plaque-field__label">configStand</span>
+  <select class="plaque-field__control">
+    <option>local_http</option>
+    <option>prod</option>
+  </select>
+</label>
+
+<!-- Human caption (not param id) + text input -->
+<label class="plaque-field plaque-field--divided" data-testid="plaque-field-caption-input">
+  <span class="plaque-field__text">Метка бенчмарка</span>
+  <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
+</label>
+
+<!-- Param id label + text input -->
+<label class="plaque-field plaque-field--divided" data-testid="plaque-field-text">
+  <span class="plaque-field__label">benchmarkLabel</span>
+  <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
+</label>
+
+<!-- Read-only value (not an input) -->
+<div class="plaque-field plaque-field--divided" data-testid="plaque-field-value">
+  <span class="plaque-field__label">testSuite</span>
+  <span class="plaque-field__value">login</span>
+</div>
+
+<!-- 2-option seg inside divided plaque (legacy single-param) -->
+<div class="plaque-field plaque-field--divided" data-testid="plaque-field-seg">
+  <span class="plaque-field__label">headless</span>
+  <div class="plaque-field-seg-track plaque-field__control">
+    <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+      <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+      <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+    </div>
+  </div>
+</div>
+
+<!-- Divided toggle — label | indicator dot (e2e-builder boolean batch) -->
+<button type="button" class="plaque-field plaque-field--divided plaque-field--toggle plaque-field--toggle-on" data-testid="plaque-field-toggle-head" aria-pressed="true" title="headless">
+  <span class="plaque-field__label">headless</span>
+  <span class="plaque-field__value"><span class="plaque-field__indicator" aria-hidden="true"></span></span>
+</button>
+<button type="button" class="plaque-field plaque-field--divided plaque-field--toggle" data-testid="plaque-field-toggle-close" aria-pressed="false" title="closeBrowserAfterEach">
+  <span class="plaque-field__label">closeBrowserAfterEach</span>
+  <span class="plaque-field__value"><span class="plaque-field__indicator" aria-hidden="true"></span></span>
+</button>
+
+<!-- Flagstrip — compact boolean batch (remote hub, 4/row @ 320px) -->
+<div class="plaque-field-flagstrip plaque-field-flagstrip--bool4" data-testid="plaque-field-flagstrip" role="group" aria-label="Remote hub flags">
+  <button type="button" class="plaque-field-flagstrip__item" title="enableVnc" aria-pressed="false" data-testid="plaque-field-flagstrip-vnc">
+    <span class="plaque-field-flagstrip__abbr">vnc</span>
+    <span class="plaque-field-flagstrip__dot" aria-hidden="true"></span>
+  </button>
+  <button type="button" class="plaque-field-flagstrip__item plaque-field-flagstrip__item--on" title="enableVideo" aria-pressed="true" data-testid="plaque-field-flagstrip-video">
+    <span class="plaque-field-flagstrip__abbr">vid</span>
+    <span class="plaque-field-flagstrip__dot" aria-hidden="true"></span>
+  </button>
+  <button type="button" class="plaque-field-flagstrip__item" title="enableHar" aria-pressed="false" data-testid="plaque-field-flagstrip-har">
+    <span class="plaque-field-flagstrip__abbr">har</span>
+    <span class="plaque-field-flagstrip__dot" aria-hidden="true"></span>
+  </button>
+  <button type="button" class="plaque-field-flagstrip__item plaque-field-flagstrip__item--on" title="enableAllureSelenideListener" aria-pressed="true" data-testid="plaque-field-flagstrip-listener">
+    <span class="plaque-field-flagstrip__abbr">lst</span>
+    <span class="plaque-field-flagstrip__dot" aria-hidden="true"></span>
+  </button>
+</div>
+
+<!-- Boolean toggle batch wrapper -->
+<div class="plaque-field-toggles" data-testid="plaque-field-toggles" role="group" aria-label="Boolean parameters"></div>
+
+<!-- Chip-style option (3–5 radio options) -->
+<button type="button" class="plaque-field-option" data-testid="plaque-field-option">allure3</button>
+
+<!-- Checkstrip — compact multi-select (e2e-builder junitTags) -->
+<div class="plaque-field-checkstrip" data-testid="plaque-field-checkstrip" role="group" aria-label="JUnit tags">
+  <label class="plaque-field-checkstrip__item" data-testid="plaque-field-checkstrip-item">
+    <input type="checkbox" class="plaque-field-checkstrip__input" checked>
+    <span>smoke</span>
+  </label>
+</div>
+
+<!-- Multi checkbox list -->
+<ul class="plaque-field-list plaque-field-list--dense" data-testid="plaque-field-checklist">
+  <li data-testid="plaque-field-checklist-item">
+    <label class="plaque-field-check">
+      <input type="checkbox" class="plaque-field-check__input" checked>
+      <span>attachBrowserConsoleLogs</span>
+    </label>
+  </li>
+</ul>

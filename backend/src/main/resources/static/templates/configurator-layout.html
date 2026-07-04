@@ -1,0 +1,35 @@
+<!-- Configurator shell: page frame + 2×1 topology (main + sticky aside) -->
+<!--
+  Aside rules:
+  - terminal-panel → panel.panel--sticky + configurator__output-* chain (modifier --terminal on layout)
+  - textarea / preview → section.section--sticky (prompt-builder)
+  Refs: frontend/e2e-builder.html, frontend/prompt-builder.html
+-->
+<main class="configurator">
+  <a class="configurator__back" href="index.html">← template-project</a>
+
+  <header class="configurator__intro">
+    <h1 class="configurator__title"><!-- title --></h1>
+    <p class="configurator__lead"><!-- lead --></p>
+  </header>
+
+  <!-- optional: <div class="configurator__toolbar">…</div> -->
+
+  <div class="configurator__layout grid grid--2x1 configurator__layout--terminal">
+    <div class="configurator__main">
+      <!-- form sections, stack stack--lg -->
+    </div>
+    <div class="configurator__aside">
+      <div class="configurator__output-panel">
+        <div class="configurator__output-sticky">
+          <div class="panel panel--sticky">
+            <div class="panel__main">
+              <!-- terminal-panel: templates/terminal-panel.html -->
+            </div>
+            <!-- optional: <div class="panel__foot">status</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

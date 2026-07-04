@@ -1,0 +1,682 @@
+@import url("tokens.css");
+
+/* Plaque field — compact label+control shell (e2e-builder, forms) */
+
+:root {
+  --plaque-chevron-inset: calc(var(--space-2) + 5px);
+  --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23f1f5f9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+html.theme-light {
+  --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231c1917' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.plaque-field,
+.fv-plaque {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  min-width: 0;
+}
+
+.plaque-field--divided,
+.fv-plaque--divided {
+  /* divider on label — see __label */
+}
+
+.plaque-field__label,
+.fv-plaque__label {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Human caption — not a config param id (e2e-builder uses __label) */
+.plaque-field__text,
+.fv-plaque__text {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plaque-field--divided .plaque-field__label,
+.plaque-field--divided .plaque-field__text,
+.fv-plaque--divided .fv-plaque__label,
+.fv-plaque--divided .fv-plaque__text {
+  padding-right: var(--space-2);
+  border-right: 1px solid var(--color-border);
+}
+
+.plaque-field__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.plaque-field__control,
+.fv-plaque__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: var(--space-1) 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.plaque-field__control:focus,
+.fv-plaque__control:focus {
+  outline: none;
+}
+
+.plaque-field:focus-within,
+.fv-plaque:focus-within {
+  border-color: var(--color-primary);
+}
+
+select.plaque-field__control,
+select.fv-plaque__control {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: calc(var(--plaque-chevron-inset) + 12px);
+  background-image: var(--plaque-chevron-glyph);
+  background-repeat: no-repeat;
+  background-size: 10px 6px;
+  background-position: right var(--plaque-chevron-inset) center;
+  cursor: pointer;
+}
+
+/* Shell owns border/radius — inner .input / .fv-input must not duplicate chrome */
+.plaque-field > .plaque-field__control.input,
+.plaque-field > select.plaque-field__control.input,
+.fv-plaque > .fv-plaque__control.fv-input,
+.fv-plaque > select.fv-plaque__control.fv-input {
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.plaque-field > .plaque-field__control.input:focus-visible,
+.plaque-field > select.plaque-field__control.input:focus-visible,
+.fv-plaque > .fv-plaque__control.fv-input:focus-visible,
+.fv-plaque > select.fv-plaque__control.fv-input:focus-visible {
+  outline: none;
+}
+
+.plaque-field-list,
+.fv-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plaque-field-list--dense,
+.fv-checklist--dense {
+  gap: var(--space-1);
+}
+
+.plaque-field-check,
+.fv-plaque-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.plaque-field-check:has(.plaque-field-check__input:checked),
+.fv-plaque-check:has(.fv-check__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+}
+
+.plaque-field-check__input,
+.fv-check__input {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.plaque-field-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-option:hover {
+  border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-primary));
+}
+
+.plaque-field-option--on {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  font-weight: 600;
+}
+
+.plaque-field-seg-track.plaque-field__control,
+.fv-seg-track.fv-plaque__control {
+  padding: 0;
+  min-height: 0;
+}
+
+.plaque-field-seg,
+.fv-seg {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  gap: 2px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Compact seg btn — tier below Button (36px); SSOT: component-sizes.md → Plaque field seg */
+.plaque-field-seg .plaque-field-seg__btn,
+.fv-seg .fv-seg__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: calc(var(--plaque-control-height) - 12px);
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-seg .plaque-field-seg__btn--on,
+.fv-seg .fv-seg__btn--on {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.plaque-field--divided:has(.plaque-field-seg-track),
+.fv-plaque--divided:has(.fv-seg-track) {
+  width: fit-content;
+  max-width: 100%;
+  padding-right: var(--space-1);
+}
+
+.plaque-field--divided .plaque-field-seg-track.plaque-field__control,
+.fv-plaque--divided .fv-seg-track.fv-plaque__control {
+  flex: 0 0 auto;
+  width: auto;
+  height: calc(var(--plaque-control-height) - 8px);
+  align-self: center;
+}
+
+.plaque-field-seg-track,
+.fv-seg-track {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  min-width: 0;
+  padding: 2px;
+  gap: 2px;
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.plaque-field--divided .plaque-field-seg-track .plaque-field-seg,
+.fv-plaque--divided .fv-seg-track .fv-seg {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+.plaque-field--divided .plaque-field-seg-track .plaque-field-seg .plaque-field-seg__btn,
+.fv-plaque--divided .fv-seg-track .fv-seg .fv-seg__btn {
+  width: 100%;
+  min-width: 0;
+}
+
+.plaque-field--divided > .plaque-field-seg.plaque-field__control,
+.fv-plaque--divided > .fv-seg.fv-plaque__control {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  height: calc(var(--plaque-control-height) - 8px);
+  align-self: center;
+  padding: 2px;
+  gap: 2px;
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.plaque-field--divided > .plaque-field-seg.plaque-field__control .plaque-field-seg__btn,
+.fv-plaque--divided > .fv-seg.fv-plaque__control .fv-seg__btn {
+  width: 100%;
+}
+
+.plaque-field--seg-shell {
+  height: calc(var(--plaque-control-height) - 8px);
+  min-height: calc(var(--plaque-control-height) - 8px);
+  padding: 2px;
+  gap: 2px;
+}
+
+.plaque-field--seg-shell .plaque-field-seg {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.plaque-field--seg-shell .plaque-field-seg__btn {
+  flex: 1 1 50%;
+}
+
+/* Divided toggle — label | indicator dot (e2e-builder boolean batch) */
+.plaque-field--toggle {
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+  width: fit-content;
+  max-width: 100%;
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+}
+
+.plaque-field--toggle .plaque-field__value {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  padding-left: var(--space-1);
+}
+
+.plaque-field-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.plaque-field__indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-text-muted);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.plaque-field--toggle.plaque-field--toggle-on .plaque-field__indicator {
+  border-color: var(--color-text);
+  background: var(--color-text);
+}
+
+.plaque-field--toggle:focus,
+.plaque-field--toggle:focus-within {
+  border-color: var(--color-border);
+}
+
+.plaque-field--toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Checkstrip — compact multi-select (e2e-builder junitTags, …) */
+.plaque-field-checkstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-1);
+  min-width: 0;
+}
+
+.plaque-field-checkstrip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 20px;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-checkstrip__item:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plaque-field-checkstrip__input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Flagstrip — compact boolean batch (abbr + dot, click toggles on/off) */
+.plaque-field-flagstrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-height: 24px;
+}
+
+.plaque-field-flagstrip--compact {
+  gap: var(--space-1);
+}
+
+.plaque-field-flagstrip--bool4 {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.plaque-field-flagstrip--bool4 .plaque-field-flagstrip__item {
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
+}
+
+.plaque-field-flagstrip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-1);
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-flagstrip__item:hover {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+.plaque-field-flagstrip__item--on {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-flagstrip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-text-muted);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.plaque-field-flagstrip__item--on .plaque-field-flagstrip__dot {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.plaque-field-flagstrip__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Dense grid — 3–4 plaque-field (seg / divided) per row inside panel / section */
+.plaque-field-grid {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.plaque-field-grid__cell {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.plaque-field-grid__cell--hidden {
+  display: none;
+}
+
+.plaque-field-grid .plaque-field,
+.plaque-field-grid .plaque-field--divided:has(.plaque-field-seg-track) {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.plaque-field-grid .plaque-field__label {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: var(--font-size-xs);
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field__label {
+  padding-right: var(--space-1);
+}
+
+.plaque-field-grid .plaque-field-seg-track.plaque-field__control {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  padding: 0 var(--space-1);
+}
+
+@container (min-width: 22rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 34rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 44rem) {
+  .plaque-field-grid--4:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Mixed tier — 4 sm + 3 md + 2 lg per row (12-col) */
+.plaque-field-grid--mixed {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.plaque-field-grid__cell--sm {
+  grid-column: span 3;
+}
+
+.plaque-field-grid__cell--md {
+  grid-column: span 4;
+}
+
+.plaque-field-grid__cell--lg {
+  grid-column: span 6;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--sm .plaque-field {
+  height: 22px;
+  min-height: 22px;
+  padding: 0 var(--space-1);
+  gap: var(--space-1);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--sm .plaque-field__label {
+  font-size: var(--font-size-xs);
+  padding-right: var(--space-1);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--sm .plaque-field--divided .plaque-field-seg-track.plaque-field__control {
+  height: 14px;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--sm .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  height: 8px;
+  min-height: 8px;
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-xs);
+  line-height: 1;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--md .plaque-field {
+  height: 28px;
+  min-height: 28px;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--md .plaque-field__label {
+  font-size: var(--font-size-xs);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--md .plaque-field--divided .plaque-field-seg-track.plaque-field__control {
+  height: 20px;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--md .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  min-height: 14px;
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-xs);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field {
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field__label {
+  flex: 0 0 auto;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided .plaque-field__label {
+  padding-right: var(--space-2);
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  padding: 0 var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn--on {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed),
+  .plaque-field-grid--4:not(.plaque-field-grid--mixed) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plaque-field-grid--mixed .plaque-field-grid__cell--sm,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--md,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--lg {
+    grid-column: span 12;
+  }
+}

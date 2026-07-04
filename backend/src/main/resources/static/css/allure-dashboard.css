@@ -1,0 +1,94 @@
+/* Page layout — allure-dashboard.html (phase 7.analytics) */
+
+.metrics-charts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+@media (min-width: 769px) {
+  .metrics-charts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .metrics-charts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.chart-tile__body.chart-tile__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.allure-dashboard-note {
+  margin: 0;
+}
+
+#quality-gate-callout {
+  margin-bottom: var(--space-3);
+}
+
+.chart-tile--epic,
+.chart-tile--pyramid {
+  margin-bottom: var(--space-3);
+}
+
+.quality-gate-rule__id {
+  font-size: 0.85em;
+  color: var(--muted);
+}
+
+.allure-dashboard-note code {
+  font-size: 0.85em;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 35%, transparent);
+}
+
+.live-badge::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: currentColor;
+  animation: live-badge-pulse 1.4s ease-in-out infinite;
+}
+
+.live-badge--waiting::before {
+  animation: none;
+  opacity: 0.45;
+}
+
+@keyframes live-badge-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}

@@ -1,0 +1,387 @@
+/* Tests table — allure-dashboard.html (phase 8.2 DIY grid: sort + pagination, 8.3 sparklines) */
+
+.tests-panel {
+  margin-bottom: var(--space-3);
+}
+
+.tests-panel__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.tests-panel__title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.tests-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface-soft));
+}
+
+.tests-filters__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.tests-filters__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tests-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 0.72rem;
+  color: var(--color-text);
+}
+
+.tests-filter-chip__key {
+  color: var(--color-text-muted);
+}
+
+.tests-filters__clear {
+  margin-left: auto;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.tests-filters__clear:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tests-table-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.tests-table__summary {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tests-table-toolbar__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.tests-table-page-size {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.tests-table-page-size select {
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.75rem;
+}
+
+.tests-table-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.tests-table-pagination__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tests-table-pagination__btn:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.tests-table-pagination__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tests-table-pagination__info {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.tests-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+}
+
+.tests-table {
+  width: 100%;
+  min-width: 52rem;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.tests-table th,
+.tests-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tests-table th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+}
+
+.tests-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tests-table__sort:hover {
+  color: var(--color-text);
+}
+
+.tests-table__sort::after {
+  content: "↕";
+  font-size: 0.62rem;
+  opacity: 0.35;
+}
+
+.tests-table__sort[aria-sort="ascending"]::after {
+  content: "↑";
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+.tests-table__sort[aria-sort="descending"]::after {
+  content: "↓";
+  opacity: 1;
+  color: var(--color-primary);
+}
+
+.tests-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tests-table tbody tr:hover td {
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+.tests-table__name {
+  font-weight: 500;
+  color: var(--color-text);
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tests-table__name[title] {
+  cursor: help;
+}
+
+.tests-table__status {
+  width: 7rem;
+}
+
+.tests-table__trend {
+  width: 6.5rem;
+}
+
+.tests-table__stability {
+  width: 8.5rem;
+}
+
+.tests-table__duration {
+  width: 10rem;
+}
+
+.tests-table__category {
+  width: 9rem;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.tests-table__empty {
+  margin: 0;
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.tests-table .badge--status-passed {
+  background: color-mix(in srgb, var(--color-success) 22%, transparent);
+  color: var(--color-success);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tests-table .badge--status-failed {
+  background: color-mix(in srgb, var(--color-danger) 22%, transparent);
+  color: var(--color-danger);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tests-table .badge--status-broken {
+  background: color-mix(in srgb, var(--color-warning) 22%, transparent);
+  color: var(--color-warning);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tests-table .badge--status-skipped,
+.tests-table .badge--status-unknown {
+  background: color-mix(in srgb, var(--color-text-muted) 18%, transparent);
+  color: var(--color-text-muted);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.duration-bar {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.duration-bar__value {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: right;
+}
+
+.duration-bar__track {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-border) 80%, transparent);
+  overflow: hidden;
+}
+
+.duration-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+  min-width: 2px;
+  transition: width 0.35s ease, background-color 0.3s ease;
+}
+
+.duration-bar__fill--passed {
+  background: var(--color-success);
+}
+
+.duration-bar__fill--failed,
+.duration-bar__fill--broken {
+  background: var(--color-danger);
+}
+
+.sparkline {
+  display: block;
+}
+
+.sparkline--empty {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.sparkline--duration {
+  overflow: visible;
+}
+
+.stability-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 1.25rem;
+}
+
+.stability-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: nowrap;
+}
+
+.stability-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tests-table .badge--flaky {
+  min-width: 1.25rem;
+  padding: 0 0.35rem;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: color-mix(in srgb, var(--color-warning) 24%, transparent);
+  color: var(--color-warning);
+}

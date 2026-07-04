@@ -1,0 +1,33 @@
+# Wired design-system embed (local dev; materialized via sync-app-static.sh)
+frontend/css
+frontend/js
+frontend/templates
+frontend/allure-shell.css
+frontend/allure-shell.js
+
+# Build
+backend/build/
+backend/.gradle/
+backend/bin/
+tests/build/
+tests/.gradle/
+tests/bin/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Runtime
+*.log
+.env
+
+# Test artifacts
+allure-results/
+allure-report/
+test-results/
+
+# OS
+.DS_Store
+tests-java/build/
+tests-java/.gradle/

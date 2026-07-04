@@ -1,0 +1,119 @@
+/* Configurator page shell — prompt-builder, e2e-builder, playground, selenoid-ui */
+
+.configurator {
+  max-width: min(var(--content-max-width), calc(100% - 2 * var(--page-padding-x)));
+  margin: 0 auto;
+  padding: var(--space-6) var(--page-padding-x) var(--space-8);
+}
+
+.configurator__back {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.configurator__back:hover {
+  color: var(--color-primary);
+}
+
+.configurator__intro {
+  margin-bottom: var(--space-6);
+}
+
+.configurator__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.configurator__lead {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.configurator__toolbar {
+  margin-bottom: var(--space-6);
+}
+
+.configurator__layout.grid {
+  gap: var(--space-6);
+}
+
+.configurator__main,
+.configurator__aside {
+  min-width: 0;
+}
+
+@media (min-width: 769px) {
+  .configurator__aside {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .configurator__aside > .section--sticky,
+  .configurator__aside .panel--sticky {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+/* Terminal output — 2×1 (1fr / 2fr) + sticky panel chain (e2e-builder, autotests.ai) */
+.configurator__layout--terminal {
+  align-items: start;
+}
+
+@media (min-width: 769px) {
+  .configurator__layout--terminal {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: stretch;
+  }
+
+  .configurator__layout--terminal > .configurator__main {
+    align-self: start;
+  }
+
+  .configurator__layout--terminal > .configurator__aside {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .configurator__output-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .configurator__aside .configurator__output-sticky {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .configurator__output-sticky .panel__main {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-height: 0;
+  }
+
+  .configurator__output-sticky .panel--sticky {
+    z-index: 1;
+  }
+
+  .configurator__layout--terminal .terminal-panel__code {
+    max-height: none;
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .configurator__layout--terminal .terminal-panel__code {
+    min-height: 160px;
+    max-height: min(40vh, 360px);
+  }
+}

@@ -1,0 +1,48 @@
+/* Configurator output-only — right sticky terminal, no main form (e2e-builder parity) */
+
+.configurator-output-only {
+  overflow-x: clip;
+}
+
+.configurator-output-only .configurator__intro {
+  margin-bottom: var(--space-4);
+}
+
+/* Empty main keeps 1fr slot on desktop; hidden on mobile stack */
+.configurator-output-only__main {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .configurator-output-only__main {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .configurator-output-only .e2e-builder__workspace {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: stretch;
+  }
+
+  .configurator-output-only .e2e-builder__aside {
+    align-self: stretch;
+  }
+}
+
+/* Narrow: trim terminal chrome so 390px fits without horizontal scroll */
+@media (max-width: 768px) {
+  .configurator-output-only .e2e-builder__terminal-tabs {
+    margin-left: var(--space-2);
+  }
+
+  .configurator-output-only .terminal-panel__trail {
+    gap: var(--space-1);
+  }
+
+  .configurator-output-only .e2e-builder__hash-badge {
+    display: none;
+  }
+}

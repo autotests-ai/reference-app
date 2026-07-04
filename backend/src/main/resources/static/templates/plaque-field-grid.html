@@ -1,0 +1,57 @@
+<!-- 3-col dense grid (default) — boolean / 2-opt seg fields -->
+<div class="plaque-field-grid" data-testid="plaque-field-grid">
+  <div class="plaque-field-grid__cell">
+    <div class="plaque-field plaque-field--divided">
+      <span class="plaque-field__label" title="logToConsole">logToConsole</span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="logToConsole">
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+          <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plaque-field-grid__cell">
+    <div class="plaque-field plaque-field--divided">
+      <span class="plaque-field__label" title="selenideLogToConsole">selenideLogToConsole</span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="selenideLogToConsole">
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+          <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plaque-field-grid__cell">
+    <div class="plaque-field plaque-field--divided">
+      <span class="plaque-field__label" title="headless">headless</span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+          <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4-col variant -->
+<div class="plaque-field-grid plaque-field-grid--4" data-testid="plaque-field-grid-4">
+  <!-- same cell pattern × 4–8 -->
+</div>
+
+<!-- Mixed tier — 4 sm + 3 md + 2 lg (12-col) -->
+<div class="plaque-field-grid plaque-field-grid--mixed" data-testid="plaque-field-grid-mixed">
+  <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
+    <div class="plaque-field plaque-field--divided">
+      <span class="plaque-field__label" title="enableVnc">vnc</span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
+          <button type="button" class="plaque-field-seg__btn" aria-pressed="false">T</button>
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">F</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- …3 more __cell--sm, 3× __cell--md, 2× __cell--lg — see components.html -->
+</div>
