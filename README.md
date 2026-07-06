@@ -105,6 +105,14 @@ sudo NGINX_CONF_SRC=./deploy/nginx/reference-app.autotests.ai.conf \
 | `DEPLOY_HOST` | variable (optional) | `136.243.89.21` |
 | `DEPLOY_USER` | variable (optional) | `selenoid` |
 
+**Allure TestOps:** отдельный проект [5274](https://allure.autotests.cloud/project/5274) (не шарить с другими consumers).
+
+| Name | Kind | Value |
+|------|------|-------|
+| `ALLURE_PROJECT_ID` | variable | `5274` |
+| `ALLURE_ENDPOINT` | variable | `https://allure.autotests.cloud` |
+| `ALLURE_TOKEN` | secret | TestOps upload token (см. ethalon CI: allurectl opt-in по `ALLURE_PROJECT_ID`) |
+
 **DNS:** `reference-app.autotests.ai` → `136.243.89.21` (A record).
 
 **TLS:** one-time bootstrap on prod host (NOPASSWD `sudo /tmp/sync-nginx.sh` for `selenoid`):

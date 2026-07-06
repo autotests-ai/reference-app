@@ -1,5 +1,5 @@
 {
-  "name": "template-project Tests",
+  "name": "reference-app Tests",
   "historyPath": "./history.jsonl",
   "appendHistory": true,
   "historyLimit": 20,
@@ -160,7 +160,7 @@
     },
     "dashboard": {
       "options": {
-        "reportName": "template-project Tests Dashboard",
+        "reportName": "reference-app Tests Dashboard",
         "reportLanguage": "ru",
         "layout": [
           {
@@ -254,7 +254,7 @@
     },
     "csv": {
       "options": {
-        "fileName": "template-project.csv"
+        "fileName": "reference-app.csv"
       }
     }
   }
