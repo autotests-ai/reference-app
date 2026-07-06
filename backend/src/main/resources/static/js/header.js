@@ -1,4 +1,5 @@
-import { THEME_ICON_MOON, THEME_ICON_SUN } from './theme-icons.js';
+import { syncThemeToggleIcon } from './theme-icons.js';
+import { fetchTemplateText } from './dom-utils.js';
 
 const mount = document.getElementById('app-header');
 if (!mount) {
@@ -137,16 +138,7 @@ function applyLangDefault(root, langConfig) {
 
 /** @param {HTMLElement} themeBtn */
 function setThemeIcon(themeBtn) {
-  const isLight = document.documentElement.classList.contains('theme-light');
-  const icon = themeBtn.querySelector('.icon');
-  if (!icon) {
-    return;
-  }
-  icon.innerHTML = isLight ? THEME_ICON_SUN : THEME_ICON_MOON;
-  themeBtn.setAttribute(
-    'aria-label',
-    isLight ? 'Switch to dark theme' : 'Switch to light theme'
-  );
+  syncThemeToggleIcon(themeBtn);
 }
 
 /** @param {HeaderThemeConfig | undefined} themeConfig */
@@ -157,9 +149,10 @@ function applyThemeDefault(themeConfig) {
 
 async function fetchHeaderTemplate() {
   for (const url of TEMPLATE_URLS) {
-    const response = await fetch(url);
-    if (response.ok) {
-      return response.text();
+    try {
+      return await fetchTemplateText(url);
+    } catch {
+      continue;
     }
   }
   throw new Error('header.js: failed to load template (404 on all candidate paths)');

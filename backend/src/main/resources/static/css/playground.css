@@ -1,11 +1,5 @@
 /* Playground editor shell — фаза 3, чат 1 */
 
-.page-playground main {
-  max-width: min(var(--content-max-width), calc(100% - 2 * var(--page-padding-x)));
-  margin: 0 auto;
-  padding: calc(var(--header-height) + var(--space-6)) var(--page-padding-x) var(--space-6);
-}
-
 .playground__intro {
   margin-bottom: var(--space-6);
 }
@@ -30,16 +24,16 @@
   font-size: var(--font-size-sm);
 }
 
-.playground__toolbar {
+.playground__toolbar .panel__body.playground__toolbar-body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-4) var(--space-6);
-  margin-bottom: var(--space-6);
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-soft);
+}
+
+.playground__toolbar {
+  margin-bottom: var(--space-6);
 }
 
 .playground__toolbar-group {
@@ -98,15 +92,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-}
-
-@media (min-width: 769px) {
-  .playground__export-panel {
-    position: sticky;
-    top: calc(var(--header-height) + var(--space-6));
-    max-height: calc(100vh - var(--header-height) - 2 * var(--space-6));
-    overflow: auto;
-  }
 }
 
 .playground__field-error {

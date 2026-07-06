@@ -1,4 +1,6 @@
-import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
+import { initPlaqueTemplates, clonePlaqueTemplate, applyPlaqueStretch } from './plaque-field.js';
+import { escapeHtml, copyToClipboard } from './dom-utils.js';
+import { highlightJson, highlightShell } from './code-highlight.js';
 
 (async function () {
   await initPlaqueTemplates();
@@ -13,7 +15,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
   var outputs = { gradle: "", json: "", prompt: "" };
   var OUTPUT_TABS = [
     { id: "prompt", label: "Agent prompt", barLabel: "Agent" },
-    { id: "gradle", label: "Gradle", barLabel: "Gradle" },
+    { id: "gradle", label: "Terminal", barLabel: "Terminal" },
     { id: "json", label: "JSON vector", barLabel: "JSON" },
   ];
 
@@ -213,7 +215,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       onValueChange(param.id, next);
     });
 
-    return btn;
+    return applyPlaqueStretch(btn);
   }
 
   function renderBooleanFlagstripItem(param, opts) {
@@ -279,7 +281,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       seg.appendChild(btn);
     });
 
-    return plaque;
+    return applyPlaqueStretch(plaque);
   }
 
   function renderToggleButtons(param, wrap) {
@@ -721,7 +723,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
         "- ALLURE_ENDPOINT: `" + (values.testopsEndpoint || "https://allure.autotests.cloud") + "`",
         "- ALLURE_PROJECT_ID: `" + (values.testopsProjectId || "—") + "`",
         "- ALLURE_TOKEN: env secret (не в git)",
-        "- allurectl watch — см. Gradle-вкладку"
+        "- allurectl watch — см. Terminal-вкладку"
       );
     }
 
@@ -760,7 +762,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
         "",
         "## Visual baselines (UI e2e, не отдельный @Layer)",
         "- `@Layer(\"e2e\")` на классе (`LoginBaselineTests`, `LoggedInBaselineTests`); отбор — `@Tag(\"visual\")`",
-        "- Gradle: `-DincludeTags=visual` (`testVisual` slice), не wildcard по классу",
+        "- Terminal: `-DincludeTags=visual` (`testVisual` slice), не wildcard по классу",
         "- Env profile: `" + configEnvName() + "` — run profile `*_visual`, не Test Layer",
         "- Target: `frontend/` через `python -m http.server 3000`",
         "- `attachLastScreenshot=false` — element crop из `ScreenshotBaseline`, не full page",
@@ -775,7 +777,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
         return "- `docs/rag/e2e/" + c + ".md`";
       }).join("\n"),
       "",
-      "## Gradle (из конструктора)",
+      "## Terminal (из конструктора)",
       "```bash",
       buildGradleCommand(),
       "```",
@@ -786,29 +788,14 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
     return lines.join("\n");
   }
 
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
-
-  function highlightShellLine(line) {
-    var esc = escapeHtml(line);
-    if (/^\s*#/.test(line)) {
-      return '<span class="e2e-builder__tok-comment">' + esc + "</span>";
-    }
-    esc = esc.replace(/\b(export)\b/g, '<span class="e2e-builder__tok-export">$1</span>');
-    esc = esc.replace(/\b(allurectl|\.\/gradlew|gradle)\b/g, '<span class="e2e-builder__tok-cmd">$1</span>');
-    esc = esc.replace(/(-D[\w.]+(?:=[^\s\\']*)?)/g, '<span class="e2e-builder__tok-flag">$1</span>');
-    esc = esc.replace(/\b(ALLURE_[A-Z_]+|TEST_CASE_ID)\b/g, '<span class="e2e-builder__tok-var">$1</span>');
-    esc = esc.replace(/(\s+#.*)$/, '<span class="e2e-builder__tok-comment">$1</span>');
-    return esc;
-  }
-
   function highlightOutput(text, tab) {
-    if (tab !== "gradle") return escapeHtml(text);
-    return text.split("\n").map(highlightShellLine).join("\n");
+    if (tab === "gradle") {
+      return highlightShell(text);
+    }
+    if (tab === "json") {
+      return highlightJson(text);
+    }
+    return escapeHtml(text);
   }
 
   function rebuildOutputs() {
@@ -823,7 +810,8 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
   function renderActiveTab() {
     var text = outputs[activeTab] || "";
     outputEl.innerHTML = highlightOutput(text, activeTab);
-    terminalEl.classList.toggle("terminal-panel--tall", activeTab === "prompt");
+    terminalEl.classList.toggle("panel--tall", activeTab === "prompt");
+    terminalEl.classList.toggle("ch-theme--vscode", activeTab === "json" || activeTab === "gradle");
   }
 
   function renderTabs() {
@@ -888,7 +876,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       var value = plaque.querySelector(".plaque-field__value");
       value.textContent = param.options[0].label;
       if (param.options[0].hint) value.title = param.options[0].hint;
-      wrap.appendChild(plaque);
+      wrap.appendChild(applyPlaqueStretch(plaque));
       return wrap;
     }
     return renderOptionButtons(param, wrap, false);
@@ -918,7 +906,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       onValueChange(param.id, select.value);
     });
 
-    wrap.appendChild(plaque);
+    wrap.appendChild(applyPlaqueStretch(plaque));
     return wrap;
   }
 
@@ -938,7 +926,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       onValueChange(param.id, input.value);
     });
 
-    wrap.appendChild(plaque);
+    wrap.appendChild(applyPlaqueStretch(plaque));
 
     if (param.envHint) {
       var hint = document.createElement("p");
@@ -950,17 +938,17 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
     return wrap;
   }
 
-  function renderCheckStrip(param, wrap) {
-    var strip = clonePlaqueTemplate("plaque-field-checkstrip");
+  function renderTagStrip(param, wrap) {
+    var strip = clonePlaqueTemplate("plaque-field-tagstrip");
     strip.setAttribute("aria-label", param.label || param.id);
     strip.replaceChildren();
-    var itemTemplate = clonePlaqueTemplate("plaque-field-checkstrip-item");
+    var itemTemplate = clonePlaqueTemplate("plaque-field-tagstrip-item");
 
     param.options.forEach(function (opt) {
       var row = itemTemplate.cloneNode(true);
       row.dataset.testid = "e2e-check-" + param.id + "-" + opt.value;
 
-      var input = row.querySelector(".plaque-field-checkstrip__input");
+      var input = row.querySelector(".plaque-field-tagstrip__input");
       input.dataset.value = opt.value;
       input.checked = (values[param.id] || []).indexOf(opt.value) !== -1;
 
@@ -987,7 +975,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
 
   function renderCheckboxParam(param) {
     var wrap = createParamWrap(param);
-    wrap.classList.add("e2e-builder__param--checkstrip");
+    wrap.classList.add("e2e-builder__param--tagstrip");
     if (param.label) {
       var caption = document.createElement("p");
       caption.className = "e2e-builder__param-caption";
@@ -995,7 +983,7 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
       if (param.warn) caption.title = param.warn;
       wrap.appendChild(caption);
     }
-    return renderCheckStrip(param, wrap);
+    return renderTagStrip(param, wrap);
   }
 
   function renderParam(param) {
@@ -1006,6 +994,18 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
     return document.createDocumentFragment();
   }
 
+  function createPanelDots() {
+    var dots = document.createElement("div");
+    dots.className = "panel__dots";
+    dots.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 3; i++) {
+      var dot = document.createElement("span");
+      dot.className = "panel__dot";
+      dots.appendChild(dot);
+    }
+    return dots;
+  }
+
   function renderParams() {
     paramsRoot.innerHTML = "";
     var currentGroup = null;
@@ -1013,25 +1013,34 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
     var body = null;
 
     map.groups.forEach(function (group) {
-      section = document.createElement("section");
-      section.className = "section e2e-builder__group";
+      section = document.createElement("div");
+      section.className = "panel panel--content e2e-builder__group";
       section.dataset.groupId = group.id;
       section.dataset.testid = "e2e-group-" + group.id;
 
-      var title = document.createElement("h2");
-      title.className = "section__title e2e-builder__group-title";
+      var bar = document.createElement("div");
+      bar.className = "panel__bar";
+      bar.appendChild(createPanelDots());
+
+      var trail = document.createElement("div");
+      trail.className = "panel__trail";
+      var title = document.createElement("span");
+      title.className = "panel__title e2e-builder__group-title";
       title.textContent = group.title;
-      section.appendChild(title);
+      trail.appendChild(title);
+      bar.appendChild(trail);
+      section.appendChild(bar);
+
+      body = document.createElement("div");
+      body.className = "panel__body";
 
       if (group.desc) {
         var groupDesc = document.createElement("p");
-        groupDesc.className = "section__desc e2e-builder__group-desc";
+        groupDesc.className = "text text--sm text--muted e2e-builder__group-desc";
         groupDesc.textContent = group.desc;
-        section.appendChild(groupDesc);
+        body.appendChild(groupDesc);
       }
 
-      body = document.createElement("div");
-      body.className = "section__body";
       section.appendChild(body);
 
       if (group.id === "remote") {
@@ -1154,37 +1163,20 @@ import { initPlaqueTemplates, clonePlaqueTemplate } from './plaque-field.js';
   }
 
   function copyText(text, okMsg) {
-    if (!text) {
-      statusEl.textContent = "Нечего копировать";
-      return;
-    }
-    navigator.clipboard.writeText(text).then(
-      function () {
+    void copyToClipboard(text, {
+      onEmpty: function () {
+        statusEl.textContent = "Нечего копировать";
+      },
+      onSuccess: function () {
         statusEl.textContent = okMsg;
         setTimeout(function () {
           statusEl.textContent = "";
         }, 2000);
       },
-      function () {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          document.execCommand("copy");
-          statusEl.textContent = okMsg;
-          setTimeout(function () {
-            statusEl.textContent = "";
-          }, 2000);
-        } catch (_e) {
-          statusEl.textContent = "Не удалось скопировать";
-        }
-        document.body.removeChild(ta);
-      }
-    );
+      onError: function () {
+        statusEl.textContent = "Не удалось скопировать";
+      },
+    });
   }
 
   copyBtn.addEventListener("click", function () {

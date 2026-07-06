@@ -1,6 +1,13 @@
 /* Chart tile — Highcharts host panel for allure-dashboard metrics row */
 
+/* display: flex ниже перебивает UA-правило [hidden] — восстанавливаем */
+.chart-tile[hidden] {
+  display: none;
+}
+
 .chart-tile {
+  --panel-bg: var(--color-surface-soft);
+  --panel-border: var(--color-border);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -8,17 +15,17 @@
   min-height: 168px;
   padding: var(--space-3);
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
 }
 
-.chart-tile__title {
+.chart-tile .chart-tile__title {
   margin: 0;
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--color-text-muted);
 }
 
 .chart-tile__body {
@@ -28,5 +35,6 @@
 }
 
 .chart-tile__body > .highcharts-container {
-  width: 100% !important;
+  width: 100%;
+  max-width: 100%;
 }

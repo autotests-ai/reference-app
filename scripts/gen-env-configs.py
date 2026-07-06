@@ -59,6 +59,16 @@ STANDS = {
         "selenideLogToConsole": "true",
         "rootLogLevel": "info",
     },
+    "reference_prod": {
+        "baseUrl": "https://reference-app.autotests.ai/",
+        "apiBaseUrl": "https://reference-app.autotests.ai/",
+        "remoteUrl": "https://user1:1234@selenoid.autotests.cloud/wd/hub",
+        "videoFolder": "https://selenoid.autotests.cloud/video/",
+        "browserSize": "1740x1080",
+        "logToConsole": "false",
+        "selenideLogToConsole": "false",
+        "rootLogLevel": "warn",
+    },
 }
 
 COMPONENT_BASE = {

@@ -1,0 +1,314 @@
+@import url("tokens.css");
+
+.plaque-matrix__intro {
+  margin-bottom: var(--space-4);
+}
+
+.plaque-matrix__title {
+  margin: 0 0 var(--space-1);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.plaque-matrix__lead {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.plaque-matrix__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.plaque-matrix__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+}
+
+.plaque-matrix__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+}
+
+.plaque-matrix__legend-id {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.plaque-matrix__table-wrap {
+  overflow-x: auto;
+  margin-bottom: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.plaque-matrix__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.plaque-matrix__table th,
+.plaque-matrix__table td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+  text-align: left;
+}
+
+.plaque-matrix__table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-surface-soft);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.plaque-matrix__table tr:last-child td {
+  border-bottom: 0;
+}
+
+.plaque-matrix__table tr:hover td {
+  background: color-mix(in srgb, var(--color-primary) 3%, transparent);
+}
+
+.plaque-matrix__id {
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.plaque-matrix__canon {
+  display: inline-block;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-primary);
+}
+
+.plaque-matrix__classes code {
+  display: block;
+  margin: 0 0 2px;
+  white-space: nowrap;
+}
+
+.plaque-matrix__demo {
+  min-width: 14rem;
+  max-width: 28rem;
+}
+
+.plaque-matrix__demo--wide {
+  min-width: 18rem;
+  max-width: 36rem;
+}
+
+.plaque-matrix__demo .plaque-field,
+.plaque-matrix__demo .plaque-field-flagstrip,
+.plaque-matrix__demo .plaque-field-checkstrip,
+.plaque-matrix__demo .plaque-field-tagstrip,
+.plaque-matrix__demo .plaque-field-toggles,
+.plaque-matrix__demo .plaque-field-grid {
+  width: 100%;
+}
+
+.plaque-matrix__when {
+  max-width: 14rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.plaque-matrix__adopt {
+  text-align: center;
+}
+
+.plaque-matrix__adopt input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.plaque-matrix__section-title {
+  margin: var(--space-6) 0 var(--space-2);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.plaque-matrix__section-desc {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+}
+
+.plaque-matrix__adopt-summary {
+  margin-top: var(--space-6);
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+}
+
+.plaque-matrix__adopt-summary h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.plaque-matrix__adopt-summary p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+/* Plaque tier vs .btn — mirrors button-variants P1–P4 */
+.plaque-matrix__cta-grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 1279px) {
+  .plaque-matrix__cta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .plaque-matrix__cta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plaque-matrix__cta-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  min-width: 0;
+}
+
+.plaque-matrix__cta-card--baseline {
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+}
+
+.plaque-matrix__cta-head {
+  margin-bottom: var(--space-3);
+}
+
+.plaque-matrix__cta-id {
+  margin: 0 0 var(--space-1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.plaque-matrix__cta-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.plaque-matrix__cta-desc {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.plaque-matrix__cta-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.plaque-matrix__cta-demo--320 {
+  max-width: 320px;
+}
+
+.plaque-matrix__cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.plaque-matrix__cta-stack .plaque-field-option,
+.plaque-matrix__cta-stack .plaque-field--toggle,
+.plaque-matrix__cta-stack .plaque-field,
+.plaque-matrix__cta-stack .plaque-field-flagstrip {
+  width: 100%;
+}
+
+.plaque-matrix__cta-meta {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.plaque-matrix__tier-row {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: var(--space-4);
+  padding: var(--space-3);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+}
+
+@media (max-width: 768px) {
+  .plaque-matrix__tier-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plaque-matrix__tier-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.plaque-matrix__tier-label {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}

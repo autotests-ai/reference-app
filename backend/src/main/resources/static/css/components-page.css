@@ -1,23 +1,17 @@
-.components-page .terminal-panel__body {
+.components-page .panel__body {
   background: var(--color-surface-soft);
   color: var(--color-text);
 }
 
-.components-page .terminal-panel__body .section__desc {
+.components-page .panel__body .section__desc {
   margin-top: 0;
 }
 
-.components-page .terminal-panel__body .section__title {
+.components-page .panel__body .section__title {
   margin: 0 0 var(--space-2);
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.4;
-}
-
-.components-page {
-  max-width: min(var(--content-max-width), calc(100% - 2 * var(--page-padding-x)));
-  margin: 0 auto;
-  padding: var(--space-6) var(--page-padding-x);
 }
 
 .components-page__intro {

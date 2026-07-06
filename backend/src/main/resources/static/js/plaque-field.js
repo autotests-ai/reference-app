@@ -1,3 +1,5 @@
+import { fetchTemplateText } from './dom-utils.js';
+
 const TEMPLATE_URLS = [
   new URL('../templates/plaque-field.html', import.meta.url),
   new URL('../templates/plaque-field-grid.html', import.meta.url),
@@ -5,14 +7,6 @@ const TEMPLATE_URLS = [
 
 /** @type {Map<string, Element> | null} */
 let templateRegistry = null;
-
-async function fetchTemplateText(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('plaque-field.js: failed to load template ' + url);
-  }
-  return response.text();
-}
 
 function indexTemplates(root) {
   const registry = new Map();
@@ -47,4 +41,12 @@ export function clonePlaqueTemplate(testid) {
     throw new Error('plaque-field.js: unknown template data-testid="' + testid + '"');
   }
   return template.cloneNode(true);
+}
+
+/** Full-width row — label column + divider left; control slot right (plaque-field.css). */
+export function applyPlaqueStretch(node) {
+  if (node && node.classList && node.classList.contains('plaque-field--divided')) {
+    node.classList.add('plaque-field--stretch');
+  }
+  return node;
 }

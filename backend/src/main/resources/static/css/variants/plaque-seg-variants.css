@@ -1,0 +1,345 @@
+@import url("../tokens.css");
+@import url("../plaque-field.css");
+
+/* Plaque seg overflow — exploration only (e2e-builder Build / gradleInvoker) */
+
+.psv__intro {
+  margin-bottom: var(--space-6);
+}
+
+.psv__title {
+  margin: 0 0 var(--space-1);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.psv__lead {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.psv__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.psv__section {
+  margin-bottom: var(--space-6);
+}
+
+.psv__section-title {
+  margin: 0 0 var(--space-1);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.psv__section-desc {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.psv__problems {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.psv__problems li + li {
+  margin-top: var(--space-1);
+}
+
+.psv__subsection-title {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+/* Context — vertical stack, Build-only at fixed panel widths */
+.psv-context-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 100%;
+}
+
+.psv-context-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.psv-context-row__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.psv-context-col__label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.psv-context-col__label code {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.psv-build-panel .panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.psv-build-panel .e2e-builder__group-desc {
+  margin: 0;
+}
+
+.psv__mock .panel,
+.psv-workspace__main .panel,
+.psv-workspace__aside .panel {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Workspace ref — explicit px columns (no 1fr inside narrow parent) */
+.psv-workspace-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  padding-bottom: var(--space-1);
+}
+
+.psv-workspace {
+  display: grid;
+  grid-template-columns: 320px 640px;
+  gap: var(--space-3);
+  align-items: start;
+  width: fit-content;
+  max-width: none;
+}
+
+.psv-workspace__main,
+.psv-workspace__aside {
+  min-width: 0;
+}
+
+.psv-terminal-stub .panel__body {
+  padding: 0;
+}
+
+.psv-terminal-code {
+  min-height: 88px;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  border-radius: 0;
+}
+
+.psv-clip-badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 40%, var(--color-border));
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-warning);
+}
+
+.psv-clip-badge--ok {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+  color: var(--color-primary);
+}
+
+/* Variant cards */
+.psv__grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 959px) {
+  .psv__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.psv__card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  min-width: 0;
+}
+
+.psv__card--baseline {
+  border-color: color-mix(in srgb, var(--color-warning) 35%, var(--color-border));
+  background: color-mix(in srgb, var(--color-warning) 4%, var(--color-surface-soft));
+}
+
+.psv__card--rec {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-soft));
+}
+
+.psv__card--winner {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-soft));
+}
+
+.psv__card-winner {
+  margin-left: var(--space-1);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  vertical-align: middle;
+}
+
+.psv__card-id {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.psv__card-rec {
+  margin: 0 0 var(--space-1);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.psv__card-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.psv__card-desc {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.psv__mock {
+  width: 320px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.psv__mock--400 {
+  width: 400px;
+  max-width: 100%;
+}
+
+/* Legacy baseline (card 0) — pre-A content-hug seg */
+.psv-legacy-baseline .plaque-field--stretch > .plaque-field-seg-track.plaque-field__control {
+  justify-self: end;
+  width: auto;
+  max-width: 100%;
+}
+
+.psv-legacy-baseline .plaque-field--stretch .plaque-field-seg-track .plaque-field-seg {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.psv-legacy-baseline .plaque-field--stretch .plaque-field-seg-track .plaque-field-seg .plaque-field-seg__btn {
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.psv__meta {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.psv-param-caption {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.psv-build-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.psv-build-row .e2e-builder__param {
+  min-width: 0;
+}
+
+.psv__prompt {
+  margin: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+/* —— Variant E: 2-col build row (exploration only) —— */
+.psv-variant-b .plaque-field--seg-shell {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* —— Variant E: 2-col build row —— */
+.psv-variant-e .plaque-field--stretch > .plaque-field-seg-track.plaque-field__control {
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+}
+
+.psv-variant-e .plaque-field--stretch .plaque-field-seg-track .plaque-field-seg {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.psv-variant-e .plaque-field--stretch .plaque-field-seg-track .plaque-field-seg .plaque-field-seg__btn {
+  flex: 1 1 50%;
+  min-width: 0;
+  padding: 0 2px;
+  font-size: 0.625rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,3 +1,5 @@
+import { escapeHtml } from './dom-utils.js';
+
 const I18N = {
   en: {
     dashboardTitle: "template-project Tests Dashboard",
@@ -448,14 +450,6 @@ function sampleTestsData() {
 function statusLabel(status) {
   const key = `status${status.charAt(0).toUpperCase()}${status.slice(1)}`;
   return t(key) || status.toUpperCase();
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function durationBarFillClass(status) {

@@ -1,5 +1,6 @@
 import { remountHeader } from './header.js';
-import { THEME_ICON_MOON, THEME_ICON_SUN } from './theme-icons.js';
+import { syncThemeToggleIcon } from './theme-icons.js';
+import { copyToClipboard } from './dom-utils.js';
 
 const STORAGE_PAGE_THEME = 'playground-theme';
 
@@ -114,17 +115,7 @@ function applyPageTheme(theme) {
 }
 
 function syncInPlaceHeaderThemeIcon() {
-  const themeBtn = document.querySelector('#app-header [data-testid="header-theme-toggle"]');
-  const icon = themeBtn?.querySelector('.icon');
-  if (!icon) {
-    return;
-  }
-  const isLight = document.documentElement.classList.contains('theme-light');
-  icon.innerHTML = isLight ? THEME_ICON_SUN : THEME_ICON_MOON;
-  themeBtn.setAttribute(
-    'aria-label',
-    isLight ? 'Switch to dark theme' : 'Switch to light theme'
-  );
+  syncThemeToggleIcon(document.querySelector('#app-header [data-testid="header-theme-toggle"]'));
 }
 
 function syncToolbarFromDocument() {
@@ -242,7 +233,7 @@ async function syncFromForm() {
 }
 
 async function copyText(text) {
-  await navigator.clipboard.writeText(text);
+  await copyToClipboard(text);
 }
 
 function bindForm() {

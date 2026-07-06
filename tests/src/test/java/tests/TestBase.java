@@ -11,6 +11,8 @@ import config.TestConfig;
 import helpers.BrowserSessionHelper;
 import helpers.LocalChromePin;
 import pages.HomePage;
+import pages.LoginPage;
+import pages.LoggedInPage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,6 +29,8 @@ import static com.codeborne.selenide.Selenide.closeWebDriver;
 public class TestBase {
 
     protected HomePage homePage = new HomePage();
+    protected LoginPage loginPage = new LoginPage();
+    protected LoggedInPage loggedInPage = new LoggedInPage();
     
     protected static final TestConfig config = ConfigReader.testConfig;
     private static final SimpleReport selenideReport = new SimpleReport();

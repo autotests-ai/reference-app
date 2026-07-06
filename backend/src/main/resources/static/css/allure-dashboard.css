@@ -26,7 +26,7 @@
   min-height: 140px;
   margin: 0;
   font-size: 0.85rem;
-  color: var(--muted);
+  color: var(--color-text-muted);
   text-align: center;
 }
 
@@ -45,7 +45,7 @@
 
 .quality-gate-rule__id {
   font-size: 0.85em;
-  color: var(--muted);
+  color: var(--color-text-muted);
 }
 
 .allure-dashboard-note code {

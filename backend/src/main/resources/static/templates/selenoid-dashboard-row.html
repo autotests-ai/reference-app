@@ -1,0 +1,41 @@
+<div class="selenoid-dashboard-row" data-testid="selenoid-dashboard-row">
+  <div
+    class="status-tile status-tile--connected status-tile--tile"
+    role="status"
+    data-testid="sse-status"
+    aria-label="SSE connected"
+  >
+    <span class="status-tile__label">SSE</span>
+    <span class="status-tile__state">Connected</span>
+  </div>
+  <div
+    class="status-tile status-tile--connected status-tile--tile"
+    role="status"
+    data-testid="selenoid-status"
+    aria-label="Selenoid connected"
+  >
+    <span class="status-tile__label">Selenoid</span>
+    <span class="status-tile__state">Connected</span>
+  </div>
+  <div
+    class="selenoid-metrics selenoid-metrics--tile"
+    role="group"
+    data-testid="selenoid-metrics"
+    aria-label="Hub metrics"
+  >
+    <div class="selenoid-metrics__item" data-testid="selenoid-metrics-used">
+      <span class="selenoid-metrics__label">Used</span>
+      <span class="selenoid-metrics__value">0<span class="selenoid-metrics__unit">%</span></span>
+    </div>
+    <div class="selenoid-metrics__item" data-testid="selenoid-metrics-queued">
+      <span class="selenoid-metrics__label">Queued</span>
+      <span class="selenoid-metrics__value">0</span>
+    </div>
+    <div class="selenoid-metrics__item" data-testid="selenoid-metrics-quota">
+      <span class="selenoid-metrics__label">Quota</span>
+      <span class="selenoid-metrics__value">
+        0<span class="selenoid-metrics__quota-sep"> + </span><span class="selenoid-metrics__quota-pending">0</span><span class="selenoid-metrics__quota-sep"> / </span>20
+      </span>
+    </div>
+  </div>
+</div>

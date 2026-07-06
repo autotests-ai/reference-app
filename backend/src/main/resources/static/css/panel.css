@@ -1,43 +1,154 @@
+/* Panel — chrome shell: bar (dots + title) + body | code. Modes: --terminal, --content */
+
+@import url("sticky.css");
+
 .panel {
+  --panel-bg: var(--color-surface-soft);
+  --panel-border: var(--color-border);
+  --panel-bar-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --panel-title-color: var(--color-text-muted);
+  --panel-code-color: var(--color-text);
   display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: var(--space-2);
   min-width: 0;
   min-height: 0;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--panel-bg);
 }
 
-.panel--sm {
+.panel--terminal {
+  --panel-bg: #1a1917;
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --panel-bar-bg: rgba(255, 255, 255, 0.03);
+  --panel-title-color: rgba(255, 255, 255, 0.55);
+  --panel-code-color: #e6edf3;
+}
+
+.panel--content {
+  --panel-bg: var(--color-surface-soft);
+  --panel-border: var(--color-border);
+}
+
+.panel__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-3);
+  border-bottom: 1px solid var(--panel-border);
+  background: var(--panel-bar-bg);
+}
+
+.panel__dots {
+  display: flex;
+  gap: var(--panel-dot-gap);
+  flex-shrink: 0;
+}
+
+.panel__dot {
+  width: var(--panel-dot-size);
+  height: var(--panel-dot-size);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.panel__dot:nth-child(1) { background: #ff5f57; }
+.panel__dot:nth-child(2) { background: #febc2e; }
+.panel__dot:nth-child(3) { background: #28c840; }
+
+.panel--content .panel__dot:nth-child(1) {
+  background: color-mix(in srgb, #ff5f57 55%, transparent);
+}
+
+.panel--content .panel__dot:nth-child(2) {
+  background: color-mix(in srgb, #febc2e 55%, transparent);
+}
+
+.panel--content .panel__dot:nth-child(3) {
+  background: color-mix(in srgb, #28c840 55%, transparent);
+}
+
+.panel__trail {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.panel__title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--panel-title-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel__bar-end {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
   gap: var(--space-2);
 }
 
-.panel--lg {
-  gap: var(--space-6);
+.panel__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--panel-action-gap);
 }
 
-.panel__head,
-.panel__main,
-.panel__foot {
-  padding: 0;
+/* Trail sibling (canonical) or trail last-child (legacy) — one ml:auto in panel.css */
+.panel__bar > .panel__bar-end,
+.panel__bar > .panel__actions,
+.panel__trail > .panel__bar-end,
+.panel__trail > .panel__actions {
+  margin-left: auto;
+}
+
+.panel--terminal .panel__action.icon-btn {
+  width: var(--panel-action-size);
+  height: var(--panel-action-size);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.panel--terminal .panel__action.icon-btn:hover {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.panel--terminal .panel__action.icon-btn:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.65);
+}
+
+.panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+.panel__code {
+  flex: 1 1 auto;
+  min-height: 0;
   margin: 0;
-  border: none;
-  background: transparent;
+  padding: var(--space-3);
+  padding-bottom: calc(var(--space-3) + 0.25em);
+  overflow: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--panel-code-color);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-@media (min-width: 769px) {
-  .panel--sticky {
-    position: sticky;
-    top: var(--space-6);
-    max-height: calc(100vh - 2 * var(--space-6));
-    overflow: auto;
-  }
-
-  /* Fixed #app-header (e2e-builder, playground, …) */
-  :has(#app-header) .panel--sticky {
-    top: calc(var(--header-height) + var(--space-4));
-    max-height: calc(100vh - var(--header-height) - 2 * var(--space-4));
-  }
+.panel__foot {
+  flex: 0 0 auto;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--panel-border);
 }

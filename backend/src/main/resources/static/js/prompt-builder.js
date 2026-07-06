@@ -1,3 +1,5 @@
+import { copyToClipboard } from './dom-utils.js';
+
 (function () {
   var map = window.promptMap;
   if (!map) return;
@@ -94,13 +96,13 @@
       items.forEach(function (skill) {
         var label = document.createElement("label");
         label.className =
-          "prompt-builder__skill" +
+          "skill-row prompt-builder__skill" +
           (skill.group === "planned" ? " prompt-builder__skill--planned" : "");
 
         var input = document.createElement("input");
         input.type = "radio";
         input.name = "prompt-skill";
-        input.className = "prompt-builder__skill-input";
+        input.className = "skill-row__input prompt-builder__skill-input";
         input.value = skill.id;
         input.checked = selectedSkillId === skill.id;
         input.addEventListener("change", function () {
@@ -260,18 +262,18 @@
       copyStatus.textContent = "Нечего копировать";
       return;
     }
-    navigator.clipboard.writeText(text).then(
-      function () {
+    void copyToClipboard(text, {
+      onSuccess: function () {
         copyStatus.textContent = successMessage;
         setTimeout(function () {
           copyStatus.textContent = "";
         }, 2000);
       },
-      function () {
+      onError: function () {
         outputEl.select();
         copyStatus.textContent = "Выделено — Cmd/Ctrl+C";
-      }
-    );
+      },
+    });
   }
 
   function saveState() {

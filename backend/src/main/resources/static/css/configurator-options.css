@@ -1,0 +1,113 @@
+/* Configurator options exploration — layout inside panel--content */
+
+.configurator-options__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.configurator-options__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.configurator-options__legend-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  margin-right: var(--space-1);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs, 2px);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.configurator-options__variants {
+  margin-top: var(--space-2);
+}
+
+.configurator-options__variant {
+  scroll-margin-top: var(--space-6);
+}
+
+.configurator-options__variant-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.configurator-options__variant-desc {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.configurator-options__variant-desc code {
+  font-size: 0.92em;
+}
+
+.configurator-options__demo {
+  margin: 0;
+}
+
+.configurator-options__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.configurator-options__group + .configurator-options__group {
+  margin-top: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.configurator-options__group-title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.configurator-options__scroll-body {
+  max-height: min(320px, 45vh);
+}
+
+.configurator-options__terminal-stub .panel__code {
+  min-height: 120px;
+  font-size: var(--font-size-xs);
+}
+
+.configurator-options__panel-grid .panel__body {
+  padding: var(--space-3);
+}
+
+.configurator-options__panel-grid .e2e-builder__params-grid {
+  gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .configurator-options__panel-grid .e2e-builder__params-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .configurator-options__panel-grid
+    .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) {
+    grid-column: span 1;
+  }
+}

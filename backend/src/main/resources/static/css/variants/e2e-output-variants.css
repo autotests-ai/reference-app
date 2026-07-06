@@ -1,0 +1,577 @@
+@import url("../tokens.css");
+
+/* Exploration — output panel variants for e2e-builder */
+
+.eov {
+  --eov-code-bg: #1a1917;
+  --eov-code-border: rgba(255, 255, 255, 0.08);
+  --eov-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.eov__intro {
+  margin-bottom: var(--space-6);
+}
+
+.eov__title {
+  margin: 0 0 var(--space-1);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.eov__lead {
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.eov__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.eov__ideas {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.eov__ideas dt {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.eov__ideas dd {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.eov__ideas dd:last-child {
+  margin-bottom: 0;
+}
+
+.eov__grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .eov__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eov__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.eov__card-label {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.eov__card-desc {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.eov__card-rec {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Shared mock panel shell */
+.eov-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  overflow: hidden;
+}
+
+.eov-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) 0;
+}
+
+.eov-panel__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.eov-panel__hash {
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.eov-panel__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  min-height: 0;
+}
+
+.eov-panel__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.eov-panel__tab {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: default;
+}
+
+.eov-panel__tab--active {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  font-weight: 600;
+}
+
+.eov-panel__code {
+  flex: 1;
+  min-height: 140px;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  overflow: auto;
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.eov-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.eov-panel__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: var(--control-height-md);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: default;
+}
+
+.eov-panel__btn--primary {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.eov-panel__btn--secondary {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.eov-panel__btn--ghost {
+  min-height: auto;
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Syntax-lite tokens */
+.eov-tok-comment { color: #8b949e; }
+.eov-tok-export { color: #79c0ff; }
+.eov-tok-var { color: #ffa657; }
+.eov-tok-cmd { color: #a5d6ff; }
+.eov-tok-flag { color: #d2a8ff; }
+.eov-tok-str { color: #7ee787; }
+
+/* ── Variant 1: Baseline (current) ── */
+.eov-panel--baseline .eov-panel__code {
+  resize: vertical;
+}
+
+/* ── Variant 2: Terminal chrome ── */
+.eov-panel--terminal {
+  border-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-border));
+}
+
+.eov-panel--terminal .eov-panel__head {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.eov-panel--terminal .eov-panel__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.eov-panel--terminal .eov-panel__badge {
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}
+
+.eov-panel--terminal .eov-terminal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--eov-code-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--eov-code-bg);
+}
+
+.eov-panel--terminal .eov-terminal__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--eov-code-border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.eov-panel--terminal .eov-terminal__dots {
+  display: flex;
+  gap: 5px;
+}
+
+.eov-panel--terminal .eov-terminal__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.eov-panel--terminal .eov-terminal__dot:nth-child(1) { background: #ff5f57; }
+.eov-panel--terminal .eov-terminal__dot:nth-child(2) { background: #febc2e; }
+.eov-panel--terminal .eov-terminal__dot:nth-child(3) { background: #28c840; }
+
+.eov-panel--terminal .eov-terminal__label {
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.eov-panel--terminal .eov-terminal__code {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: auto;
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.55;
+  color: #e6edf3;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.eov-panel--terminal .eov-panel__actions {
+  padding-top: var(--space-1);
+}
+
+.eov-panel--terminal .eov-panel__actions-main {
+  flex: 1;
+}
+
+/* ── Variant 3: Segmented tabs ── */
+.eov-panel--segmented .eov-panel__body {
+  gap: var(--space-3);
+}
+
+.eov-panel--segmented .eov-segment {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 3px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.eov-panel--segmented .eov-segment__item {
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  text-align: center;
+  cursor: default;
+}
+
+.eov-panel--segmented .eov-segment__item--active {
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.eov-panel--segmented .eov-panel__code {
+  border-color: transparent;
+  background: var(--eov-code-bg);
+  color: #e6edf3;
+}
+
+.eov-panel--segmented .eov-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.eov-panel--segmented .eov-toolbar__meta {
+  font-family: var(--eov-mono);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.eov-panel--segmented .eov-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ── Variant 4: Sheet (underline tabs + inline copy) ── */
+.eov-panel--sheet {
+  background: var(--color-surface);
+}
+
+.eov-panel--sheet .eov-panel__head {
+  padding-bottom: var(--space-2);
+}
+
+.eov-panel--sheet .eov-sheet-tabs {
+  display: flex;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  margin: 0 calc(-1 * var(--space-3));
+  padding: 0 var(--space-3);
+}
+
+.eov-panel--sheet .eov-sheet-tabs__item {
+  position: relative;
+  padding: var(--space-2) 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: default;
+}
+
+.eov-panel--sheet .eov-sheet-tabs__item--active {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.eov-panel--sheet .eov-sheet-tabs__item--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-primary);
+  border-radius: 2px 2px 0 0;
+}
+
+.eov-panel--sheet .eov-code-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.eov-panel--sheet .eov-panel__code {
+  min-height: 160px;
+  padding-right: calc(var(--space-3) + 88px);
+  background: var(--color-surface-soft);
+}
+
+.eov-panel--sheet .eov-code-wrap__copy {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: default;
+}
+
+.eov-panel--sheet .eov-panel__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-top: var(--space-1);
+}
+
+.eov-panel--sheet .eov-panel__foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.eov-panel--sheet .eov-link-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: default;
+}
+
+/* ── Variant 5: Compact toolbar row ── */
+.eov-panel--compact {
+  min-height: 280px;
+}
+
+.eov-panel--compact .eov-panel__head {
+  align-items: center;
+  padding-bottom: var(--space-2);
+}
+
+.eov-panel--compact .eov-compact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.eov-panel--compact .eov-compact-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.eov-panel--compact .eov-compact-tabs__item {
+  padding: 2px var(--space-2);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: default;
+}
+
+.eov-panel--compact .eov-compact-tabs__item--active {
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.eov-panel--compact .eov-panel__code {
+  min-height: 120px;
+  max-height: 180px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  background: var(--eov-code-bg);
+  color: #cbd5e1;
+  border-color: var(--eov-code-border);
+}
+
+.eov-panel--compact .eov-panel__actions {
+  justify-content: stretch;
+}
+
+.eov-panel--compact .eov-panel__btn--primary {
+  flex: 1;
+}
+
+.eov-panel--compact .eov-panel__btn--secondary {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding-inline: var(--space-3);
+}
+
+.eov-panel--compact .eov-panel__status {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-success);
+  text-align: center;
+}
+
+.eov-panel__hint {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.eov-panel__hint code {
+  font-family: var(--eov-mono);
+  font-size: 0.92em;
+}

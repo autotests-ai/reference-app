@@ -20,7 +20,7 @@
 
 .btn--primary {
   background: var(--color-primary);
-  color: var(--color-surface);
+  color: var(--color-primary-on);
 }
 
 .btn--primary:hover:not(:disabled) {
@@ -35,6 +35,29 @@
 
 .btn--secondary:hover:not(:disabled) {
   background: var(--color-surface-soft);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--hover-bg);
+}
+
+.btn--danger {
+  background: var(--color-danger);
+  color: var(--color-surface);
+}
+
+.btn--danger:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.btn--block {
+  width: 100%;
 }
 
 .btn:focus-visible {

@@ -54,15 +54,7 @@
 }
 
 .prompt-builder__skill {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out);
+  border-color: var(--color-border);
 }
 
 .prompt-builder__skill:hover {
@@ -76,11 +68,6 @@
 
 .prompt-builder__skill--planned {
   opacity: 0.65;
-}
-
-.prompt-builder__skill-input {
-  margin-top: 3px;
-  accent-color: var(--color-primary);
 }
 
 .prompt-builder__skill-body {
@@ -174,7 +161,7 @@
     align-self: start;
   }
 
-  .prompt-builder .configurator__aside > .section--sticky {
+  .prompt-builder .configurator__aside > .panel--sticky {
     flex: 0 0 auto;
   }
 }

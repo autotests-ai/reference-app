@@ -1,4 +1,4 @@
-/* Configurator output-only — right sticky terminal, no main form (e2e-builder parity) */
+/* Configurator output-only — right sticky terminal, no main form */
 
 .configurator-output-only {
   overflow-x: clip;
@@ -22,27 +22,70 @@
 }
 
 @media (min-width: 769px) {
-  .configurator-output-only .e2e-builder__workspace {
+  .configurator-output-only__workspace {
     grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     align-items: stretch;
   }
+}
 
-  .configurator-output-only .e2e-builder__aside {
-    align-self: stretch;
-  }
+/* Terminal bar tabs — pill format switcher on dark panel bar */
+.configurator-output-only__terminal-tabs {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  margin-left: 50px;
+}
+
+.configurator-output-only__terminal-tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 0;
+  height: 20px;
+  padding: 0 var(--space-2);
+  line-height: 1;
+  border-radius: 999px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.configurator-output-only__terminal-tabs .tab:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.configurator-output-only__terminal-tabs .tab--active {
+  border-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.configurator-output-only__terminal-tabs .tab:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.65);
+}
+
+.configurator-output-only__status {
+  margin: 0;
+  min-height: 1.5em;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }
 
 /* Narrow: trim terminal chrome so 390px fits without horizontal scroll */
 @media (max-width: 768px) {
-  .configurator-output-only .e2e-builder__terminal-tabs {
+  .configurator-output-only__terminal-tabs {
     margin-left: var(--space-2);
   }
 
-  .configurator-output-only .terminal-panel__trail {
+  .configurator-output-only .panel__trail {
     gap: var(--space-1);
-  }
-
-  .configurator-output-only .e2e-builder__hash-badge {
-    display: none;
   }
 }

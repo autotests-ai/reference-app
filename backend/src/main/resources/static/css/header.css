@@ -45,7 +45,6 @@
   width: auto;
   height: var(--header-brand-logo-height);
   max-height: var(--header-brand-logo-height);
-  transform: translateY(var(--space-1));
 }
 
 /* Step 3: nav */
@@ -56,20 +55,9 @@
 }
 
 .header__nav .link--nav + .link--nav {
-  position: relative;
-  padding-left: calc(var(--space-3) + 1px);
   margin-left: var(--space-3);
-}
-
-.header__nav .link--nav + .link--nav::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 1px;
-  height: var(--control-height-md);
-  background: var(--color-border);
-  transform: translateY(-50%);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--color-border);
 }
 
 /* Step 4: search */
@@ -100,7 +88,7 @@
 }
 
 /* Step 7: responsive */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .header__nav,
   .header__search {
     display: none;

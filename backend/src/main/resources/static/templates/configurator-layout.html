@@ -1,9 +1,12 @@
-<!-- Configurator shell: page frame + 2×1 topology (main + sticky aside) -->
+<!-- Configurator shell: page frame + 2×1 topology (content panel + sticky terminal) -->
 <!--
-  Aside rules:
-  - terminal-panel → panel.panel--sticky + configurator__output-* chain (modifier --terminal on layout)
-  - textarea / preview → section.section--sticky (prompt-builder)
-  Refs: frontend/e2e-builder.html, frontend/prompt-builder.html
+  Left: panel.panel--content — config form (plaque-field, sections, stack)
+  Right: panel.panel--terminal.panel--sticky + configurator__output-* chain
+  Layout: grid grid--2x1 (50/50 ≥769px); modifier configurator__layout--terminal — sticky chain + panel__code
+  Variants: toolbar (configurator__toolbar + panel--content), output-only (empty main), prompt (panel--sticky)
+  Options layout inside panel__body: preview/configurator-options.html (flat stack, groups, grid, tabs, dense, scroll)
+  Alt aside: panel.panel--content.panel--sticky — textarea/preview (prompt-builder)
+  Refs: preview/configurator.html, preview/configurator-options.html, preview/e2e-builder.html, preview/prompt-builder.html
 -->
 <main class="configurator">
   <a class="configurator__back" href="index.html">← template-project</a>
@@ -17,17 +20,12 @@
 
   <div class="configurator__layout grid grid--2x1 configurator__layout--terminal">
     <div class="configurator__main">
-      <!-- form sections, stack stack--lg -->
+      <!-- panel: templates/panel.html — panel--content -->
     </div>
     <div class="configurator__aside">
       <div class="configurator__output-panel">
         <div class="configurator__output-sticky">
-          <div class="panel panel--sticky">
-            <div class="panel__main">
-              <!-- terminal-panel: templates/terminal-panel.html -->
-            </div>
-            <!-- optional: <div class="panel__foot">status</div> -->
-          </div>
+          <!-- panel: templates/panel.html — panel--terminal + panel--sticky -->
         </div>
       </div>
     </div>

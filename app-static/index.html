@@ -18,7 +18,10 @@
   <script>
     window.headerConfig = {
       brand: { href: '/', label: 'Reference' },
-      nav: [],
+      nav: [
+        { href: '/', label: 'Home', active: true, testid: 'header-nav-home' },
+        { href: '/login.html', label: 'Login', testid: 'header-nav-login' },
+      ],
       lang: { default: 'en' },
       theme: { default: 'dark' },
     };

@@ -24,6 +24,18 @@
   flex-shrink: 0;
 }
 
+.selenoid-header-group > .status-tile--header:first-child {
+  border-left: none;
+  padding-left: var(--space-2);
+}
+
+.selenoid-dashboard-row {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 .selenoid-metrics__item {
   display: flex;
   flex-direction: column;

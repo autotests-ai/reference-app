@@ -1,0 +1,50 @@
+name: Deploy production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [deploy]
+
+concurrency:
+  group: deploy-reference-app-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Require deploy secrets
+        run: |
+          test -n "${{ secrets.DEPLOY_SSH_KEY }}" || {
+            echo "::error::Missing secret DEPLOY_SSH_KEY — see README § Deploy"
+            exit 1
+          }
+
+      - name: Deploy on production host
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.DEPLOY_HOST || '136.243.89.21' }}
+          username: ${{ vars.DEPLOY_USER || 'selenoid' }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+            APP_DIR="${APP_DIR:-/home/selenoid/reference-app}"
+            export SERVER_PORT="${SERVER_PORT:-8083}"
+            cd "$APP_DIR"
+            git fetch --all
+            git reset --hard origin/main
+            docker compose build backend
+            docker compose up -d --remove-orphans
+            for i in $(seq 1 30); do
+              if curl -fsS "http://127.0.0.1:${SERVER_PORT}/api/health" | grep -q '"status":"ok"'; then
+                break
+              fi
+              sleep 2
+            done
+            curl -fsS "http://127.0.0.1:${SERVER_PORT}/api/health" | grep -q '"status":"ok"'
+            bash deploy/smoke-remote.sh https://reference-app.autotests.ai
+            echo "Deploy OK: https://reference-app.autotests.ai ($(git rev-parse --short HEAD))"

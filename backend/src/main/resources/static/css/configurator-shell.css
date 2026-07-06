@@ -1,0 +1,61 @@
+/* Configurator shell catalog — multi-variant demos on configurator.html */
+
+.configurator-shell__links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-left: var(--space-2);
+}
+
+.configurator-shell__links::before {
+  content: "·";
+  margin-right: var(--space-1);
+  color: var(--color-text-muted);
+}
+
+.configurator-shell__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.configurator-shell__variants {
+  margin-top: var(--space-2);
+}
+
+.configurator-shell__variant {
+  scroll-margin-top: var(--space-6);
+}
+
+.configurator-shell__variant-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.configurator-shell__variant-desc {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.configurator-shell__variant-desc code {
+  font-size: 0.92em;
+}
+
+.configurator-shell__demo {
+  margin: 0;
+}
+
+.configurator-shell__prompt-output {
+  min-height: 120px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-sm);
+}
+
+/* Output-only variant: empty main slot inside catalog section */
+.configurator-shell__demo.configurator-output-only .configurator__intro {
+  margin-bottom: 0;
+}
