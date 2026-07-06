@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Layer("api")
-@Epic("Reference API")
+@Epic("Home")
 @Feature("Health and items")
 @DisplayName("Reference API")
 class ReferenceApiTests extends ApiTestBase {

@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Layer("e2e")
-@Epic("Reference App")
+@Epic("Home")
 @Feature("Home load")
-@DisplayName("Home smoke")
-class HomeSmokeTests extends TestBase {
+@DisplayName("Home")
+class HomeTests extends TestBase {
 
     @Test
     @Tag("smoke")

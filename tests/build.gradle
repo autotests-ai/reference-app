@@ -377,6 +377,7 @@ layerTestSlices.each { slice ->
         systemProperty 'env', envName
         systemProperty 'allureReportMode', allureReportMode
         systemProperty 'allureAgentMode', allureAgentMode
+        systemProperty 'updateBaselines', System.getProperty('updateBaselines', 'false')
         maxParallelForks = testParallelForks
         if (!shouldSkipHealthCheck(envName)) {
             dependsOn healthCheck

@@ -1,8 +1,9 @@
 /**
+ * Test-run parameter schema for e2e-builder (all pyramid layers, Gradle -D*, TestConfig keys).
  * Канон осей: ADR 002, docs/rag/e2e/*, ladder ethalon — tests-java/src/test/java/_ethalon/ladder/.
  * Синхронизировать при добавлении новых RAG-чанков (sync-agent-meta).
  */
-window.e2eParamsMap = {
+window.testParamsMap = {
   version: "0.2.1",
   presets: [
     {

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
-    private static final String LOGGED_IN_REDIRECT = "/logged-in.html";
+    private static final String POST_AUTH_REDIRECT = "/";
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -58,7 +58,7 @@ public class AuthService {
         return new AuthResponse(
                 jwtService.createToken(username),
                 username,
-                LOGGED_IN_REDIRECT
+                POST_AUTH_REDIRECT
         );
     }
 }

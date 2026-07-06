@@ -4,9 +4,10 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.WebDriverConditions.urlContaining;
+import static com.codeborne.selenide.WebDriverConditions.url;
 import static com.codeborne.selenide.Selenide.webdriver;
 
+import config.ConfigReader;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
@@ -24,12 +25,12 @@ public class LoginPage {
 
     @Step("Open login page")
     public LoginPage openPage() {
-        open("login.html");
+        open("/login");
         return this;
     }
 
     @Step("Fill and submit form")
-    public LoggedInPage fillAndSubmitForm(String username, String password) {
+    public HomePage fillAndSubmitForm(String username, String password) {
         typeUsername(username);
         typePassword(password);
         return submit();
@@ -48,10 +49,17 @@ public class LoginPage {
     }
 
     @Step("Submit login form")
-    public LoggedInPage submit() {
+    public HomePage submit() {
         submitButton.click();
-        webdriver().shouldHave(urlContaining("/logged-in.html"));
-        return new LoggedInPage();
+        webdriver().shouldHave(url(ConfigReader.resolveBaseUrl()));
+        return new HomePage();
+    }
+
+    @Step("Submit login form expecting validation error")
+    public LoginPage submitExpectingError() {
+        submitButton.click();
+        errorMessage.shouldBe(visible, Duration.ofSeconds(10));
+        return this;
     }
 
     @Step("Verify embedded header is mounted")

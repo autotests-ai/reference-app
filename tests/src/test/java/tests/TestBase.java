@@ -12,7 +12,6 @@ import helpers.BrowserSessionHelper;
 import helpers.LocalChromePin;
 import pages.HomePage;
 import pages.LoginPage;
-import pages.LoggedInPage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +29,6 @@ public class TestBase {
 
     protected HomePage homePage = new HomePage();
     protected LoginPage loginPage = new LoginPage();
-    protected LoggedInPage loggedInPage = new LoggedInPage();
     
     protected static final TestConfig config = ConfigReader.testConfig;
     private static final SimpleReport selenideReport = new SimpleReport();
@@ -47,7 +45,7 @@ public class TestBase {
             System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
         }
 
-        Configuration.baseUrl = ConfigReader.resolveBaseUrl();
+        Configuration.baseUrl = ConfigReader.resolveWebBaseUrl();
         Configuration.browser = config.browser();
         Configuration.browserSize = config.browserSize();
         Configuration.headless = config.headless();

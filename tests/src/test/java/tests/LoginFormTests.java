@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 @Layer("integration")
-@Epic("Reference App")
+@Epic("Authentication")
 @Feature("Login form")
 @DisplayName("Login form mount")
 class LoginFormTests extends TestBase {

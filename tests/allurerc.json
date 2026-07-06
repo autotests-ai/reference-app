@@ -248,6 +248,18 @@
             "type": "statusAgePyramid",
             "title": "Пирамида возраста статусов",
             "limit": 20
+          },
+          {
+            "type": "testingPyramid",
+            "title": "Пирамида тестирования",
+            "layers": [
+              "unit",
+              "component",
+              "integration",
+              "api",
+              "e2e",
+              "manual"
+            ]
           }
         ]
       }

@@ -8,6 +8,18 @@ import java.nio.file.Path;
 public class ConfigReader {
     public static final TestConfig testConfig = ConfigFactory.create(TestConfig.class);
 
+    public static String resolveWebBaseUrl() {
+        return resolveBaseUrl().replaceAll("/+$", "");
+    }
+
+    public static String resolveComponentCatalogUrl() {
+        var url = testConfig.componentCatalogUrl().trim();
+        if (!url.isEmpty()) {
+            return url.replaceAll("/+$", "");
+        }
+        return resolveWebBaseUrl();
+    }
+
     public static String resolveBaseUrl() {
         return resolveBaseUrl(testConfig);
     }

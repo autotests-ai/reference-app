@@ -57,6 +57,35 @@ body {
   font-size: var(--font-size-sm);
 }
 
+.reference-app__session {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-soft);
+  text-align: center;
+}
+
+.reference-app__session p {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+}
+
+.reference-app__session button {
+  border: none;
+  background: #1677f2;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.reference-app__session button:hover {
+  background: #0e63d7;
+}
+
 .reference-app__error {
   color: var(--color-danger, #e55);
 }

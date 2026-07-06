@@ -5,7 +5,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 (async function () {
   await initPlaqueTemplates();
 
-  var map = window.e2eParamsMap;
+  var map = window.testParamsMap;
   if (!map) return;
 
   var STORAGE_KEY = "e2e-builder-v1";
@@ -29,19 +29,6 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   var resetBtn = document.getElementById("e2e-reset");
   var statusEl = document.getElementById("e2e-status");
   var tabsRoot = document.getElementById("e2e-tabs");
-  var REMOTE_HUB_TOGGLE_IDS = ["enableVnc", "enableVideo", "enableHar", "enableAllureSelenideListener"];
-  var TOGGLE_ABBR = {
-    enableVnc: "vnc",
-    enableVideo: "video",
-    enableHar: "har",
-    enableAllureSelenideListener: "listener",
-  };
-  var TOGGLE_ABBR_BOOL4 = {
-    enableVnc: "vnc",
-    enableVideo: "vid",
-    enableHar: "har",
-    enableAllureSelenideListener: "lst",
-  };
 
   function paramById(id) {
     return map.params.find(function (p) {
@@ -127,18 +114,6 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   function syncControlButtons(paramId, value) {
     document.querySelectorAll('[data-param-id="' + paramId + '"]').forEach(function (node) {
-      if (node.classList.contains("plaque-field--toggle")) {
-        var on = value === "true";
-        node.classList.toggle("plaque-field--toggle-on", on);
-        node.setAttribute("aria-pressed", on ? "true" : "false");
-        return;
-      }
-      if (node.classList.contains("plaque-field-flagstrip__item")) {
-        var flagOn = value === "true";
-        node.classList.toggle("plaque-field-flagstrip__item--on", flagOn);
-        node.setAttribute("aria-pressed", flagOn ? "true" : "false");
-        return;
-      }
       node.querySelectorAll(".plaque-field-seg__btn, .plaque-field-option").forEach(function (btn) {
         var active = btn.dataset.value === value;
         btn.classList.toggle("plaque-field-seg__btn--on", active && btn.classList.contains("plaque-field-seg__btn"));
@@ -156,22 +131,6 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return wrap;
   }
 
-  function isBooleanToggleParam(param) {
-    if (param.type !== "radio" || radioUiMode(param) !== "toggle") return false;
-    if (!param.options || param.options.length !== 2) return false;
-    var hasTrue = false;
-    var hasFalse = false;
-    param.options.forEach(function (opt) {
-      if (opt.value === "true") hasTrue = true;
-      if (opt.value === "false") hasFalse = true;
-    });
-    return hasTrue && hasFalse;
-  }
-
-  function isRemoteHubToggleParam(param) {
-    return REMOTE_HUB_TOGGLE_IDS.indexOf(param.id) !== -1;
-  }
-
   function plaqueLabelEl(param, opts, root) {
     opts = opts || {};
     var label = root
@@ -183,68 +142,6 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     label.textContent = opts.abbr || param.label;
     label.title = param.warn || param.label;
     return label;
-  }
-
-  function toggleSegButtonLabel(opt) {
-    return opt.label;
-  }
-
-  function renderBooleanTogglePlaque(param, opts) {
-    opts = opts || {};
-    var compact = !!opts.compact;
-    var value = values[param.id];
-    var isOn = value === "true";
-
-    var btn = clonePlaqueTemplate("plaque-field-toggle-head");
-    btn.classList.remove("plaque-field--toggle-on");
-    if (isOn) btn.classList.add("plaque-field--toggle-on");
-    btn.dataset.paramId = param.id;
-    btn.dataset.testid = "e2e-toggle-" + param.id;
-    btn.setAttribute("aria-pressed", isOn ? "true" : "false");
-
-    var titleParts = [param.label];
-    if (param.warn) titleParts.push(param.warn);
-    titleParts.push("= " + value);
-    btn.title = titleParts.join(" · ");
-
-    plaqueLabelEl(param, { abbr: compact && TOGGLE_ABBR[param.id] ? TOGGLE_ABBR[param.id] : undefined }, btn);
-
-    btn.addEventListener("click", function () {
-      var next = values[param.id] === "true" ? "false" : "true";
-      syncControlButtons(param.id, next);
-      onValueChange(param.id, next);
-    });
-
-    return applyPlaqueStretch(btn);
-  }
-
-  function renderBooleanFlagstripItem(param, opts) {
-    opts = opts || {};
-    var abbrMap = opts.bool4 ? TOGGLE_ABBR_BOOL4 : TOGGLE_ABBR;
-    var value = values[param.id];
-    var isOn = value === "true";
-
-    var btn = clonePlaqueTemplate("plaque-field-flagstrip-vnc");
-    btn.classList.remove("plaque-field-flagstrip__item--on");
-    if (isOn) btn.classList.add("plaque-field-flagstrip__item--on");
-    btn.dataset.paramId = param.id;
-    btn.dataset.testid = "e2e-flagstrip-" + param.id;
-    btn.setAttribute("aria-pressed", isOn ? "true" : "false");
-
-    var titleParts = [param.label];
-    if (param.warn) titleParts.push(param.warn);
-    titleParts.push("= " + value);
-    btn.title = titleParts.join(" · ");
-
-    btn.querySelector(".plaque-field-flagstrip__abbr").textContent = abbrMap[param.id] || param.label;
-
-    btn.addEventListener("click", function () {
-      var next = values[param.id] === "true" ? "false" : "true";
-      syncControlButtons(param.id, next);
-      onValueChange(param.id, next);
-    });
-
-    return btn;
   }
 
   function renderSegTogglePlaque(param) {
@@ -264,7 +161,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       btn.type = "button";
       btn.className = "plaque-field-seg__btn";
       btn.dataset.value = opt.value;
-      btn.textContent = toggleSegButtonLabel(opt);
+      btn.textContent = opt.label;
       if (opt.hint) btn.title = opt.hint;
       if (values[param.id] === opt.value) {
         btn.classList.add("plaque-field-seg__btn--on");
@@ -285,54 +182,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   }
 
   function renderToggleButtons(param, wrap) {
-    if (isBooleanToggleParam(param)) {
-      wrap.appendChild(renderBooleanTogglePlaque(param));
-    } else {
-      wrap.appendChild(renderSegTogglePlaque(param));
-    }
-    return wrap;
-  }
-
-  function renderToggleGrid(params) {
-    var visible = params.filter(function (param) {
-      return matchesShowWhen(param);
-    });
-    if (!visible.length) return document.createDocumentFragment();
-    if (visible.length === 1) return renderParam(visible[0]);
-
-    var wrap = document.createElement("div");
-    wrap.className = "e2e-builder__param e2e-builder__param--toggle-grid";
-
-    var toggles = clonePlaqueTemplate("plaque-field-toggles");
-    toggles.setAttribute("aria-label", "Boolean parameters");
-
-    visible.forEach(function (param) {
-      toggles.appendChild(renderBooleanTogglePlaque(param));
-    });
-
-    wrap.appendChild(toggles);
-    return wrap;
-  }
-
-  function renderRemoteHubToggleGrid() {
-    var visible = REMOTE_HUB_TOGGLE_IDS.map(paramById).filter(function (param) {
-      return param && isBooleanToggleParam(param) && matchesShowWhen(param);
-    });
-    if (!visible.length) return null;
-
-    var wrap = document.createElement("div");
-    wrap.className = "e2e-builder__param e2e-builder__param--remote-hub-toggles";
-    wrap.dataset.testid = "e2e-remote-hub-toggles";
-
-    var strip = clonePlaqueTemplate("plaque-field-flagstrip");
-    strip.setAttribute("aria-label", "Remote hub");
-    strip.replaceChildren();
-
-    visible.forEach(function (param) {
-      strip.appendChild(renderBooleanFlagstripItem(param, { bool4: true }));
-    });
-
-    wrap.appendChild(strip);
+    wrap.appendChild(renderSegTogglePlaque(param));
     return wrap;
   }
 
@@ -1043,40 +893,15 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
       section.appendChild(body);
 
-      if (group.id === "remote") {
-        var hubToggles = renderRemoteHubToggleGrid();
-        if (hubToggles) body.appendChild(hubToggles);
-      }
-
-      var pendingToggles = [];
-
       map.params
         .filter(function (p) {
           return p.group === group.id;
         })
         .forEach(function (param) {
-          if (isRemoteHubToggleParam(param)) return;
-          if (isBooleanToggleParam(param) && matchesShowWhen(param)) {
-            pendingToggles.push(param);
-            return;
-          }
-          if (pendingToggles.length === 1) {
-            body.appendChild(renderParam(pendingToggles[0]));
-            pendingToggles = [];
-          } else if (pendingToggles.length > 1) {
-            body.appendChild(renderToggleGrid(pendingToggles));
-            pendingToggles = [];
-          }
           if (matchesShowWhen(param)) {
             body.appendChild(renderParam(param));
           }
         });
-
-      if (pendingToggles.length === 1) {
-        body.appendChild(renderParam(pendingToggles[0]));
-      } else if (pendingToggles.length > 1) {
-        body.appendChild(renderToggleGrid(pendingToggles));
-      }
 
       paramsRoot.appendChild(section);
       currentGroup = group.id;

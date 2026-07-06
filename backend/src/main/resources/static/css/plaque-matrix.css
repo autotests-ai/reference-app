@@ -124,10 +124,8 @@
 }
 
 .plaque-matrix__demo .plaque-field,
-.plaque-matrix__demo .plaque-field-flagstrip,
 .plaque-matrix__demo .plaque-field-checkstrip,
 .plaque-matrix__demo .plaque-field-tagstrip,
-.plaque-matrix__demo .plaque-field-toggles,
 .plaque-matrix__demo .plaque-field-grid {
   width: 100%;
 }
@@ -266,9 +264,8 @@
 }
 
 .plaque-matrix__cta-stack .plaque-field-option,
-.plaque-matrix__cta-stack .plaque-field--toggle,
 .plaque-matrix__cta-stack .plaque-field,
-.plaque-matrix__cta-stack .plaque-field-flagstrip {
+.plaque-matrix__cta-stack .plaque-field-grid {
   width: 100%;
 }
 

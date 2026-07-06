@@ -5,6 +5,9 @@
 | Page | Class | Open |
 |------|-------|------|
 | Home | `HomePage` | `open("")` → `GET /` |
+| Login | `LoginPage` | `open("/login")` |
+
+Post-auth state (welcome message, logout) lives on `HomePage` at `/`.
 
 ## Profiles
 

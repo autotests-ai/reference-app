@@ -1,5 +1,8 @@
 const healthStatus = document.querySelector('[data-testid="health-status"]');
 const itemsList = document.querySelector('[data-testid="items-list"]');
+const welcomeMessage = document.querySelector('[data-testid="welcome-message"]');
+const sessionPanel = document.querySelector('[data-testid="session-panel"]');
+const logoutButton = document.getElementById('logout-button');
 
 function renderItems(items) {
   if (!items.length) {
@@ -44,5 +47,27 @@ async function loadItems() {
   }
 }
 
+async function loadSession() {
+  if (!window.ReferenceAuth || !ReferenceAuth.getToken()) {
+    return;
+  }
+
+  try {
+    const profile = await ReferenceAuth.fetchProfile();
+    welcomeMessage.textContent = 'Welcome, ' + profile.username + '!';
+    sessionPanel.hidden = false;
+  } catch (error) {
+    ReferenceAuth.clearSession();
+  }
+}
+
+if (logoutButton) {
+  logoutButton.addEventListener('click', async () => {
+    await ReferenceAuth.logout();
+    window.location.href = '/login';
+  });
+}
+
 loadHealth();
 loadItems();
+loadSession();

@@ -125,7 +125,7 @@ window.promptMap = {
       id: "configurator-boolean",
       group: "active",
       phase: "meta",
-      when: "Boolean true/false в конфигураторах — .plaque-field--toggle (label|dot), не seg",
+      when: "Boolean true/false в конфигураторах — .plaque-field-seg (кнопки true|false), как и не-boolean 2-opt",
       path: ".cursor/skills/configurator-boolean/",
       rules: ["component-sizes"],
     },

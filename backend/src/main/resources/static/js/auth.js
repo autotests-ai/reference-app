@@ -49,14 +49,35 @@
     return null;
   }
 
+  function createNetworkError() {
+    const error = new Error("");
+    error.network = true;
+    return error;
+  }
+
+  function resolveAuthErrorMessage(error, messages, fallbackMessage) {
+    if (error?.network) {
+      return messages.errorNetwork;
+    }
+    if (error?.message) {
+      return error.message;
+    }
+    return fallbackMessage;
+  }
+
   async function apiRequest(path, options) {
-    const response = await fetch(path, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(options?.headers || {}),
-      },
-      ...options,
-    });
+    let response;
+    try {
+      response = await fetch(path, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(options?.headers || {}),
+        },
+        ...options,
+      });
+    } catch (e) {
+      throw createNetworkError();
+    }
 
     const body = await response.json().catch(() => ({}));
     if (!response.ok) {
@@ -119,6 +140,7 @@
     MIN_LOGIN_LENGTH,
     MIN_PASSWORD_LENGTH,
     validateCredentials,
+    resolveAuthErrorMessage,
     login,
     register,
     fetchProfile,

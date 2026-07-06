@@ -222,14 +222,9 @@
 }
 
 .bv-tier-compare__slot .plaque-field-option,
-.bv-tier-compare__slot .plaque-field--toggle,
 .bv-tier-compare__slot .plaque-field {
   width: 100%;
   max-width: 100%;
-}
-
-.bv-tier-compare__slot .plaque-field--toggle {
-  width: 100%;
 }
 
 .bv-plaque-cta {
@@ -239,9 +234,8 @@
 }
 
 .bv-plaque-cta .plaque-field-option,
-.bv-plaque-cta .plaque-field--toggle,
 .bv-plaque-cta .plaque-field,
-.bv-plaque-cta .plaque-field-flagstrip {
+.bv-plaque-cta .plaque-field-grid {
   width: 100%;
 }
 

@@ -46,6 +46,10 @@ public interface TestConfig extends Config {
     @DefaultValue("")
     String baseUrl();
 
+    @Key("componentCatalogUrl")
+    @DefaultValue("http://localhost:3000/")
+    String componentCatalogUrl();
+
     @Key("basePath")
     @DefaultValue("")
     String basePath();

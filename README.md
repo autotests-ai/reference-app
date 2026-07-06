@@ -9,7 +9,7 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 | `backend/` | Spring Boot — `GET /api/health`, `GET /api/items`, JWT auth API, static UI, Flyway + Postgres |
 | `frontend/` | design-system symlinks (`scripts/wire-ui.sh`) |
 | `tests/` | Browser + API tests (Selenide, Gradle); `@Tag smoke`, `api`, `component` |
-| `app-static/` | App pages (index, login, register, logged-in) — overlaid by sync |
+| `app-static/` | App pages (index, login, register) — overlaid by sync |
 | `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
@@ -19,9 +19,9 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 
 | Page | URL |
 |------|-----|
-| Login | `/login.html` |
-| Register | `/register.html` |
-| Logged in | `/logged-in.html` |
+| Home | `/` |
+| Login | `/login` |
+| Register | `/register` |
 
 | API | Method |
 |-----|--------|

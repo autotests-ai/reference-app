@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/css/icon-btn.css">
   <link rel="stylesheet" href="/css/lang-toggle.css">
   <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/auth.css">
   <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -20,7 +21,8 @@
       brand: { href: '/', label: 'Reference' },
       nav: [
         { href: '/', label: 'Home', active: true, testid: 'header-nav-home' },
-        { href: '/login.html', label: 'Login', testid: 'header-nav-login' },
+        { href: '/login', label: 'Login', testid: 'header-nav-login' },
+        { href: '/register', label: 'Register', testid: 'header-nav-register' },
       ],
       lang: { default: 'en' },
       theme: { default: 'dark' },
@@ -33,11 +35,16 @@
     <p class="reference-app__lead">
       Generic Spring Boot + static JS demo — items loaded from <code>/api/items</code>.
     </p>
+    <section class="reference-app__session" data-testid="session-panel" hidden>
+      <p id="welcome-message" data-testid="welcome-message">Welcome!</p>
+      <button id="logout-button" type="button" data-testid="logout-button">Logout</button>
+    </section>
     <p class="reference-app__status" data-testid="health-status">→ Checking health…</p>
     <div class="reference-app__items" data-testid="items-list" aria-live="polite">
       <p class="text text--muted">→ Loading items…</p>
     </div>
   </main>
+  <script src="/js/auth.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>

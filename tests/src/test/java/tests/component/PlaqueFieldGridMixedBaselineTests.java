@@ -3,6 +3,7 @@ package tests.component;
 import annotations.Layer;
 import annotations.SubSuite;
 import annotations.Suite;
+import config.ConfigReader;
 import helpers.ScreenshotBaseline;
 import helpers.ViewportHelper;
 import io.qameta.allure.Epic;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import tests.TestBase;
+
+import com.codeborne.selenide.Configuration;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -34,6 +37,7 @@ class PlaqueFieldGridMixedBaselineTests extends TestBase {
 
     @BeforeEach
     void openCatalog() {
+        Configuration.baseUrl = ConfigReader.resolveComponentCatalogUrl();
         ViewportHelper.setViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
         open("/components.html");
         $("[data-testid='section-plaque-field']").shouldBe(visible);

@@ -193,14 +193,6 @@
   gap: var(--space-1);
 }
 
-.e2e-builder__param--toggle-grid {
-  gap: 0;
-}
-
-.e2e-builder__param--toggle-grid .plaque-field-toggles {
-  width: 100%;
-}
-
 .e2e-builder__param--tagstrip .plaque-field-tagstrip {
   width: 100%;
 }
@@ -211,14 +203,6 @@
 
 .e2e-builder__param .plaque-field-list.plaque-field-list--dense {
   gap: var(--space-1);
-}
-
-.e2e-builder__param--remote-hub-toggles {
-  gap: 0;
-}
-
-.e2e-builder__param--remote-hub-toggles .plaque-field-flagstrip {
-  width: 100%;
 }
 
 /* Output panel */

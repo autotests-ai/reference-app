@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @Layer("api")
-@Epic("Reference API")
+@Epic("Authentication")
 @Feature("Authentication")
 @DisplayName("Auth API")
 class AuthApiTests extends ApiTestBase {
@@ -32,7 +32,7 @@ class AuthApiTests extends ApiTestBase {
                 .statusCode(200)
                 .body("token", notNullValue())
                 .body("username", equalTo("user1"))
-                .body("redirectUrl", equalTo("/logged-in.html"));
+                .body("redirectUrl", equalTo("/"));
     }
 
     @Test
@@ -64,7 +64,7 @@ class AuthApiTests extends ApiTestBase {
                 .statusCode(201)
                 .body("token", notNullValue())
                 .body("username", equalTo(username))
-                .body("redirectUrl", equalTo("/logged-in.html"));
+                .body("redirectUrl", equalTo("/"));
     }
 
     @Test
@@ -102,5 +102,53 @@ class AuthApiTests extends ApiTestBase {
                 .then()
                 .statusCode(200)
                 .body("username", equalTo("user1"));
+    }
+
+    @Test
+    @Tag("api")
+    @DisplayName("GET /api/auth/me without token returns 401")
+    void profileWithoutToken() {
+        given()
+                .when()
+                .get("/api/auth/me")
+                .then()
+                .statusCode(401);
+    }
+
+    @Test
+    @Tag("api")
+    @DisplayName("POST /api/auth/logout returns 204")
+    void logoutReturnsNoContent() {
+        given()
+                .when()
+                .post("/api/auth/logout")
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    @Tag("api")
+    @DisplayName("POST /api/auth/login rejects empty credentials with 400")
+    void loginRejectsEmptyCredentials() {
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"username\":\"\",\"password\":\"\"}")
+                .when()
+                .post("/api/auth/login")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    @Tag("api")
+    @DisplayName("POST /api/auth/register rejects short password with 400")
+    void registerRejectsShortPassword() {
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"username\":\"shortuser\",\"password\":\"abc\"}")
+                .when()
+                .post("/api/auth/register")
+                .then()
+                .statusCode(400);
     }
 }

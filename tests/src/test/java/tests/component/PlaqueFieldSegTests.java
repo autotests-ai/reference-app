@@ -94,14 +94,14 @@ class PlaqueFieldSegTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Mixed grid tier track heights match component-sizes")
+    @DisplayName("Mixed grid seg track height is 24px for sm, md, and lg tiers")
     void mixedGridTierTrackHeights() {
         assertElementHeight(
                 "[data-testid='plaque-field-grid-mixed'] .plaque-field-grid__cell--sm .plaque-field-seg-track",
-                14);
+                24);
         assertElementHeight(
                 "[data-testid='plaque-field-grid-mixed'] .plaque-field-grid__cell--md .plaque-field-seg-track",
-                20);
+                24);
         assertElementHeight(
                 "[data-testid='plaque-field-grid-mixed'] .plaque-field-grid__cell--lg .plaque-field-seg-track",
                 24);

@@ -23,7 +23,7 @@ on:
         description: "JUnit excludeTags (comma-separated); empty = slice default"
         required: false
       test_class:
-        description: "Fully qualified test (optional), e.g. tests.HomeSmokeTests"
+        description: "Fully qualified test (optional), e.g. tests.HomeTests"
         required: false
       test_case_id:
         description: "Allure TestOps test case ID (optional, for launch name)"
