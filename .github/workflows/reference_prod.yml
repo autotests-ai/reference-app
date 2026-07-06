@@ -72,6 +72,10 @@ jobs:
           sparse-checkout: history.jsonl
           sparse-checkout-cone-mode: false
 
+      # config/*.properties gitignored — regen матрицы stand×layer (см. tests/.gitignore)
+      - name: Generate env configs
+        run: python ../scripts/gen-env-configs.py
+
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
