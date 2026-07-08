@@ -37,7 +37,7 @@ cd tests
 | api | `ReferenceApiTests`, `AuthApiTests` | `testApi` |
 | e2e smoke | `HomeTests`, `LoginTests`, `RegisterTests`, `LogoutTests` | `testE2e` |
 | e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests`, `PlaqueFieldGridMixedBaselineTests` | `testVisual` |
-| manual | `@Manual` methods in `LoginTests` | `testManual` |
+| manual | exploratory stubs (none in `LoginTests`; use `testManual` slice when added) | `testManual` |
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 

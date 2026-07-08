@@ -1,10 +1,8 @@
 package tests;
 
 import annotations.Layer;
-import annotations.Manual;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import io.qameta.allure.Step;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,6 +12,12 @@ import org.junit.jupiter.api.Test;
 @Feature("Login")
 @DisplayName("Login")
 class LoginTests extends TestBase {
+
+    private static final String LOGIN_REQUIRED_MESSAGE =
+            "Login is required (minimum 3 characters)";
+    private static final String PASSWORD_REQUIRED_MESSAGE =
+            "Password is required (minimum 6 characters)";
+    private static final String WRONG_CREDENTIALS_MESSAGE = "Wrong login or password";
 
     @Test
     @Tag("smoke")
@@ -26,65 +30,36 @@ class LoginTests extends TestBase {
     }
 
     @Test
-    @Manual
-    @Layer("manual")
-    @Tag("manual")
-    @DisplayName("Manual: empty username shows validation error")
-    void manualEmptyUsernameShowsValidationError() {
-        stepOpenLoginPage();
-        stepSubmitWithUsername("");
-        stepVerifyValidationErrorVisible();
+    @Tag("smoke")
+    @Tag("negative")
+    @DisplayName("Empty username shows validation error")
+    void shouldShowValidationErrorWhenUsernameIsEmpty() {
+        loginPage.openPage()
+                .typePassword("password1")
+                .submitExpectingError()
+                .shouldHaveErrorMessage(LOGIN_REQUIRED_MESSAGE);
     }
 
     @Test
-    @Manual
-    @Layer("manual")
-    @Tag("manual")
-    @DisplayName("Manual: empty password shows validation error")
-    void manualEmptyPasswordShowsValidationError() {
-        stepOpenLoginPage();
-        stepSubmitWithPassword("");
-        stepVerifyValidationErrorVisible();
+    @Tag("smoke")
+    @Tag("negative")
+    @DisplayName("Empty password shows validation error")
+    void shouldShowValidationErrorWhenPasswordIsEmpty() {
+        loginPage.openPage()
+                .typeUsername("user1")
+                .submitExpectingError()
+                .shouldHaveErrorMessage(PASSWORD_REQUIRED_MESSAGE);
     }
 
     @Test
-    @Manual
-    @Layer("manual")
-    @Tag("manual")
-    @DisplayName("Manual: wrong password shows readable error")
-    void manualWrongPasswordShowsReadableError() {
-        stepOpenLoginPage();
-        stepSubmitCredentials("user1", "wrongpassword");
-        stepVerifyWrongCredentialsError();
-    }
-
-    @Step("Open /login")
-    private void stepOpenLoginPage() {
-        // Exploratory checklist — execute manually in TestOps
-    }
-
-    @Step("Submit with username: {username}")
-    private void stepSubmitWithUsername(String username) {
-        // Leave password empty or fill as needed
-    }
-
-    @Step("Submit with password only")
-    private void stepSubmitWithPassword(String password) {
-        // Fill username, leave password empty
-    }
-
-    @Step("Submit credentials")
-    private void stepSubmitCredentials(String username, String password) {
-        // Type and submit login form
-    }
-
-    @Step("Verify validation error is visible")
-    private void stepVerifyValidationErrorVisible() {
-        // Assert client-side validation message in [data-testid='error-message']
-    }
-
-    @Step("Verify wrong credentials error")
-    private void stepVerifyWrongCredentialsError() {
-        // Assert message: Wrong login or password
+    @Tag("smoke")
+    @Tag("negative")
+    @DisplayName("Wrong password shows readable error")
+    void shouldShowErrorWhenPasswordIsWrong() {
+        loginPage.openPage()
+                .typeUsername("user1")
+                .typePassword("wrongpassword")
+                .submitExpectingError()
+                .shouldHaveErrorMessage(WRONG_CREDENTIALS_MESSAGE);
     }
 }
