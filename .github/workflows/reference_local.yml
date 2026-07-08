@@ -1,0 +1,81 @@
+# Full local pyramid against docker compose (:8080).
+# Component slice needs design-system preview on :3000 — skipped in standalone CI
+# (run locally: projects/design-system-home/design-system/preview + testComponent).
+#
+# Prod smoke/visual — reference_prod.yml (Selenoid + reference_prod_* env).
+
+name: reference local pyramid
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: reference-local-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pyramid:
+    name: Local pyramid
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate env configs
+        run: python ../scripts/gen-env-configs.py
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+
+      - name: Start app stack
+        working-directory: .
+        run: |
+          ./scripts/sync-app-static.sh
+          docker compose up -d --build --wait
+
+      - name: Backend unit
+        working-directory: backend
+        run: ./gradlew test
+
+      - name: Pyramid unit (tests)
+        run: ./gradlew testUnit -DpyramidStand=reference_local -DallureReportMode=none
+
+      - name: Pyramid api
+        run: ./gradlew testApi -DpyramidStand=reference_local -DallureReportMode=none
+
+      - name: Pyramid integration
+        run: ./gradlew testIntegration -DpyramidStand=reference_local -DallureReportMode=none
+
+      - name: Pyramid e2e smoke
+        run: ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none
+
+      - name: Pyramid visual
+        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none
+
+      - name: Pyramid summary
+        if: always()
+        run: |
+          {
+            echo "## reference local pyramid"
+            echo "- backend unit + testUnit + testApi + testIntegration + testE2e + testVisual"
+            echo "- component skipped (needs design-system preview on :3000 — see monorepo dev/README)"
+          } >> "$GITHUB_STEP_SUMMARY"
