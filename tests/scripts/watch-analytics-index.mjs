@@ -66,7 +66,7 @@ function main() {
   const options = parseArgs(process.argv.slice(2));
   if (!options.resultsDir || !options.outputFile) {
     console.error(
-      "Usage: watch-analytics-index.mjs --results <dir> --output <file> [--history <file>] [--agent-output <dir>] [--config <allurerc.json>] [--interval <ms>]"
+      "Usage: watch-analytics-index.mjs --results <dir> --output <file> [--history <file>] [--agent-output <dir>] [--config <allurerc.mjs>] [--interval <ms>]"
     );
     process.exit(1);
   }

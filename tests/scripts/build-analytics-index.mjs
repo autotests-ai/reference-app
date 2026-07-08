@@ -5,6 +5,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
 
 const UNCATEGORIZED_FAILURE = "Прочее";
 const TAXONOMY_COLORS = ["#dc2626", "#d97706", "#7c3aed", "#0891b2", "#64748b"];
@@ -37,6 +38,16 @@ function parseArgs(argv) {
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+/** Load allurerc.mjs (export default) or legacy allurerc.json. */
+async function loadConfig(configFile) {
+  if (!configFile || !fs.existsSync(configFile)) return null;
+  if (configFile.endsWith(".mjs") || configFile.endsWith(".js")) {
+    const mod = await import(pathToFileURL(path.resolve(configFile)).href);
+    return mod.default ?? null;
+  }
+  return readJson(configFile);
 }
 
 function listResultFiles(resultsDir) {
@@ -161,16 +172,11 @@ function labelValue(result, name) {
   return result.labels?.find((entry) => entry.name === name)?.value ?? null;
 }
 
-function readPyramidLayers(configFile) {
-  if (!configFile || !fs.existsSync(configFile)) return PYRAMID_LAYERS;
-  try {
-    const config = readJson(configFile);
-    const charts = config.plugins?.awesome?.options?.charts ?? [];
-    const chart = charts.find((entry) => entry.type === "testingPyramid");
-    return chart?.layers ?? PYRAMID_LAYERS;
-  } catch {
-    return PYRAMID_LAYERS;
-  }
+function pyramidLayersFromConfig(config) {
+  if (!config) return PYRAMID_LAYERS;
+  const charts = config.plugins?.awesome?.options?.charts ?? [];
+  const chart = charts.find((entry) => entry.type === "testingPyramid");
+  return chart?.layers ?? PYRAMID_LAYERS;
 }
 
 function buildTestingPyramid(results, layers) {
@@ -204,14 +210,8 @@ function buildTestingPyramid(results, layers) {
   });
 }
 
-function readCategoryRules(configFile) {
-  if (!configFile || !fs.existsSync(configFile)) return [];
-  try {
-    const config = readJson(configFile);
-    return config.categories?.rules ?? [];
-  } catch {
-    return [];
-  }
+function categoryRulesFromConfig(config) {
+  return config?.categories?.rules ?? [];
 }
 
 function failureMessage(result) {
@@ -447,13 +447,12 @@ function countActionableFailures(results, knownIds) {
   return { actionable, excluded };
 }
 
-function evaluateQualityGate(results, summary, configFile) {
-  if (!configFile || !fs.existsSync(configFile)) {
+function evaluateQualityGate(results, summary, config, configFile) {
+  if (!config) {
     return { passed: true, evaluatedAt: new Date().toISOString(), rules: [] };
   }
 
-  const configDir = path.dirname(configFile);
-  const config = readJson(configFile);
+  const configDir = configFile ? path.dirname(configFile) : process.cwd();
   const ruleDefs = config.qualityGate?.rules ?? [];
   if (!ruleDefs.length) {
     return { passed: true, evaluatedAt: new Date().toISOString(), rules: [] };
@@ -538,18 +537,19 @@ function evaluateQualityGate(results, summary, configFile) {
   };
 }
 
-function main() {
+async function main() {
   const options = parseArgs(process.argv.slice(2));
   if (!options.resultsDir || !options.outputFile) {
     console.error(
-      "Usage: build-analytics-index.mjs --results <dir> --output <file> [--history <file>] [--agent-output <dir>] [--config <allurerc.json>]"
+      "Usage: build-analytics-index.mjs --results <dir> --output <file> [--history <file>] [--agent-output <dir>] [--config <allurerc.mjs>]"
     );
     process.exit(1);
   }
 
   const resultFiles = listResultFiles(options.resultsDir);
   const results = resultFiles.map((filePath) => readJson(filePath));
-  const categoryRules = readCategoryRules(options.configFile);
+  const config = await loadConfig(options.configFile);
+  const categoryRules = categoryRulesFromConfig(config);
   const summary = summarizeResults(results, categoryRules);
   const historyRuns = readHistoryRuns(options.historyFile, options.historyLimit);
   const testTimelines = readHistoryTestTimelines(options.historyFile, options.historyLimit);
@@ -558,8 +558,8 @@ function main() {
   mergeCurrentRun(testTimelines, results, currentRunId);
   const tests = attachTestHistory(summary.tests, results, testTimelines);
   const agent = readAgentSummary(options.agentOutputDir);
-  const qualityGate = evaluateQualityGate(results, summary, options.configFile);
-  const testingPyramid = buildTestingPyramid(results, readPyramidLayers(options.configFile));
+  const qualityGate = evaluateQualityGate(results, summary, config, options.configFile);
+  const testingPyramid = buildTestingPyramid(results, pyramidLayersFromConfig(config));
   const epicBreakdown = buildEpicBreakdownSeries(results);
 
   const payload = {
@@ -601,4 +601,7 @@ function main() {
   console.log(`analytics-index: ${summary.total} tests → ${options.outputFile}`);
 }
 
-main();
+main().catch((err) => {
+  console.error(err?.stack || String(err));
+  process.exit(1);
+});
