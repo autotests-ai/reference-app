@@ -50,9 +50,7 @@ jobs:
 
       - name: Start app stack
         working-directory: .
-        run: |
-          ./scripts/sync-app-static.sh
-          docker compose up -d --build --wait
+        run: docker compose up -d --build --wait
 
       - name: Backend unit
         working-directory: backend
