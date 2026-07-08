@@ -54,7 +54,9 @@ cd tests
 ./gradlew testManual -DpyramidStand=reference_local -DallureReportMode=none
 ```
 
-Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout,plaque-field-grid-mixed}/` or refresh locally:
+Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout,plaque-field-grid-mixed}/`.
+
+**CI SSOT:** Linux headless Chrome 148 (`reference_visual_baselines.yml` workflow_dispatch). macOS local may differ — refresh with `-DupdateBaselines=true` or accept CI as source of truth.
 
 ```bash
 ./gradlew testVisual -Denv=reference_local_visual -DupdateBaselines=true -DallureReportMode=none
