@@ -36,7 +36,7 @@ cd tests
 | component | `LangToggleTests`, `PrimitiveSizeTests`, `PlaqueFieldSegTests` | `testComponent` |
 | api | `ReferenceApiTests`, `AuthApiTests` | `testApi` |
 | e2e smoke | `HomeTests`, `LoginTests`, `RegisterTests`, `LogoutTests` | `testE2e` |
-| e2e visual | `LoginBaselineTests`, `LoggedInBaselineTests`, `HomeLayoutBaselineTests`, `PlaqueFieldGridMixedBaselineTests` | `testVisual` |
+| e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests`, `PlaqueFieldGridMixedBaselineTests` | `testVisual` |
 | manual | `@Manual` methods in `LoginTests` | `testManual` |
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
@@ -54,7 +54,7 @@ cd tests
 ./gradlew testManual -DpyramidStand=reference_local -DallureReportMode=none
 ```
 
-Visual baselines: commit PNG under `src/test/resources/screenshots/{login,logged-in,home-layout,plaque-field-grid-mixed}/` or refresh locally:
+Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout,plaque-field-grid-mixed}/` or refresh locally:
 
 ```bash
 ./gradlew testVisual -Denv=reference_local_visual -DupdateBaselines=true -DallureReportMode=none

@@ -1,89 +1,24 @@
 @import url("grid.css");
 @import url("panel.css");
 @import url("text.css");
+@import url("button.css");
 
 body {
   margin: 0;
   min-height: 100vh;
 }
 
+/* Shell: page-shell + page-shell--below-header on <main>; narrow max-width only */
 .reference-app {
   max-width: 960px;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-4);
 }
 
-.reference-app__title {
-  margin: 0 0 var(--space-2);
-  font-size: var(--font-size-xl);
-  color: var(--color-text);
-}
-
-.reference-app__lead {
-  margin: 0 0 var(--space-6);
-  color: var(--color-text-muted);
-}
-
-.reference-app__status {
-  display: inline-block;
-  margin-bottom: var(--space-4);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-soft);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-}
-
-.reference-app__items {
-  display: grid;
+.reference-app__welcome-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: var(--space-3);
-}
-
-.reference-app__item {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-soft);
-}
-
-.reference-app__item-name {
-  margin: 0 0 var(--space-1);
-  font-size: var(--font-size-md);
-  color: var(--color-text);
-}
-
-.reference-app__item-desc {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.reference-app__session {
-  margin-bottom: var(--space-4);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-soft);
   text-align: center;
-}
-
-.reference-app__session p {
-  margin: 0 0 var(--space-3);
-  font-size: var(--font-size-md);
-  color: var(--color-text);
-}
-
-.reference-app__session button {
-  border: none;
-  background: #1677f2;
-  color: #fff;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.reference-app__session button:hover {
-  background: #0e63d7;
 }
 
 .reference-app__error {

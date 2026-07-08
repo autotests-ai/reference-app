@@ -20,29 +20,29 @@ import static com.codeborne.selenide.Selenide.$;
 @Layer("e2e")
 @Tag("visual")
 @Epic("Authentication")
-@Feature("Logged-in session")
-@Suite("Logged-in")
+@Feature("Welcome panel")
+@Suite("Welcome panel")
 @SubSuite("visual")
 @Execution(ExecutionMode.SAME_THREAD)
-@DisplayName("Logged-in session visual")
-class LoggedInBaselineTests extends TestBase {
+@DisplayName("Welcome panel visual")
+class WelcomePanelBaselineTests extends TestBase {
 
     private static final int VIEWPORT_HEIGHT = 900;
 
-    @ParameterizedTest(name = "Logged-in session matches baseline at {0}px")
+    @ParameterizedTest(name = "Welcome panel matches baseline at {0}px")
     @ValueSource(ints = {390, 768, 1280})
-    @DisplayName("Logged-in session matches baseline")
-    void loggedInSessionMatchesBaseline(int viewportWidth) {
+    @DisplayName("Welcome panel matches baseline")
+    void welcomePanelMatchesBaseline(int viewportWidth) {
         ViewportHelper.setViewport(viewportWidth, VIEWPORT_HEIGHT);
         loginPage.openPage()
                 .fillAndSubmitForm("user1", "password1")
                 .shouldHaveWelcomeMessage("Welcome, user1!");
 
-        var sessionPanel = $("[data-testid='session-panel']").shouldBe(visible);
+        var welcomePanel = $("[data-testid='welcome-panel']").shouldBe(visible);
         ScreenshotBaseline.captureAndCompare(
-                sessionPanel,
-                "logged-in",
+                welcomePanel,
+                "welcome-panel",
                 viewportWidth,
-                "logged-in-" + viewportWidth);
+                "welcome-panel-" + viewportWidth);
     }
 }

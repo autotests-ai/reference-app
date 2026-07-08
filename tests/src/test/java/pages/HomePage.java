@@ -21,7 +21,7 @@ public class HomePage {
     private final SelenideElement itemsList = $("[data-testid='items-list']");
     private final SelenideElement welcomeMessage = $("[data-testid='welcome-message']");
     private final SelenideElement logoutButton = $("[data-testid='logout-button']");
-    private final SelenideElement sessionPanel = $("[data-testid='session-panel']");
+    private final SelenideElement welcomePanel = $("[data-testid='welcome-panel']");
 
     @Step("Open home page")
     public HomePage openPage() {
@@ -72,7 +72,7 @@ public class HomePage {
 
     @Step("Verify welcome message: {message}")
     public HomePage shouldHaveWelcomeMessage(String message) {
-        sessionPanel.shouldBe(visible, Duration.ofSeconds(10));
+        welcomePanel.shouldBe(visible, Duration.ofSeconds(10));
         welcomeMessage.shouldHave(text(message));
         return this;
     }

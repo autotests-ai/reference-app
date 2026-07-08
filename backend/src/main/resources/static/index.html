@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/css/icon-btn.css">
   <link rel="stylesheet" href="/css/lang-toggle.css">
   <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/page.css">
   <link rel="stylesheet" href="/css/auth.css">
   <link rel="stylesheet" href="/css/app.css">
 </head>
@@ -30,18 +31,74 @@
   </script>
   <script type="module" src="/js/header.js"></script>
 
-  <main class="reference-app" data-testid="reference-layout">
-    <h1 class="reference-app__title">Reference App</h1>
-    <p class="reference-app__lead">
-      Generic Spring Boot + static JS demo — items loaded from <code>/api/items</code>.
-    </p>
-    <section class="reference-app__session" data-testid="session-panel" hidden>
-      <p id="welcome-message" data-testid="welcome-message">Welcome!</p>
-      <button id="logout-button" type="button" data-testid="logout-button">Logout</button>
-    </section>
-    <p class="reference-app__status" data-testid="health-status">→ Checking health…</p>
-    <div class="reference-app__items" data-testid="items-list" aria-live="polite">
-      <p class="text text--muted">→ Loading items…</p>
+  <main class="page-shell page-shell--below-header grid reference-app" data-testid="reference-layout">
+    <div class="panel panel--content">
+      <div class="panel__bar">
+        <div class="panel__dots" aria-hidden="true">
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+        </div>
+        <div class="panel__trail">
+          <span class="panel__title">Reference App</span>
+        </div>
+      </div>
+      <div class="panel__body">
+        <p class="text text--muted">
+          Generic Spring Boot + static JS demo — items loaded from <code>/api/items</code>.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel panel--content" data-testid="welcome-panel" hidden>
+      <div class="panel__bar">
+        <div class="panel__dots" aria-hidden="true">
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+        </div>
+        <div class="panel__trail">
+          <span class="panel__title">Session</span>
+        </div>
+      </div>
+      <div class="panel__body reference-app__welcome-body">
+        <p id="welcome-message" class="text" data-testid="welcome-message">Welcome!</p>
+        <button id="logout-button" type="button" class="btn btn--primary" data-testid="logout-button">Logout</button>
+      </div>
+    </div>
+
+    <div class="panel panel--content" data-testid="health-panel">
+      <div class="panel__bar">
+        <div class="panel__dots" aria-hidden="true">
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+          <span class="panel__dot"></span>
+        </div>
+        <div class="panel__trail">
+          <span class="panel__title">Health</span>
+        </div>
+      </div>
+      <div class="panel__body">
+        <p class="text text--sm text--muted" data-testid="health-status">→ Checking health…</p>
+      </div>
+    </div>
+
+    <div class="reference-app__items grid" data-testid="items-list" aria-live="polite">
+      <div class="panel panel--content">
+        <div class="panel__bar">
+          <div class="panel__dots" aria-hidden="true">
+            <span class="panel__dot"></span>
+            <span class="panel__dot"></span>
+            <span class="panel__dot"></span>
+          </div>
+          <div class="panel__trail">
+            <span class="panel__title">Items</span>
+          </div>
+        </div>
+        <div class="panel__body">
+          <p class="text text--muted">→ Loading items…</p>
+        </div>
+      </div>
     </div>
   </main>
   <script src="/js/auth.js"></script>
