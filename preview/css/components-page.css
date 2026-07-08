@@ -1,0 +1,75 @@
+.components-page .panel__body {
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.components-page .panel__body .section__desc {
+  margin-top: 0;
+}
+
+.components-page .panel__body .section__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.components-page__intro {
+  margin-bottom: var(--space-6);
+}
+
+.components-page__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.components-page__lead {
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.demo-field {
+  max-width: 320px;
+}
+
+.demo-field-wide {
+  max-width: min(720px, 100%);
+  width: 100%;
+}
+
+.demo-sizes {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.demo-sizes code {
+  font-size: inherit;
+}
+
+.components-page code {
+  font-size: var(--font-size-sm);
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.grid-demo-cell {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}

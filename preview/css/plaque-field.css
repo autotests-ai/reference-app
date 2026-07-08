@@ -1,0 +1,927 @@
+@import url("tokens.css");
+@import url("plaque-divider.css");
+
+/* Plaque field — compact label+control shell (e2e-builder, forms) */
+
+.plaque-field {
+  display: flex;
+  align-items: center;
+  row-gap: 0;
+  column-gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  min-width: 0;
+}
+
+.plaque-field--divided {
+  /* Slot order: __label|__text · .plaque-divider · __control|__value|seg-track */
+}
+
+.plaque-field__label {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Human caption — not a config param id (e2e-builder uses __label) */
+
+.plaque-field__text {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plaque-field--divided .plaque-field__label,
+.plaque-field--divided .plaque-field__text {
+  align-self: center;
+  line-height: 1.35;
+  padding-right: var(--space-2);
+  border-right: 0;
+}
+
+.plaque-field--divided .plaque-divider {
+  grid-column: 2;
+}
+
+/* Control slot — right edge (before select chevron); label-only left is on __label / __text */
+
+.plaque-field__value {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+  text-align: right;
+}
+
+.plaque-field__control {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: var(--space-1) 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  text-align: right;
+}
+
+.plaque-field__control:focus {
+  outline: none;
+}
+
+.plaque-field:focus-within {
+  border-color: var(--color-primary);
+}
+
+select.plaque-field__control {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0 var(--plaque-select-trail) 0 0;
+  direction: rtl;
+  text-align: right;
+  background-image: var(--plaque-chevron-glyph);
+  background-repeat: no-repeat;
+  background-size: var(--plaque-chevron-size) 6px;
+  /* Center chevron between text and plaque outer edge (trail + shell padding-right). */
+  background-position: right calc((var(--plaque-select-trail) - var(--plaque-chevron-size)) / 2 - var(--space-2) / 2) center;
+  cursor: pointer;
+}
+
+select.plaque-field__control option {
+  direction: ltr;
+}
+
+.plaque-field > .plaque-field__control.input,
+.plaque-field > select.plaque-field__control.input {
+  min-width: 0;
+  min-height: calc(var(--plaque-control-height) - 2px);
+  padding: var(--space-1) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.plaque-field > .plaque-field__control.input:focus-visible,
+.plaque-field > select.plaque-field__control.input:focus-visible {
+  outline: none;
+}
+
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill,
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill:hover,
+.plaque-field > :is(input, select).plaque-field__control:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.plaque-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plaque-field-list--dense {
+  gap: var(--space-1);
+}
+
+.plaque-field-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.plaque-field-check:has(.plaque-field-check__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+}
+
+.plaque-field-check__input {
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.plaque-field-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--plaque-control-height);
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  text-align: right;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-option:hover {
+  border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-primary));
+}
+
+.plaque-field-option--on {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  font-weight: 600;
+}
+
+.plaque-field-seg-track.plaque-field__control {
+  padding: 0 var(--plaque-seg-gap) 0 0;
+  min-height: 0;
+}
+
+.plaque-field-seg {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  gap: var(--plaque-seg-gap);
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Seg as control slot — symmetric inset (not plaque__control 4px 0) */
+
+.plaque-field-seg.plaque-field__control {
+  padding: var(--plaque-seg-gap);
+  align-items: stretch;
+  min-height: 0;
+}
+
+/* Compact seg btn — tier below Button (36px); SSOT: component-sizes.md → Plaque field seg */
+
+.plaque-field-seg .plaque-field-seg__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: calc(var(--plaque-control-height) - 12px);
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-seg .plaque-field-seg__btn--on {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* pyramidLayer seg — @Layer tint (palette A; tokens --layer-*) */
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="unit"].plaque-field-seg__btn--on {
+  border-color: var(--layer-unit);
+  background: color-mix(in srgb, var(--layer-unit) 18%, var(--color-surface));
+}
+
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="component"].plaque-field-seg__btn--on {
+  border-color: var(--layer-component);
+  background: color-mix(in srgb, var(--layer-component) 18%, var(--color-surface));
+}
+
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="integration"].plaque-field-seg__btn--on {
+  border-color: var(--layer-integration);
+  background: color-mix(in srgb, var(--layer-integration) 18%, var(--color-surface));
+}
+
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="api"].plaque-field-seg__btn--on {
+  border-color: var(--layer-api);
+  background: color-mix(in srgb, var(--layer-api) 18%, var(--color-surface));
+}
+
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="e2e"].plaque-field-seg__btn--on {
+  border-color: var(--layer-e2e);
+  background: color-mix(in srgb, var(--layer-e2e) 18%, var(--color-surface));
+}
+
+[data-param-id="pyramidLayer"] .plaque-field-seg__btn[data-value="manual"].plaque-field-seg__btn--on {
+  border-color: var(--layer-manual);
+  background: color-mix(in srgb, var(--layer-manual) 18%, var(--color-surface));
+}
+
+.plaque-field--divided:has(.plaque-field-seg-track) {
+  width: fit-content;
+  max-width: 100%;
+  gap: var(--plaque-seg-gap);
+  padding-right: 0;
+}
+
+.plaque-field--divided .plaque-field-seg-track.plaque-field__control {
+  flex: 0 0 auto;
+  width: auto;
+  height: calc(var(--plaque-control-height) - 8px);
+  align-self: center;
+}
+
+.plaque-field-seg-track {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: stretch;
+  min-width: 0;
+  padding: 0 var(--plaque-seg-gap) 0 0;
+  gap: var(--plaque-seg-gap);
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+}
+
+.plaque-field--divided .plaque-field-seg-track .plaque-field-seg {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  gap: var(--plaque-seg-gap);
+}
+
+.plaque-field--divided .plaque-field-seg-track .plaque-field-seg .plaque-field-seg__btn {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.plaque-field--divided > .plaque-field-seg.plaque-field__control {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  height: calc(var(--plaque-control-height) - 8px);
+  align-self: center;
+  padding: 0;
+  gap: var(--plaque-seg-gap);
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+}
+
+.plaque-field--divided > .plaque-field-seg.plaque-field__control .plaque-field-seg__btn {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* Full-width divided — 3-col grid: label · divider · control */
+
+.plaque-field--divided.plaque-field--stretch {
+  display: grid;
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+  align-items: center;
+  row-gap: 0;
+  column-gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Grid cell — label · divider · control */
+
+.plaque-field-grid .plaque-field--divided {
+  display: grid;
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+  align-items: center;
+  row-gap: 0;
+  column-gap: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.plaque-field-grid .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: var(--plaque-mixed-label-col, max-content) 1px minmax(0, 1fr);
+}
+
+.plaque-field--divided.plaque-field--stretch > .plaque-field__label,
+.plaque-field--divided.plaque-field--stretch > .plaque-field__text,
+.plaque-field-grid .plaque-field--divided .plaque-field__label,
+.plaque-field-grid .plaque-field--divided .plaque-field__text {
+  grid-column: 1;
+  flex: none;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > :is(.plaque-field__control, .plaque-field__value, .plaque-field-seg-track, .plaque-field-seg.plaque-field__control),
+.plaque-field-grid .plaque-field--divided > :is(.plaque-field__control, .plaque-field__value) {
+  grid-column: 3;
+  justify-self: end;
+  margin-left: 0;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field-grid .plaque-field--divided > .plaque-field-seg-track {
+  grid-column: 3;
+  justify-self: end;
+  margin-left: 0;
+  width: auto;
+  max-width: none;
+  min-width: min-content;
+  flex-shrink: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+  justify-self: stretch;
+  width: 100%;
+  padding-right: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg {
+  width: 100%;
+}
+
+.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg__btn {
+  flex: 1 1 50%;
+  min-width: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control, .input.plaque-field__control),
+.plaque-field-grid .plaque-field--divided > :is(select.plaque-field__control, input.plaque-field__control) {
+  justify-self: stretch;
+  width: 100%;
+}
+
+/* Mixed grid — label col from cell container (cqi); rem cap via tokens */
+
+.plaque-field-grid--mixed .plaque-field--divided .plaque-field__label,
+.plaque-field-grid--mixed .plaque-field--divided .plaque-field__text {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid--mixed .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: min(var(--plaque-label-width), var(--plaque-mixed-label-cqi)) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid--mixed .plaque-field-grid__cell--lg .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: min(var(--plaque-label-width-wide), var(--plaque-mixed-label-cqi)) 1px minmax(0, 1fr);
+}
+
+.plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+  justify-self: end;
+  width: auto;
+}
+
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.plaque-field--seg-shell {
+  height: calc(var(--plaque-control-height) - 8px);
+  min-height: calc(var(--plaque-control-height) - 8px);
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
+}
+
+.plaque-field--seg-shell .plaque-field-seg.plaque-field__control {
+  flex: 1 1 auto;
+  width: 100%;
+  align-self: stretch;
+}
+
+.plaque-field--seg-shell .plaque-field-seg {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.plaque-field--seg-shell .plaque-field-seg__btn {
+  flex: 1 1 50%;
+  min-height: 0;
+  align-self: stretch;
+}
+
+/* Checkstrip — compact multi-select (e2e-builder junitTags, …) */
+
+.plaque-field-checkstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px var(--space-1);
+  min-width: 0;
+}
+
+.plaque-field-checkstrip__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 20px;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: var(--color-surface);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked) {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-checkstrip__item:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plaque-field-checkstrip__input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Checkstrip MD — custom 18×18 box, row 24px (JUnit tags exploration) */
+.plaque-field-checkstrip--md {
+  gap: var(--space-1) var(--space-2);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__item {
+  gap: var(--space-1);
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: var(--icon-size-md);
+  height: var(--icon-size-md);
+  border: 1.5px solid var(--color-text-muted);
+  border-radius: calc(var(--radius-sm) - 2px);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input:checked {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 8px;
+}
+
+.plaque-field-checkstrip--md .plaque-field-checkstrip__input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Checkstrip pill — no visible box, label pill toggles (JUnit tags) */
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__item {
+  position: relative;
+  gap: var(--space-1);
+  min-height: 24px;
+  padding: 0 var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.plaque-field-checkstrip--pill .plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked)::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%2394a3b8' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 8px;
+}
+
+html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:has(.plaque-field-checkstrip__input:checked)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10' fill='none'%3E%3Cpath d='M1 5l3.5 3.5L11 1' stroke='%231c1917' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Tagstrip — chip-like multi-select (e2e-builder junitTags) */
+.plaque-field-tagstrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.plaque-field-tagstrip__item {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--plaque-control-height);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.plaque-field-tagstrip__item:has(.plaque-field-tagstrip__input:checked) {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+  color: var(--color-text);
+}
+
+.plaque-field-tagstrip__item:focus-within {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plaque-field-tagstrip__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Inline check rows — plaque-field-check in a horizontal wrap */
+.plaque-field-checks-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+
+.plaque-field-checks-inline .plaque-field-check {
+  width: auto;
+  flex: 0 1 auto;
+}
+
+/* Dense grid — 3–4 plaque-field (seg / divided) per row inside panel / section */
+
+.plaque-field-grid {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.plaque-field-grid__cell {
+  min-width: 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.plaque-field-grid__cell--hidden {
+  display: none;
+}
+
+.plaque-field-grid .plaque-field,
+.plaque-field-grid .plaque-field--divided:has(.plaque-field-seg-track) {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  row-gap: 0;
+  column-gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.plaque-field-grid--mixed .plaque-field,
+.plaque-field-grid--mixed .plaque-field--divided,
+.plaque-field-grid--mixed .plaque-field--divided:has(.plaque-field-seg-track) {
+  column-gap: 0;
+}
+
+.plaque-field-grid .plaque-field__label {
+  min-width: 0;
+  font-size: var(--font-size-xs);
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field__label,
+.plaque-field-grid .plaque-field--divided .plaque-field__text {
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+  padding-right: var(--space-2);
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg {
+  min-width: min-content;
+  flex-shrink: 0;
+}
+
+.plaque-field-grid .plaque-field--divided .plaque-field-seg-track .plaque-field-seg__btn {
+  padding: 0 var(--space-1);
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  min-width: calc(4ch + var(--space-2));
+}
+
+@container (min-width: 22rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Triple batch (remote hub flags) — 3 equal cols fill row width, same as remoteUrl */
+  .plaque-field-grid:not(.plaque-field-grid--mixed):has(> .plaque-field-grid__cell:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container (min-width: 34rem) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mixed layout — 4 sm + 3 md + 2 lg per row (12-col); shell height = --plaque-control-height everywhere */
+
+.plaque-field-grid--mixed {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.plaque-field-grid__cell--sm {
+  grid-column: span 3;
+}
+
+.plaque-field-grid__cell--md {
+  grid-column: span 4;
+}
+
+.plaque-field-grid__cell--lg {
+  grid-column: span 6;
+}
+
+.plaque-field-grid__cell--full {
+  grid-column: span 12;
+}
+
+/* 2+2+1 row — seg + seg + compact select (build tool chain) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-221 {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-221 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 1+2 row — compact select + wide seg */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-12 {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+
+.plaque-field-grid--ratio-12 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 3+2 row — execution seg + parallel threads select */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-32 {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+
+.plaque-field-grid--ratio-32 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 1+1 row — equal seg + select (legacy) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-11 {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-11 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 4+1 row — wide divided select + compact version select (test framework · version) */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-41 {
+  grid-template-columns: minmax(0, 4fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-41 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* 2+1 row — wide seg + compact select */
+
+.plaque-field-grid--mixed.plaque-field-grid--ratio-21 {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.plaque-field-grid--ratio-21 > .plaque-field-grid__cell {
+  grid-column: auto;
+  min-width: 0;
+}
+
+/* Panel stack — shared fixed label col per panel (divider sync across rows; no subgrid) */
+
+.plaque-field-grid-stack,
+.plaque-field-grid-stack--ratio-221,
+.plaque-field-grid-stack--parallel,
+.plaque-field-panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* Full-width rows in panel-stack (remoteUrl) — wide fixed label col */
+.plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided,
+.plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided.plaque-field--stretch {
+  --plaque-mixed-label-col: var(--plaque-label-width-wide);
+  grid-template-columns: var(--plaque-label-width-wide) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+.plaque-field-grid-stack .plaque-field--divided .plaque-field__label,
+.plaque-field-grid-stack .plaque-field--divided .plaque-field__text,
+.plaque-field-panel-stack .plaque-field--divided .plaque-field__label,
+.plaque-field-panel-stack .plaque-field--divided .plaque-field__text {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track,
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control) {
+  justify-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Grid-stack — col1 label sync (Build preset): one divider col for longest col1 label.
+   Canon mixed default = min(--plaque-label-width, 44cqi) per __cell (dividers float).
+   Stack sync = shared col; cap --plaque-label-width minus one spacing step (≈7rem). */
+
+.plaque-field-grid-stack--ratio-221 .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided,
+.plaque-field-grid-stack--ratio-221 .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--ratio-221 .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(> :is(input, select).plaque-field__control),
+.plaque-field-grid-stack--parallel .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided,
+.plaque-field-grid-stack--parallel .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(.plaque-field-seg-track),
+.plaque-field-grid-stack--parallel .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  grid-template-columns: min(calc(var(--plaque-label-width) - var(--space-2)), 100%) 1px minmax(0, 1fr);
+  column-gap: 0;
+}
+
+@media (max-width: 768px) {
+  .plaque-field-grid:not(.plaque-field-grid--mixed),
+  .plaque-field-grid--4:not(.plaque-field-grid--mixed) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plaque-field-grid--mixed .plaque-field-grid__cell--sm,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--md,
+  .plaque-field-grid--mixed .plaque-field-grid__cell--lg {
+    grid-column: span 12;
+  }
+
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-221,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-12,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-21,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-41,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-32,
+  .plaque-field-grid--mixed.plaque-field-grid--ratio-11 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .plaque-field-panel-stack > :not(.plaque-field-grid) .plaque-field--divided {
+    grid-template-columns: var(--plaque-label-width-wide) 1px minmax(0, 1fr);
+  }
+}

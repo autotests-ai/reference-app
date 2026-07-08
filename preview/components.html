@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Components — template-project</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/icon.css">
+  <link rel="stylesheet" href="css/icon-btn.css">
+  <link rel="stylesheet" href="css/lang-toggle.css">
+  <link rel="stylesheet" href="css/button.css">
+  <link rel="stylesheet" href="css/input.css">
+  <link rel="stylesheet" href="css/textarea.css">
+  <link rel="stylesheet" href="css/label.css">
+  <link rel="stylesheet" href="css/field-caption.css">
+  <link rel="stylesheet" href="css/plaque-field.css">
+  <link rel="stylesheet" href="css/text.css">
+  <link rel="stylesheet" href="css/link.css">
+  <link rel="stylesheet" href="css/badge.css">
+  <link rel="stylesheet" href="css/status-tile.css">
+  <link rel="stylesheet" href="css/selenoid-metrics.css">
+  <link rel="stylesheet" href="css/chip.css">
+  <link rel="stylesheet" href="css/segmented-control.css">
+  <link rel="stylesheet" href="css/tab.css">
+  <link rel="stylesheet" href="css/checkbox.css">
+  <link rel="stylesheet" href="css/radio.css">
+  <link rel="stylesheet" href="css/choice-card.css">
+  <link rel="stylesheet" href="css/stack.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="css/code-highlight.css">
+  <link rel="stylesheet" href="css/chart-tile.css">
+  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="css/section.css">
+  <link rel="stylesheet" href="css/configurator.css">
+  <link rel="stylesheet" href="css/components-page.css">
+</head>
+<body>
+  <main class="components-page page-shell" data-testid="components-page">
+    <header class="components-page__intro">
+      <h1 class="components-page__title">Primitives</h1>
+      <p class="components-page__lead">
+        Каталог фазы 1.1. Размеры — <code>docs/component-sizes.md</code>, токены — <code>css/tokens.css</code>.
+        Shell container (terminal vs content) — <a href="configurator.html" class="link link--nav">Configurator</a>,
+        <a href="components.html#section-panel" class="link link--nav">panel modes</a>.
+      </p>
+    </header>
+
+    <div class="stack stack--lg">
+<div class="panel panel--content" id="section-text" data-testid="section-text">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Text</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Статический текст для абзацев и span — без ссылки, badge или привязки к полю.</p>
+        <div class="section__body demo-row">
+          <p class="text">Body text</p>
+          <p class="text text--muted">Muted text</p>
+          <p class="text text--sm">Small text</p>
+        </div>
+        <p class="demo-sizes"><code>font-size: var(--font-size-base)</code> · <code>color: var(--color-text)</code> · <code>.text--muted</code>: <code>var(--color-text-muted)</code> · <code>.text--sm</code>: <code>var(--font-size-sm)</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-link" data-testid="section-link">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Link</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Обычная ссылка и nav-вариант для будущего header.</p>
+        <div class="section__body demo-row">
+          <a href="#" class="link" data-testid="link-default">Default link</a>
+          <a href="#" class="link link--nav" data-testid="link-nav">Nav link</a>
+          <a href="#" class="link link--nav is-active" data-testid="link-nav-active" aria-current="page">Active nav</a>
+        </div>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-badge" data-testid="section-badge">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Badge</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Метка статуса или версии.</p>
+        <div class="section__body demo-row">
+          <span class="badge" data-testid="badge-default">Фаза 1.1</span>
+          <span class="badge badge--primary" data-testid="badge-primary">New</span>
+        </div>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-status-tile" data-testid="section-status-tile">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Status tile</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Компактный тайл label + state (SSE, Selenoid, hub, …) — dashboard-ряд и header slot.</p>
+        <div class="section__body demo-row">
+          <div class="status-tile status-tile--connected status-tile--tile" role="status" data-testid="sse-status-connected" aria-label="SSE connected">
+            <span class="status-tile__label">SSE</span>
+            <span class="status-tile__state">Connected</span>
+          </div>
+          <div class="status-tile status-tile--connected status-tile--tile" role="status" data-testid="status-tile-connected" aria-label="Selenoid connected">
+            <span class="status-tile__label">Selenoid</span>
+            <span class="status-tile__state">Connected</span>
+          </div>
+          <div class="status-tile status-tile--disconnected status-tile--tile" role="status" data-testid="status-tile-disconnected" aria-label="Selenoid disconnected">
+            <span class="status-tile__label">Selenoid</span>
+            <span class="status-tile__state">Disconnected</span>
+          </div>
+          <div class="status-tile status-tile--error" role="status" data-testid="status-tile-error" aria-label="Selenoid error">
+            <span class="status-tile__label">Selenoid</span>
+            <span class="status-tile__state">Error</span>
+          </div>
+          <div class="status-tile status-tile--connected status-tile--header" role="status" data-testid="status-tile-header" aria-label="Selenoid connected in header">
+            <span class="status-tile__label">Selenoid</span>
+            <span class="status-tile__state">Connected</span>
+          </div>
+        </div>
+        <p class="demo-sizes"><code>min-height: var(--control-height-md)</code> · label <code>9px</code> · state <code>13px</code> · <code>.status-tile--connected</code> · <code>.status-tile--tile</code> (dashboard) · <code>.status-tile--header</code> (slot)</p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-selenoid-metrics" data-testid="section-selenoid-metrics">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Selenoid metrics</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Ряд метрик hub (USED / QUEUED / QUOTA) — после пар SSE + <code>status-tile</code> в dashboard-ряде selenoid-ui.</p>
+        <div class="section__body demo-row">
+          <div class="selenoid-dashboard-row" data-testid="selenoid-dashboard-row-demo">
+            <div class="status-tile status-tile--connected status-tile--tile" role="status" data-testid="selenoid-metrics-demo-sse" aria-label="SSE connected">
+              <span class="status-tile__label">SSE</span>
+              <span class="status-tile__state">Connected</span>
+            </div>
+            <div class="status-tile status-tile--connected status-tile--tile" role="status" data-testid="selenoid-metrics-demo-status" aria-label="Selenoid connected">
+              <span class="status-tile__label">Selenoid</span>
+              <span class="status-tile__state">Connected</span>
+            </div>
+            <div class="selenoid-metrics selenoid-metrics--tile" role="group" data-testid="selenoid-metrics-tile" aria-label="Hub metrics">
+              <div class="selenoid-metrics__item" data-testid="selenoid-metrics-used">
+                <span class="selenoid-metrics__label">Used</span>
+                <span class="selenoid-metrics__value">0<span class="selenoid-metrics__unit">%</span></span>
+              </div>
+              <div class="selenoid-metrics__item" data-testid="selenoid-metrics-queued">
+                <span class="selenoid-metrics__label">Queued</span>
+                <span class="selenoid-metrics__value">0</span>
+              </div>
+              <div class="selenoid-metrics__item" data-testid="selenoid-metrics-quota">
+                <span class="selenoid-metrics__label">Quota</span>
+                <span class="selenoid-metrics__value">
+                  0<span class="selenoid-metrics__quota-sep"> + </span><span class="selenoid-metrics__quota-pending">0</span><span class="selenoid-metrics__quota-sep"> / </span>20
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="selenoid-header-group">
+            <div class="status-tile status-tile--connected status-tile--header" role="status" data-testid="selenoid-metrics-header-sse" aria-label="SSE connected in header">
+              <span class="status-tile__label">SSE</span>
+              <span class="status-tile__state">Connected</span>
+            </div>
+            <div class="status-tile status-tile--connected status-tile--header" role="status" data-testid="selenoid-metrics-header-status" aria-label="Selenoid connected in header">
+              <span class="status-tile__label">Selenoid</span>
+              <span class="status-tile__state">Connected</span>
+            </div>
+            <div class="selenoid-metrics selenoid-metrics--header" role="group" data-testid="selenoid-metrics-header" aria-label="Hub metrics in header">
+              <div class="selenoid-metrics__item">
+                <span class="selenoid-metrics__label">Used</span>
+                <span class="selenoid-metrics__value">0<span class="selenoid-metrics__unit">%</span></span>
+              </div>
+              <div class="selenoid-metrics__item">
+                <span class="selenoid-metrics__label">Queued</span>
+                <span class="selenoid-metrics__value">0</span>
+              </div>
+              <div class="selenoid-metrics__item">
+                <span class="selenoid-metrics__label">Quota</span>
+                <span class="selenoid-metrics__value">
+                  0<span class="selenoid-metrics__quota-sep"> + </span><span class="selenoid-metrics__quota-pending">0</span><span class="selenoid-metrics__quota-sep"> / </span>20
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-sizes"><code>min-height: var(--control-height-md)</code> · label <code>9px</code> · value <code>22px</code> · <code>.selenoid-dashboard-row</code> (SSE + status + metrics) · <code>.selenoid-metrics--tile</code> · <code>.selenoid-metrics--header</code> · <code>.selenoid-header-group</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-chip" data-testid="section-chip">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Chip</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Интерактивная метка (button) на базе badge — пресеты и теги.</p>
+        <div class="section__body demo-row">
+          <button type="button" class="chip" data-testid="chip-default">Default</button>
+          <button type="button" class="chip chip--active" data-testid="chip-active">Active</button>
+          <span class="chip chip--active chip--static" data-testid="chip-static">Static</span>
+        </div>
+        <p class="demo-sizes"><code>padding: var(--space-1) var(--space-3)</code> · как badge · <code>.chip--active</code> · <code>.chip--static</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-segmented-control" data-testid="section-segmented-control">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Segmented control</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Переключатель из двух опций равной ширины (ON/OFF, 2 значения enum).</p>
+        <div class="section__body demo-field">
+          <div class="segmented-control" data-testid="segmented-control-demo">
+            <button type="button" class="segmented-control__btn segmented-control__btn--active" data-testid="segmented-control-on">ON</button>
+            <button type="button" class="segmented-control__btn" data-testid="segmented-control-off">OFF</button>
+          </div>
+        </div>
+        <p class="demo-sizes"><code>min-height: var(--control-height-md)</code> · 50/50 flex · стили совместимы с <code>.btn.btn--secondary</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-tab" data-testid="section-tab">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Tab</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Кнопки переключения панелей (Terminal / JSON / prompt в e2e-builder).</p>
+        <div class="section__body demo-row">
+          <div class="tabs" data-testid="tabs-demo">
+            <button type="button" class="tab tab--active" data-testid="tab-gradle">Terminal</button>
+            <button type="button" class="tab" data-testid="tab-json">JSON</button>
+            <button type="button" class="tab" data-testid="tab-prompt">Prompt</button>
+          </div>
+        </div>
+        <p class="demo-sizes"><code>padding: var(--space-1) var(--space-3)</code> · <code>font-size: var(--font-size-sm)</code> · <code>.tab--active</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-input" data-testid="section-input">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Input</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Текстовое поле на токенах surface и border.</p>
+        <div class="section__body demo-field">
+          <input type="text" class="input" placeholder="Введите текст" data-testid="input-text">
+        </div>
+        <p class="demo-sizes"><code>min-height: 36px</code>, <code>min-width: 200px</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-textarea" data-testid="section-textarea">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Textarea</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Многострочное поле. Модификатор <code>.textarea--mono</code> — monospace для кода и промптов.</p>
+        <div class="section__body stack stack--sm demo-field">
+          <textarea class="textarea" placeholder="Комментарий" data-testid="textarea-comment" rows="3"></textarea>
+          <textarea class="textarea textarea--mono" placeholder="Monospace output" data-testid="textarea-mono" readonly>{"prompt": "example"}</textarea>
+        </div>
+        <p class="demo-sizes"><code>min-height: 72px</code> · <code>.textarea--mono</code>: <code>min-height: 280px</code>, monospace</p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-label" data-testid="section-label">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Label + Input</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Label связывается с полем через <code>for</code> / <code>id</code>.</p>
+        <div class="section__body demo-field">
+          <div class="stack stack--sm">
+            <label class="label" for="demo-email">Email</label>
+            <input type="email" id="demo-email" class="input" placeholder="you@example.com" data-testid="input-email">
+          </div>
+        </div>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-field-caption" data-testid="section-field-caption">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Field caption</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Обёртка: control + текстовая подпись снизу (hint, layout-note). Слот — любой примитив поля.</p>
+        <div class="section__body demo-field">
+          <div class="field-caption" data-testid="field-caption-plaque">
+            <label class="plaque-field plaque-field--divided">
+              <span class="plaque-field__label">stand</span>
+              <span class="plaque-divider" aria-hidden="true"></span>
+              <select class="plaque-field__control" data-testid="field-caption-plaque-select">
+                <option>local</option>
+                <option>prod</option>
+              </select>
+            </label>
+            <p class="field-caption__text">2-col на desktop</p>
+          </div>
+        </div>
+        <p class="demo-sizes"><code>gap: var(--space-1)</code> · подпись: <code>--font-size-xs</code>, monospace, <code>var(--color-text-muted)</code></p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-plaque-field" data-testid="section-plaque-field">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Plaque field</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Компактная плашка «label | divider | control» для форм. Snippet — <code>templates/plaque-field.html</code>.
+          Слот слева: <code>__label</code> (id параметра) или <code>__text</code> (подпись, не параметр).
+          Разделитель: <code>.plaque-divider</code> — <code>templates/plaque-divider.html</code>, <code>css/plaque-divider.css</code>.
+          Справа: <code>__control</code> (поле ввода / select) или <code>__value</code> (статический текст).
+          Full-width row: <code>.plaque-field--stretch</code> — label content-hug, divider, options справа.
+          Составные части: <code>.plaque-field-seg-track</code>, <code>.plaque-field-seg</code>, <code>.plaque-field-grid</code>, …
+        </p>
+        <div class="section__body stack stack--sm">
+        <div class="demo-field stack stack--sm">
+          <p class="demo-sizes">Divider — <code>.plaque-divider</code> · height <code>--plaque-divider-height</code> (Login ref)</p>
+          <div class="plaque-field plaque-field--divided" data-testid="plaque-divider-demo">
+            <span class="plaque-field__text">Login</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <span class="plaque-field__value">…</span>
+          </div>
+        </div>
+        <div class="demo-field stack stack--sm">
+          <p class="demo-sizes">Compact — <code>width: fit-content</code>, без <code>--stretch</code></p>
+          <label class="plaque-field plaque-field--divided" data-testid="plaque-field-select">
+            <span class="plaque-field__label">configStand</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <select class="plaque-field__control">
+              <option>local_http</option>
+              <option>one-page-form_prod</option>
+            </select>
+          </label>
+          <label class="plaque-field plaque-field--divided" data-testid="plaque-field-caption-input">
+            <span class="plaque-field__text">Метка бенчмарка</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
+          </label>
+          <label class="plaque-field plaque-field--divided" data-testid="plaque-field-text">
+            <span class="plaque-field__label">benchmarkLabel</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
+          </label>
+          <div class="plaque-field plaque-field--divided" data-testid="plaque-field-value">
+            <span class="plaque-field__label">testSuite</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <span class="plaque-field__value">login</span>
+          </div>
+          <div class="plaque-field plaque-field--divided" data-testid="plaque-field-seg">
+            <span class="plaque-field__label">headless</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <div class="plaque-field-seg-track plaque-field__control">
+              <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+                <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-testid="plaque-field-seg-true" aria-pressed="true">true</button>
+                <button type="button" class="plaque-field-seg__btn" data-testid="plaque-field-seg-false" aria-pressed="false">false</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-field-wide stack stack--sm">
+          <p class="demo-sizes">Full-width — <code>.plaque-field--divided.plaque-field--stretch</code></p>
+          <label class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-select">
+            <span class="plaque-field__label">configStand</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <select class="plaque-field__control">
+              <option>local_http</option>
+              <option>one-page-form_prod</option>
+            </select>
+          </label>
+          <label class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-text">
+            <span class="plaque-field__label">gradleVersion</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <input type="text" class="plaque-field__control" value="9.6.0" placeholder="9.6.0">
+          </label>
+          <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-seg">
+            <span class="plaque-field__label">headless</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <div class="plaque-field-seg-track plaque-field__control">
+              <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+                <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+              </div>
+            </div>
+          </div>
+          <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-value">
+            <span class="plaque-field__label">browser</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <span class="plaque-field__value">chrome</span>
+          </div>
+          <div class="stack stack--sm" data-testid="plaque-field-grid-panel">
+            <p class="section__desc" style="margin: 0;">Boolean grid — 3–4 seg/row · mixed layout 4+3+2 cols</p>
+            <div class="stack stack--sm">
+              <div class="plaque-field-grid" data-testid="plaque-field-grid">
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="logToConsole">logToConsole</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="logToConsole">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="selenideLogToConsole">selenideLogToConsole</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="selenideLogToConsole">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="headless">headless</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="plaque-field-grid plaque-field-grid--4" data-testid="plaque-field-grid-4">
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableVnc">enableVnc</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableVideo">enableVideo</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableVideo">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableHar">enableHar</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableHar">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="closeBrowserAfterEach">closeBrowserAfterEach</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="closeBrowserAfterEach">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="plaque-field-grid plaque-field-grid--mixed" data-testid="plaque-field-grid-mixed">
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableVnc">enableVnc</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableVideo">enableVideo</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableVideo">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableHar">enableHar</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableHar">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="enableAllureSelenideListener">enableAllureSelenideListener</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="enableAllureSelenideListener">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="logToConsole">logToConsole</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="logToConsole">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="selenideLogToConsole">selenideLog</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="selenideLogToConsole">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="closeBrowserAfterEach">closeBrowser</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="closeBrowserAfterEach">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--lg">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="headless">headless</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="plaque-field-grid__cell plaque-field-grid__cell--lg">
+                  <div class="plaque-field plaque-field--divided">
+                    <span class="plaque-field__label" title="attachBrowserConsoleLogs">attachBrowserConsoleLogs</span>
+                    <span class="plaque-divider" aria-hidden="true"></span>
+                    <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg" role="radiogroup" aria-label="attachBrowserConsoleLogs">
+                        <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>
+                        <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">false</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="demo-field stack stack--sm">
+          <p class="field-caption">
+            <span class="field-caption__text">JUnit tags</span>
+            <a href="junit-tags-variants.html" class="link link--nav">variants</a>
+          </p>
+          <div class="plaque-field-tagstrip" data-testid="plaque-field-tagstrip" role="group" aria-label="JUnit tags">
+            <label class="plaque-field-tagstrip__item" title="smoke">
+              <input type="checkbox" class="plaque-field-tagstrip__input" checked data-testid="plaque-field-tagstrip-smoke">
+              <span>smoke</span>
+            </label>
+            <label class="plaque-field-tagstrip__item" title="visual">
+              <input type="checkbox" class="plaque-field-tagstrip__input" data-testid="plaque-field-tagstrip-visual">
+              <span>visual</span>
+            </label>
+            <label class="plaque-field-tagstrip__item" title="positive">
+              <input type="checkbox" class="plaque-field-tagstrip__input" checked data-testid="plaque-field-tagstrip-positive">
+              <span>positive</span>
+            </label>
+            <label class="plaque-field-tagstrip__item" title="negative">
+              <input type="checkbox" class="plaque-field-tagstrip__input" data-testid="plaque-field-tagstrip-negative">
+              <span>negative</span>
+            </label>
+          </div>
+          <div class="plaque-field plaque-field--divided" data-testid="plaque-field-readonly">
+            <span class="plaque-field__label">testSuite</span>
+            <span class="plaque-divider" aria-hidden="true"></span>
+            <span class="plaque-field__value">login</span>
+          </div>
+          <ul class="plaque-field-list plaque-field-list--dense" data-testid="plaque-field-checklist">
+            <li>
+              <label class="plaque-field-check">
+                <input type="checkbox" class="plaque-field-check__input" checked data-testid="plaque-field-check-a">
+                <span>attachBrowserConsoleLogs</span>
+              </label>
+            </li>
+            <li>
+              <label class="plaque-field-check">
+                <input type="checkbox" class="plaque-field-check__input" data-testid="plaque-field-check-b">
+                <span>attachPageSource</span>
+              </label>
+            </li>
+          </ul>
+          <div class="stack stack--sm" data-testid="plaque-field-options">
+            <button type="button" class="plaque-field-option plaque-field-option--on">allure3</button>
+            <button type="button" class="plaque-field-option">allure2</button>
+          </div>
+          <div class="plaque-field plaque-field--seg-shell" data-testid="plaque-field-seg-shell">
+            <div class="plaque-field-seg plaque-field__control">
+              <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on">remote</button>
+              <button type="button" class="plaque-field-seg__btn">local</button>
+            </div>
+          </div>
+        </div>
+        </div>
+        <p class="demo-sizes">
+          <code>height: var(--plaque-control-height)</code> (32px) ·
+          <code>__label</code> fw 500 muted · <code>__text</code> fw 400 ·
+          <code>.plaque-field--divided</code> · checklist gap <code>var(--space-1)</code> ·
+          <code>.plaque-field-seg-track</code> + <code>.plaque-field-seg</code> — канон boolean true/false и не-boolean 2-opt (gradleInvoker, …) · skill <code>configurator-boolean</code> ·
+          <code>.plaque-field-grid</code> container query: 2 col ≥22rem · 3 col ≥34rem · triple batch (3 cells) → 3×<code>1fr</code> ≥22rem ·
+          <code>--mixed</code> 12-col: <code>__cell--sm</code> 4/row · <code>__cell--md</code> 3/row full width · <code>__cell--lg</code> 2/row · shell 32px · snippet <code>templates/plaque-field-grid.html</code> ·
+          <code>.plaque-field-tagstrip</code> row 32px · chip-like multi · e2e-builder <code>junitTags</code> ·
+          <code>.plaque-field-checkstrip</code> legacy 20px ·
+          <a href="junit-tags-variants.html" class="link">junit-tags-variants</a> ·
+          <code>.plaque-field--seg-shell</code> track 24px · btn ~20px · active tint = segmented-control · tier ниже Button (36px) by design
+        </p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-button" data-testid="section-button">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Button</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Варианты primary, secondary, ghost, danger. Состояния hover, focus-visible, disabled.
+          Icon+text — <code>.icon</code> внутри <code>.btn</code>; full-width submit — <code>.btn--block</code>.
+        </p>
+        <div class="section__body stack stack--sm">
+          <div class="demo-row">
+            <button type="button" class="btn btn--primary" data-testid="btn-primary">Primary</button>
+            <button type="button" class="btn btn--secondary" data-testid="btn-secondary">Secondary</button>
+            <button type="button" class="btn btn--ghost" data-testid="btn-ghost">Ghost</button>
+            <button type="button" class="btn btn--danger" data-testid="btn-danger">Danger</button>
+          </div>
+          <div class="demo-row">
+            <button type="button" class="btn btn--primary" disabled data-testid="btn-primary-disabled">Primary</button>
+            <button type="button" class="btn btn--secondary" disabled data-testid="btn-secondary-disabled">Secondary</button>
+            <button type="button" class="btn btn--ghost" disabled data-testid="btn-ghost-disabled">Ghost</button>
+            <button type="button" class="btn btn--danger" disabled data-testid="btn-danger-disabled">Danger</button>
+          </div>
+          <div class="demo-row">
+            <button type="button" class="btn btn--secondary" data-testid="btn-icon-text">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+              </span>
+              Copy
+            </button>
+          </div>
+          <div class="demo-field">
+            <button type="button" class="btn btn--primary btn--block" data-testid="btn-block">Sign in</button>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          <code>min-height: var(--control-height-md)</code> · padding <code>var(--space-2) var(--space-4)</code> ·
+          <code>.btn--ghost</code> hover <code>var(--hover-bg)</code> ·
+          <code>.btn--danger</code> <code>var(--color-danger)</code> ·
+          <code>.btn--block</code> width 100%
+        </p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-checkbox" data-testid="section-checkbox">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Checkbox</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Native checkbox, box 18×18.</p>
+        <div class="section__body stack stack--sm">
+          <label class="checkbox" data-testid="checkbox-default">
+            <input type="checkbox" class="checkbox__input" checked>
+            <span>Согласен с условиями</span>
+          </label>
+          <label class="checkbox" data-testid="checkbox-disabled">
+            <input type="checkbox" class="checkbox__input" disabled>
+            <span>Disabled</span>
+          </label>
+        </div>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-radio" data-testid="section-radio">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Radio</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Native radio, box 18×18. Группа — общий <code>name</code>.</p>
+        <div class="section__body stack stack--sm">
+          <label class="radio" data-testid="radio-default">
+            <input type="radio" class="radio__input" name="catalog-radio-demo" value="default" checked>
+            <span>Выбран по умолчанию</span>
+          </label>
+          <label class="radio" data-testid="radio-option-b">
+            <input type="radio" class="radio__input" name="catalog-radio-demo" value="option-b">
+            <span>Второй вариант</span>
+          </label>
+          <label class="radio" data-testid="radio-disabled">
+            <input type="radio" class="radio__input" name="catalog-radio-disabled" value="disabled" disabled>
+            <span>Disabled</span>
+          </label>
+        </div>
+        <p class="demo-sizes">
+          Box <code>18×18</code> via <code>var(--icon-size-md)</code>, gap <code>var(--space-2)</code>
+        </p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-icon" data-testid="section-icon">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Icon</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Слот <code>.icon</code> фиксирует <code>18×18</code>. SVG без <code>width</code>/<code>height</code> — разный viewBox, один визуальный размер.
+        </p>
+        <div class="section__body demo-row" data-testid="icon-demo-row">
+          <span class="icon" data-testid="icon-lang" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+              <path d="M2 12h20"/>
+            </svg>
+          </span>
+          <span class="icon" data-testid="icon-github" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </span>
+          <span class="icon" data-testid="icon-github-pages" aria-hidden="true">
+            <svg viewBox="0 0 514 495" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M256.135 -1C114.61 -1 0.200195 112.437 0.200195 252.775C0.200195 364.954 73.5064 459.912 175.202 493.52C187.916 496.047 192.573 488.06 192.573 481.341C192.573 475.458 192.154 455.292 192.154 434.28C120.959 449.409 106.133 404.029 106.133 404.029C94.692 374.617 77.7393 367.058 77.7393 367.058C54.4372 351.512 79.4367 351.512 79.4367 351.512C105.285 353.193 118.848 377.562 118.848 377.562C141.726 416.213 178.591 405.292 193.422 398.568C195.538 382.182 202.323 370.838 209.526 364.537C152.743 358.654 92.9999 336.807 92.9999 239.328C92.9999 211.597 103.163 188.91 119.267 171.265C116.726 164.964 107.826 138.91 121.813 104.038C121.813 104.038 143.423 97.3142 192.149 130.087C213.01 124.532 234.524 121.706 256.135 121.683C277.745 121.683 299.774 124.627 320.117 130.087C368.848 97.3142 390.458 104.038 390.458 104.038C404.445 138.91 395.539 164.964 392.998 171.265C409.527 188.91 419.271 211.597 419.271 239.328C419.271 336.807 359.528 358.231 302.32 364.537C311.645 372.519 319.692 387.642 319.692 411.593C319.692 445.624 319.273 472.937 319.273 481.336C319.273 488.06 323.936 496.047 336.645 493.526C438.34 459.907 511.646 364.954 511.646 252.775C512.065 112.437 397.237 -1 256.135 -1Z"/>
+            </svg>
+          </span>
+          <span class="icon" data-testid="icon-theme-sun" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2"/><path d="M12 20v2"/>
+              <path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
+              <path d="M2 12h2"/><path d="M20 12h2"/>
+              <path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </span>
+          <span class="icon" data-testid="icon-theme-moon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+            </svg>
+          </span>
+        </div>
+        <p class="demo-sizes">Каждый <code>.icon</code> → <code>18×18px</code> (<code>--icon-size-md</code>)</p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-icon-btn" data-testid="section-icon-btn">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Icon button</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Hit area <code>36×36</code> — основа для tool-ряда header (фаза 2).</p>
+        <div class="section__body demo-row" data-testid="icon-btn-demo-row">
+          <button type="button" class="icon-btn" data-testid="icon-btn-theme" aria-label="Switch to dark theme">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2"/><path d="M12 20v2"/>
+                <path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
+                <path d="M2 12h2"/><path d="M20 12h2"/>
+                <path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/>
+              </svg>
+            </span>
+          </button>
+          <a href="https://github.com/qa-guru" class="icon-btn" data-testid="icon-btn-github" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </span>
+          </a>
+          <a href="https://qa.guru" class="icon-btn" data-testid="icon-btn-github-pages" aria-label="GitHub Pages" target="_blank" rel="noopener noreferrer">
+            <span class="icon" aria-hidden="true">
+              <svg viewBox="0 0 514 495" fill="currentColor">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M256.135 -1C114.61 -1 0.200195 112.437 0.200195 252.775C0.200195 364.954 73.5064 459.912 175.202 493.52C187.916 496.047 192.573 488.06 192.573 481.341C192.573 475.458 192.154 455.292 192.154 434.28C120.959 449.409 106.133 404.029 106.133 404.029C94.692 374.617 77.7393 367.058 77.7393 367.058C54.4372 351.512 79.4367 351.512 79.4367 351.512C105.285 353.193 118.848 377.562 118.848 377.562C141.726 416.213 178.591 405.292 193.422 398.568C195.538 382.182 202.323 370.838 209.526 364.537C152.743 358.654 92.9999 336.807 92.9999 239.328C92.9999 211.597 103.163 188.91 119.267 171.265C116.726 164.964 107.826 138.91 121.813 104.038C121.813 104.038 143.423 97.3142 192.149 130.087C213.01 124.532 234.524 121.706 256.135 121.683C277.745 121.683 299.774 124.627 320.117 130.087C368.848 97.3142 390.458 104.038 390.458 104.038C404.445 138.91 395.539 164.964 392.998 171.265C409.527 188.91 419.271 211.597 419.271 239.328C419.271 336.807 359.528 358.231 302.32 364.537C311.645 372.519 319.692 387.642 319.692 411.593C319.692 445.624 319.273 472.937 319.273 481.336C319.273 488.06 323.936 496.047 336.645 493.526C438.34 459.907 511.646 364.954 511.646 252.775C512.065 112.437 397.237 -1 256.135 -1Z"/>
+              </svg>
+            </span>
+          </a>
+        </div>
+        <p class="demo-sizes">Каждый <code>.icon-btn</code> → <code>36×36px</code> (<code>--control-height-md</code>)</p>
+  </div>
+</div>
+
+<div class="panel panel--content" id="section-lang-toggle" data-testid="section-lang-toggle">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Lang toggle</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">Составной примитив: <code>.icon-btn</code> + label overlay (RU/EN). Snippet — <code>templates/lang-toggle.html</code>.</p>
+        <div class="section__body demo-row" data-testid="lang-toggle-demo-row">
+          <span class="lang-toggle" data-testid="lang-toggle">
+            <button type="button" class="icon-btn" data-testid="lang-toggle-btn" aria-label="Переключить на English" data-lang="ru">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
+                  <path d="M2 12h20"/>
+                </svg>
+              </span>
+            </button>
+            <span class="lang-toggle__label" data-testid="lang-toggle-label" aria-hidden="true">RU</span>
+          </span>
+        </div>
+        <p class="demo-sizes">Hit area <code>36×36</code> (<code>.icon-btn</code>), label <code>8px</code> overlay</p>
+  </div>
+</div>
+
+      <div class="panel panel--content" id="section-radio-card" data-testid="section-radio-card">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Radio card</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Radio-карточка для выбора одного варианта. Shell — <code>choice-card.css</code>, input — <code>.radio__input</code> из <code>radio.css</code>.
+          Группа — <code>.radio-group</code>, muted — <code>.radio-card--muted</code>. Snippet — <code>templates/radio-card.html</code>.
+        </p>
+        <div class="section__body stack stack--sm">
+          <div class="radio-group" data-testid="radio-group-default">
+            <h3 class="radio-group__title">Default</h3>
+            <div class="stack stack--sm">
+              <label class="radio-card" data-testid="radio-card-a">
+                <input
+                  type="radio"
+                  class="radio__input"
+                  name="radio-card-demo"
+                  value="a"
+                  data-testid="radio-card-input-a"
+                  checked
+                >
+                <div class="radio-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option A</span>
+                    <span class="badge">v1</span>
+                  </div>
+                  <p>Краткое описание первого варианта.</p>
+                </div>
+              </label>
+              <label class="radio-card" data-testid="radio-card-b">
+                <input
+                  type="radio"
+                  class="radio__input"
+                  name="radio-card-demo"
+                  value="b"
+                  data-testid="radio-card-input-b"
+                >
+                <div class="radio-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option B</span>
+                    <span class="badge">v2</span>
+                  </div>
+                  <p>Краткое описание второго варианта.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="radio-group" data-testid="radio-group-optional">
+            <h3 class="radio-group__title">Optional</h3>
+            <div class="stack stack--sm">
+              <label class="radio-card radio-card--muted" data-testid="radio-card-c">
+                <input
+                  type="radio"
+                  class="radio__input"
+                  name="radio-card-demo"
+                  value="c"
+                  data-testid="radio-card-input-c"
+                >
+                <div class="radio-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option C</span>
+                    <span class="badge">beta</span>
+                  </div>
+                  <p>Дополнительный вариант с модификатором muted.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          Shell <code>choice-card.css</code>, padding <code>var(--space-2) var(--space-3)</code>, gap <code>var(--space-2)</code>,
+          input offset <code>calc((1.5em - var(--icon-size-md)) / 2)</code>, muted <code>opacity: 0.65</code>
+        </p>
+  </div>
+</div>
+
+      <div class="panel panel--content" id="section-checkbox-card" data-testid="section-checkbox-card">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Checkbox card</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Checkbox-карточка для множественного выбора. Shell — <code>choice-card.css</code>, input — <code>.checkbox__input</code> из <code>checkbox.css</code>.
+          Группа — <code>.checkbox-group</code>, muted — <code>.checkbox-card--muted</code>. Snippet — <code>templates/checkbox-card.html</code>.
+        </p>
+        <div class="section__body stack stack--sm">
+          <div class="checkbox-group" data-testid="checkbox-group-default">
+            <h3 class="checkbox-group__title">Default</h3>
+            <div class="stack stack--sm">
+              <label class="checkbox-card" data-testid="checkbox-card-a">
+                <input
+                  type="checkbox"
+                  class="checkbox__input"
+                  name="checkbox-card-demo"
+                  value="a"
+                  data-testid="checkbox-card-input-a"
+                  checked
+                >
+                <div class="checkbox-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option A</span>
+                    <span class="badge">v1</span>
+                  </div>
+                  <p>Краткое описание первого варианта.</p>
+                </div>
+              </label>
+              <label class="checkbox-card" data-testid="checkbox-card-b">
+                <input
+                  type="checkbox"
+                  class="checkbox__input"
+                  name="checkbox-card-demo"
+                  value="b"
+                  data-testid="checkbox-card-input-b"
+                >
+                <div class="checkbox-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option B</span>
+                    <span class="badge">v2</span>
+                  </div>
+                  <p>Краткое описание второго варианта.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="checkbox-group" data-testid="checkbox-group-optional">
+            <h3 class="checkbox-group__title">Optional</h3>
+            <div class="stack stack--sm">
+              <label class="checkbox-card checkbox-card--muted" data-testid="checkbox-card-c">
+                <input
+                  type="checkbox"
+                  class="checkbox__input"
+                  name="checkbox-card-demo"
+                  value="c"
+                  data-testid="checkbox-card-input-c"
+                >
+                <div class="checkbox-card__body stack stack--sm">
+                  <div class="stack stack--sm stack--row">
+                    <span>Option C</span>
+                    <span class="badge">beta</span>
+                  </div>
+                  <p>Дополнительный вариант с модификатором muted.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          Shell <code>choice-card.css</code>, padding <code>var(--space-2) var(--space-3)</code>, gap <code>var(--space-2)</code>,
+          input offset <code>calc((1.5em - var(--icon-size-md)) / 2)</code>, muted <code>opacity: 0.65</code>
+        </p>
+  </div>
+</div>
+
+      <section class="section" id="section-panel" data-testid="section-panel">
+        <h2 class="section__title">Panel</h2>
+        <p class="section__desc">
+          Chrome shell: bar (dots + title) + <code>__body</code> или <code>__code</code>.
+          Режимы <code>panel--content</code> (формы) и <code>panel--terminal</code> (output).
+          Каталог примитивов выше — обёртка <code>panel--content</code>; канонические демо — ниже.
+        </p>
+        <div class="section__body stack stack--lg">
+          <p class="section__desc">
+            Двухколоночный shell (content + terminal) — <a href="configurator.html" class="link link--nav">configurator.html</a>.
+          </p>
+
+          <div class="panel panel--content" data-testid="panel-content-build-demo">
+            <div class="panel__bar">
+              <div class="panel__dots" aria-hidden="true">
+                <span class="panel__dot"></span>
+                <span class="panel__dot"></span>
+                <span class="panel__dot"></span>
+              </div>
+              <div class="panel__trail">
+                <span class="panel__title">Build</span>
+              </div>
+            </div>
+            <div class="panel__body stack stack--sm">
+              <div class="plaque-field plaque-field--divided">
+                <span class="plaque-field__label">gradleInvoker</span>
+                <span class="plaque-divider" aria-hidden="true"></span>
+                <div class="plaque-field-seg-track plaque-field__control">
+                  <div class="plaque-field-seg" role="radiogroup" aria-label="gradleInvoker">
+                    <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">gradlew</button>
+                    <button type="button" class="plaque-field-seg__btn" aria-pressed="false">gradle</button>
+                  </div>
+                </div>
+              </div>
+              <div class="plaque-field plaque-field--divided">
+                <span class="plaque-field__label">gradleVersion</span>
+                <span class="plaque-divider" aria-hidden="true"></span>
+                <span class="plaque-field__value">9.6.0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel--terminal" data-testid="panel-bar-actions-demo">
+            <div class="panel__bar">
+              <div class="panel__dots" aria-hidden="true">
+                <span class="panel__dot"></span>
+                <span class="panel__dot"></span>
+                <span class="panel__dot"></span>
+              </div>
+              <div class="panel__trail">
+                <span class="panel__title">Output</span>
+              </div>
+              <div class="panel__bar-end">
+                <span class="badge" data-testid="panel-bar-badge">a1b2c3</span>
+                <div class="panel__actions">
+                  <button type="button" class="icon-btn panel__action" data-testid="panel-bar-reset" aria-label="Reset" title="Reset">
+                    <span class="icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 8a5.5 5.5 0 1 0 5.5-5.5 6 6 0 0 0-4.1 1.83L2.5 3.5"/>
+                        <path d="M2.5 2.5v3h3"/>
+                      </svg>
+                    </span>
+                  </button>
+                  <button type="button" class="icon-btn panel__action" data-testid="panel-bar-copy" aria-label="Copy" title="Copy">
+                    <span class="icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="5" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M5 11H4a1.5 1.5 0 0 1-1.5-1.5V4A1.5 1.5 0 0 1 4 2.5h5.5A1.5 1.5 0 0 1 11 4v1" stroke="currentColor" stroke-width="1.5"/>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <pre class="panel__code" aria-label="Terminal output">$ ./gradlew test -Denv=local_e2e
+BUILD SUCCESSFUL</pre>
+          </div>
+
+          <div class="grid grid--2x1" data-testid="panel-sticky-demo-grid">
+            <div class="stack stack--sm" data-testid="panel-sticky-scroll-filler">
+              <p class="section__desc">Sticky: прокрути страницу — <code>panel--terminal panel--sticky</code> остаётся в колонке (≥769px).</p>
+              <p class="section__desc">Строка 2 для scroll-теста.</p>
+              <p class="section__desc">Строка 3 для scroll-теста.</p>
+              <p class="section__desc">Строка 4 для scroll-теста.</p>
+              <p class="section__desc">Строка 5 для scroll-теста.</p>
+              <p class="section__desc">Строка 6 — высота main превышает viewport.</p>
+            </div>
+            <div class="panel panel--terminal panel--sticky" data-testid="panel-sticky-demo">
+              <div class="panel__bar">
+                <div class="panel__dots" aria-hidden="true">
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                </div>
+                <div class="panel__trail">
+                  <span class="panel__title">Terminal</span>
+                </div>
+              </div>
+              <pre class="panel__code" aria-label="Terminal output">$ ./gradlew test -Denv=local_e2e
+BUILD SUCCESSFUL</pre>
+              <div class="panel__foot">
+                <button type="button" class="btn btn--secondary">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          Modes <code>panel--terminal</code> / <code>panel--content</code>; dots <code>--panel-dot-size</code>, gap <code>--panel-dot-gap</code>;
+          bar padding <code>var(--space-1) var(--space-2) var(--space-1) var(--space-3)</code>;
+          <code>__title</code> <code>var(--font-size-xs)</code>; <code>__action</code> <code>--panel-action-size</code> (terminal);
+          <code>__bar-end</code> / solo <code>__actions</code> — sibling <code>__trail</code> в <code>__bar</code>, <code>margin-left: auto</code> в <code>panel.css</code>;
+          <code>__body</code> padding <code>var(--space-4)</code>; <code>__code</code> monospace <code>var(--font-size-sm)</code>;
+          <code>panel--sticky</code> — desktop ≥769px
+        </p>
+      </section>
+
+<section class="section" id="section-stack" data-testid="section-stack">
+        <h2 class="section__title">Stack</h2>
+        <p class="section__desc">Вертикальный flex-контейнер с gap из spacing-токенов.</p>
+        <div class="section__body">
+          <div class="stack stack--sm" data-testid="stack-sm">
+            <span>Элемент 1 (stack--sm)</span>
+            <span>Элемент 2</span>
+            <span>Элемент 3</span>
+          </div>
+          <div class="stack stack--sm stack--row" data-testid="stack-sm-row">
+            <button type="button" class="btn btn--primary">Primary</button>
+            <button type="button" class="btn btn--secondary">Secondary</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="panel panel--content" id="section-chart-tile" data-testid="section-chart-tile">
+  <div class="panel__bar">
+    <div class="panel__dots" aria-hidden="true">
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+      <span class="panel__dot"></span>
+    </div>
+    <div class="panel__trail">
+      <span class="panel__title">Chart tile</span>
+    </div>
+  </div>
+  <div class="panel__body">
+<p class="section__desc">
+          Контейнер для Highcharts в <code>allure-dashboard.html</code> metrics row — title + body slot.
+        </p>
+        <div class="section__body">
+          <div class="chart-tile" data-testid="chart-tile-demo">
+            <h3 class="chart-tile__title">Pass rate</h3>
+            <div
+              class="chart-tile__body grid-demo-cell"
+              data-testid="chart-tile-body-demo"
+              style="display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: var(--font-size-sm);"
+            >Highcharts mount</div>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          <code>min-height: 168px</code> · body <code>min-height: 140px</code> · title uppercase <code>0.82rem</code>
+        </p>
+  </div>
+</div>
+
+      <div class="panel panel--content" id="section-code-highlight" data-testid="section-code-highlight">
+        <div class="panel__bar">
+          <div class="panel__dots" aria-hidden="true">
+            <span class="panel__dot"></span>
+            <span class="panel__dot"></span>
+            <span class="panel__dot"></span>
+          </div>
+          <div class="panel__trail">
+            <span class="panel__title">Code highlight</span>
+          </div>
+        </div>
+        <div class="panel__body">
+          <p class="section__desc">
+            Лёгкая JSON-подсветка без Prism/Monaco — <code>CodeHighlight.highlightJson()</code> в
+            <code>js/code-highlight.js</code>. Каноническая палитра — VS Code Dark+ (default на
+            <code>.ch-code</code>). Exploration —
+            <a href="code-highlight-variants.html" class="link link--nav">code-highlight-variants.html</a>.
+          </p>
+          <div class="section__body stack stack--lg">
+            <pre
+              class="ch-code"
+              data-testid="code-highlight-standalone"
+              data-code-highlight-demo
+              aria-label="JSON sample"
+            ></pre>
+            <div class="panel panel--terminal ch-theme--vscode" data-testid="code-highlight-panel">
+              <div class="panel__bar">
+                <div class="panel__dots" aria-hidden="true">
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                </div>
+                <div class="panel__trail">
+                  <span class="panel__title">env-layer · properties</span>
+                </div>
+              </div>
+              <pre class="panel__code ch-code" data-code-highlight-demo aria-label="JSON in panel"></pre>
+            </div>
+          </div>
+          <p class="demo-sizes">
+            <code>font-size: var(--font-size-sm)</code> · padding <code>var(--space-3)</code> · mono stack;
+            tokens <code>.ch-tok-key/str/num/bool/null/punct</code>; plain fallback —
+            <code>.ch-code--plain</code> + <code>textContent</code>
+          </p>
+        </div>
+      </div>
+
+<section class="section" id="section-grid" data-testid="section-grid">
+        <h2 class="section__title">Grid</h2>
+        <p class="section__desc">
+          Flow-grid — N колонок с переносом строк. Topology — ровно 2 слота: <code>2×1</code> (form + aside) или <code>1×2</code> (controls + output). Mobile (≤768px) — одна колонка.
+        </p>
+        <div class="section__body stack stack--lg">
+          <div>
+            <p class="section__desc">2×1 — две колонки, один ряд — <code>.grid.grid--2x1</code></p>
+            <div class="grid grid--2x1" data-testid="grid-2x1">
+              <div class="stack stack--sm" data-testid="grid-2x1-main">
+                <p class="section__desc">Main: длинный контент или форма. На desktop — слева; на mobile — сверху.</p>
+                <p class="section__desc">Комбинируй с <code>.section--sticky</code> на aside для sidebar-паттерна (prompt builder, playground).</p>
+                <p class="section__desc">Дополнительный абзац, чтобы высота main превышала viewport и sticky aside было заметно при прокрутке.</p>
+                <p class="section__desc">Ещё строка для scroll-теста на desktop ≥769px.</p>
+              </div>
+              <section class="section section--sticky" data-testid="grid-2x1-aside">
+                <h3 class="section__title">Aside</h3>
+                <p class="section__desc">Sticky panel справа на desktop.</p>
+                <div class="section__body stack stack--sm">
+                  <p>Output / preview / summary.</p>
+                  <button type="button" class="btn btn--primary">Action</button>
+                </div>
+              </section>
+            </div>
+          </div>
+          <div>
+            <p class="section__desc">1×2 — два ряда, одна колонка — <code>.grid.grid--1x2</code></p>
+            <div class="grid grid--1x2" data-testid="grid-1x2">
+              <div class="grid-demo-cell" data-testid="grid-1x2-top">Controls / params</div>
+              <div class="grid-demo-cell" data-testid="grid-1x2-bottom">Output</div>
+            </div>
+          </div>
+          <div>
+            <p class="section__desc">Flow: 2 колонки — <code>.grid.grid--2</code></p>
+            <div class="grid grid--2" data-testid="grid-2">
+              <div class="grid-demo-cell">1</div>
+              <div class="grid-demo-cell">2</div>
+              <div class="grid-demo-cell">3</div>
+              <div class="grid-demo-cell">4</div>
+            </div>
+          </div>
+          <div>
+            <p class="section__desc">3 колонки — <code>.grid.grid--3</code></p>
+            <div class="grid grid--3" data-testid="grid-3">
+              <div class="grid-demo-cell">1</div>
+              <div class="grid-demo-cell">2</div>
+              <div class="grid-demo-cell">3</div>
+              <div class="grid-demo-cell">4</div>
+              <div class="grid-demo-cell">5</div>
+              <div class="grid-demo-cell">6</div>
+            </div>
+          </div>
+          <div>
+            <p class="section__desc">4 колонки — <code>.grid.grid--4</code></p>
+            <div class="grid grid--4" data-testid="grid-4">
+              <div class="grid-demo-cell">1</div>
+              <div class="grid-demo-cell">2</div>
+              <div class="grid-demo-cell">3</div>
+              <div class="grid-demo-cell">4</div>
+              <div class="grid-demo-cell">5</div>
+              <div class="grid-demo-cell">6</div>
+              <div class="grid-demo-cell">7</div>
+              <div class="grid-demo-cell">8</div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-sizes">
+          <code>gap: var(--space-4)</code>; topology <code>2×1</code> / <code>1×2</code> — ровно 2 слота;
+          flow <code>--2/3/4</code> — перенос; mobile → <code>1fr</code> при <code>max-width: 768px</code>
+        </p>
+      </section>
+
+<section class="section" id="section-section" data-testid="section-section">
+        <h2 class="section__title">Section</h2>
+        <p class="section__desc">
+          Обёртка для layout-блоков каталога: title, описание, body. Примитивы выше — в <code>.panel.panel--content</code> (dots + title).
+          Модификатор <code>.section--sticky</code> — sticky-панель на desktop (≥769px).
+        </p>
+        <div class="section__body">
+          <div class="grid grid--2" id="section-sticky-demo" data-testid="section-sticky-demo">
+            <div class="stack stack--sm" id="section-sticky-long-content" data-testid="section-sticky-long-content">
+              <p>Длинный контент слева: прокрутите страницу, чтобы проверить sticky-поведение панели справа.</p>
+              <p>Каждый примитив на этой странице живёт в <code>panel--content</code>. Section — для layout-примитивов и sticky-демо.</p>
+              <p>На mobile (≤768px) модификатор не активен — колонки складываются в одну, панель идёт после контента.</p>
+              <p>Sticky работает только внутри scroll-контейнера страницы: <code>top: var(--space-6)</code>, высота ограничена viewport минус отступы.</p>
+              <p>Если содержимое панели выше лимита, внутри неё появляется собственный scroll (<code>overflow: auto</code>).</p>
+              <p>Пример использования — двухколоночный layout: основной текст и боковая панель с действиями или сводкой.</p>
+              <p>Комбинируйте с <code>.grid.grid--2</code> для desktop/mobilе адаптации без дополнительного CSS.</p>
+              <p>Дополнительный абзац, чтобы высота левой колонки гарантированно превышала viewport и sticky было заметно при прокрутке.</p>
+            </div>
+            <section class="section section--sticky" id="section-sticky-panel" data-testid="section-sticky-panel">
+              <h3 class="section__title">Sticky panel</h3>
+              <p class="section__desc">Остаётся видимой при прокрутке длинного контента слева.</p>
+              <div class="section__body stack stack--sm">
+                <p>Содержимое боковой панели.</p>
+                <button type="button" class="btn btn--primary">Action</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="js/code-highlight.js"></script>
+  <script type="module">
+    (function () {
+      var sample = {
+        baseUrl: 'http://localhost:3000',
+        headless: true,
+        browserVersion: null,
+        timeoutMs: 15000,
+        enableHar: false,
+      };
+      var json = JSON.stringify(sample, null, 2);
+      document.querySelectorAll('[data-code-highlight-demo]').forEach(function (el) {
+        el.innerHTML = CodeHighlight.highlightJson(json);
+      });
+    })();
+    (function () {
+      var btn = document.querySelector('[data-testid="icon-btn-lang"]');
+      var label = document.querySelector('[data-testid="icon-btn-lang-label"]');
+      if (!btn || !label) return;
+
+      var state = {
+        ru: { text: 'RU', aria: 'Переключить на English' },
+        en: { text: 'EN', aria: 'Switch to Russian' }
+      };
+
+      btn.addEventListener("click", function () {
+        var next = btn.dataset.lang === "ru" ? "en" : "ru";
+        btn.dataset.lang = next;
+        label.textContent = state[next].text;
+        btn.setAttribute("aria-label", state[next].aria);
+      });
+    })();
+  </script>
+</body>
+</html>

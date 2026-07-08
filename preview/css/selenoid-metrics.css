@@ -1,0 +1,87 @@
+/* Selenoid hub metrics — USED / QUEUED / QUOTA row for header and dashboard */
+
+.selenoid-metrics {
+  --selenoid-metrics-label-size: 0.5625rem;
+  --selenoid-metrics-value-size: 1.375rem;
+
+  display: inline-flex;
+  align-items: stretch;
+  flex-shrink: 0;
+  min-height: var(--control-height-md);
+}
+
+.selenoid-metrics--tile {
+  background: color-mix(in srgb, black 28%, var(--color-surface));
+}
+
+.selenoid-metrics--header {
+  background: transparent;
+}
+
+.selenoid-header-group {
+  display: inline-flex;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.selenoid-header-group > .status-tile--header:first-child {
+  border-left: none;
+  padding-left: var(--space-2);
+}
+
+.selenoid-dashboard-row {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.selenoid-metrics__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  min-width: 4.75rem;
+  padding: var(--space-1) var(--space-4);
+}
+
+.selenoid-metrics__item:not(:last-child) {
+  border-right: 1px dashed var(--color-border);
+}
+
+.selenoid-metrics__item:last-child {
+  align-items: flex-start;
+}
+
+.selenoid-metrics__label {
+  font-size: var(--selenoid-metrics-label-size);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+  color: var(--color-text);
+  text-transform: uppercase;
+}
+
+.selenoid-metrics__value {
+  font-size: var(--selenoid-metrics-value-size);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.selenoid-metrics__unit {
+  font-size: 0.55em;
+  font-weight: 300;
+}
+
+.selenoid-metrics__quota-sep {
+  font-size: 0.5em;
+  font-weight: 300;
+  color: var(--color-text-muted);
+}
+
+.selenoid-metrics__quota-pending {
+  color: var(--color-text-muted);
+}

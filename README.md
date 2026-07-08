@@ -10,7 +10,8 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 | `frontend/` | design-system symlinks (`scripts/wire-ui.sh`) |
 | `tests/` | Browser + API tests (Selenide, Gradle); `@Tag smoke`, `api`, `component` |
 | `app-static/` | App pages (index, login, register) — overlaid by sync |
-| `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `gen-env-configs.py` |
+| `preview/` | Component catalog snapshot (`components.html`) for `testComponent` |
+| `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
 | `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
@@ -65,12 +66,15 @@ Regenerate `reference_local_*` env profiles: `python scripts/gen-env-configs.py`
 
 ## Component tests
 
-Preview catalog on `:3000` (see `../dev/README.md`):
+Committed snapshot in `preview/` (regenerate after design-system changes):
 
 ```bash
-cd ../design-system-home/design-system/preview && python -m http.server 3000
-cd ../../reference-app/tests && ./gradlew testComponent -DpyramidStand=reference_local
+./scripts/sync-component-preview.sh
+cd preview && python -m http.server 3000
+cd ../tests && ./gradlew testComponent -DpyramidStand=reference_local -DallureReportMode=none
 ```
+
+Monorepo dev may also use `projects/design-system-home/design-system/preview/` on `:3000` — see `../dev/README.md`.
 
 ## Deploy
 

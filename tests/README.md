@@ -7,7 +7,7 @@ Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 - JDK 21
 - Chrome (local)
 - **App stack** — `docker compose up -d` (:8080) or `cd backend && ./gradlew bootRun`
-- **Component** — design-system preview on :3000 (see `../../dev/README.md`)
+- **Component** — `preview/` on :3000 (`python -m http.server 3000` from `preview/`)
 
 ## Quick start
 
