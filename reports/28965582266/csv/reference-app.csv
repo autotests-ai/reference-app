@@ -1,0 +1,43 @@
+Full Name,Name,Status,Duration,Error,Stack Trace,Steps,Parent Suite,Suite,Sub Suite,Epic,Feature,Story
+"tests.LoginTests.shouldShowValidationErrorWhenPasswordIsEmpty","Empty password shows validation error","passed","14s 324ms",,,"Open login page passed (10s 96ms)
+ Type username: user1 passed (1s 803ms)
+  Submit login form expecting validation error passed (1s 663ms)
+   Verify error message: Password is required (minimum 6 characters) passed (758ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowValidationErrorWhenUsernameIsEmpty","Empty username shows validation error","passed","14s 194ms",,,"Open login page passed (9s 891ms)
+ Type password passed (1s 736ms)
+  Submit login form expecting validation error passed (1s 842ms)
+   Verify error message: Login is required (minimum 3 characters) passed (720ms)",,"Login",,"Authentication","Login",
+"tests.RegisterTests.shouldRegisterNewUser","New user can register and land on home","passed","19s 140ms",,,"Open register page passed (11s 381ms)
+ Fill and submit register form passed (6s 392ms)
+   Type username: user_0035f928 passed (1s 790ms)
+   Type password passed (1s 591ms)
+   Type confirm password passed (1s 639ms)
+   Submit register form passed (1s 371ms)
+  Verify welcome message: Welcome, user_0035f928! passed (1s 337ms)",,"Register",,"Authentication","Register",
+"tests.HomeTests.pageLoadFetchesItems","Page load fetches health and items from API","passed","13s 182ms",,,"Open home page passed (10s 408ms)
+ Verify home layout is mounted passed (1s 246ms)
+  Verify health status contains: service: reference-app passed (751ms)
+   Verify items list contains: Alpha passed (752ms)",,"Home",,"Home","Home load",
+"tests.LogoutTests.shouldLogoutAfterFormLogin","User can logout after form login","passed","17s 490ms",,,"Open login page passed (9s 250ms)
+ Fill and submit form passed (4s 902ms)
+   Type username: user1 passed (1s 861ms)
+   Type password passed (1s 645ms)
+   Submit login form passed (1s 394ms)
+  Verify welcome message: Welcome, user1! passed (1s 426ms)
+   Click logout button passed (1s 137ms)
+    Verify form title message: Login Form passed (770ms)",,"Logout",,"Authentication","Logout",
+"tests.LogoutTests.shouldLogoutAfterLocalStorageAuthentication","User can logout after localStorage authentication","passed","15s 677ms",,,"Open home page with local storage authentication passed (12s 355ms)
+ Verify welcome message: Welcome, user1! passed (1s 451ms)
+  Click logout button passed (1s 106ms)
+   Verify form title message: Login Form passed (757ms)",,"Logout",,"Authentication","Logout",
+"tests.LoginTests.shouldLoginWithValidCredentials","User is logged in with valid credentials","passed","15s 603ms",,,"Open login page passed (9s 281ms)
+ Fill and submit form passed (4s 730ms)
+   Type username: user1 passed (1s 844ms)
+   Type password passed (1s 567ms)
+   Submit login form passed (1s 317ms)
+  Verify welcome message: Welcome, user1! passed (1s 587ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowErrorWhenPasswordIsWrong","Wrong password shows readable error","passed","16s 739ms",,,"Open login page passed (10s 833ms)
+ Type username: user1 passed (1s 800ms)
+  Type password passed (1s 604ms)
+   Submit login form expecting validation error passed (1s 721ms)
+    Verify error message: Wrong login or password passed (774ms)",,"Login",,"Authentication","Login",
