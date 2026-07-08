@@ -1,0 +1,1 @@
+{"id":"81a7983662be3205daf37a105e490d32","fullName":"tests.LoginTests.shouldShowValidationErrorWhenUsernameIsEmpty","name":"Empty username shows validation error","status":"passed","testResultsByEnv":{"default":"8de9198e53cf816f758f81567559b311"}}
