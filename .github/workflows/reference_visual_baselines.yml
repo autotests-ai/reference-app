@@ -1,0 +1,74 @@
+# Regenerate visual baselines on Linux (CI SSOT: headless Chrome 148).
+# workflow_dispatch → download artifact → commit PNGs to tests/src/test/resources/screenshots/
+
+name: reference visual baselines
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    name: Refresh linux baselines
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: tests
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Generate env configs
+        run: python ../scripts/gen-env-configs.py
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install Chrome for Testing
+        run: |
+          CFT_PATH="$HOME/.local/share/chrome-for-testing"
+          npx --yes @puppeteer/browsers install chrome@148.0.7778.178 --platform linux --path "$CFT_PATH"
+          npx --yes @puppeteer/browsers install chromedriver@148.0.7778.178 --platform linux --path "$CFT_PATH"
+
+      - name: Start app stack
+        working-directory: .
+        run: docker compose up -d --build --wait
+
+      - name: Start component preview
+        working-directory: preview
+        run: |
+          python -m http.server 3000 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/components.html >/dev/null && exit 0
+            sleep 1
+          done
+          echo "component preview failed to start on :3000" >&2
+          exit 1
+
+      - name: Update visual baselines
+        run: ./gradlew testVisual -Denv=reference_local_visual -DupdateBaselines=true -DallureReportMode=none -Dheadless=true
+
+      - name: Upload baseline PNGs
+        uses: actions/upload-artifact@v6
+        with:
+          name: visual-baselines-linux
+          path: tests/src/test/resources/screenshots/
+          if-no-files-found: error

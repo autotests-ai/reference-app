@@ -1,8 +1,6 @@
-# Full local pyramid against docker compose (:8080).
-# Component slice needs design-system preview on :3000 — skipped in standalone CI
-# (run locally: projects/design-system-home/design-system/preview + testComponent).
-#
-# Prod smoke/visual — reference_prod.yml (Selenoid + reference_prod_* env).
+# Full local pyramid: docker :8080 + preview :3000.
+# Visual baselines SSOT: Linux headless Chrome 148 (refresh via reference_visual_baselines.yml).
+# Prod smoke — reference_prod.yml (Selenoid).
 
 name: reference local pyramid
 
@@ -93,11 +91,14 @@ jobs:
       - name: Pyramid component
         run: ./gradlew testComponent -DpyramidStand=reference_local -DallureReportMode=none -Dheadless=true
 
+      - name: Pyramid visual
+        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none -Dheadless=true
+
       - name: Pyramid summary
         if: always()
         run: |
           {
             echo "## reference local pyramid"
-            echo "- backend unit + testUnit + testApi + testIntegration + testComponent + testE2e"
-            echo "- testVisual skipped (baselines are macOS; run locally or reference_prod_visual on Selenoid)"
+            echo "- backend unit + testUnit + testApi + testIntegration + testComponent + testE2e + testVisual"
+            echo "- baselines SSOT: Linux headless Chrome 148 (reference_visual_baselines.yml)"
           } >> "$GITHUB_STEP_SUMMARY"
