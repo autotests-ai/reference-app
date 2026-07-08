@@ -14,6 +14,7 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 | `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
+| `.github/workflows/reference_pyramid.yml` | CI orchestrator: local pyramid (PR/push) + prod gate (post-deploy) |
 | `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
 
 ## Auth
@@ -101,7 +102,13 @@ sudo NGINX_CONF_SRC=./deploy/nginx/reference-app.autotests.ai.conf \
   bash deploy/nginx/sync-nginx.sh
 ```
 
-**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), then post-deploy [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) (`prod-gate`: api + e2e on Selenoid).
+
+**CI pyramid (PR / push):** [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) job `local-pyramid` — full stack without Selenoid.
+
+**Manual slices:** `workflow_dispatch` → `reference pyramid` → `prod_api` | `prod_e2e` | `prod_visual` | `local_full`.
+
+**Visual baselines (Linux SSOT):** [`.github/workflows/reference_visual_baselines.yml`](.github/workflows/reference_visual_baselines.yml).
 
 | Name | Kind | Value |
 |------|------|-------|

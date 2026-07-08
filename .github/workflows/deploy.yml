@@ -24,7 +24,7 @@ jobs:
           }
 
       - name: Deploy on production host
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.DEPLOY_HOST || '136.243.89.21' }}
           username: ${{ vars.DEPLOY_USER || 'selenoid' }}

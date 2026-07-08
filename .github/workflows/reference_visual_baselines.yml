@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Generate env configs
         run: python ../scripts/gen-env-configs.py
@@ -67,7 +67,7 @@ jobs:
         run: ./gradlew testVisual -Denv=reference_local_visual -DupdateBaselines=true -DallureReportMode=none -Dheadless=true
 
       - name: Upload baseline PNGs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: visual-baselines-linux
           path: tests/src/test/resources/screenshots/

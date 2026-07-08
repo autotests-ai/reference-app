@@ -9,6 +9,15 @@ Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 - **App stack** — `docker compose up -d` (:8080) or `cd backend && ./gradlew bootRun`
 - **Component** — `preview/` on :3000 (`python -m http.server 3000` from `preview/`)
 
+## CI
+
+| Workflow | Trigger | Slices |
+|----------|---------|--------|
+| `reference_pyramid.yml` | push/PR `main` | `local-pyramid`: unit → api → integration → e2e → component → visual |
+| `reference_pyramid.yml` | after `Deploy production` | `prod-gate`: `testApi` + `testE2e` (Selenoid) |
+| `reference_pyramid.yml` | workflow_dispatch | `local_full` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
+| `reference_visual_baselines.yml` | workflow_dispatch | refresh Linux PNG baselines |
+
 ## Quick start
 
 ```bash
