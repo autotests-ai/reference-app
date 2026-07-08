@@ -48,6 +48,17 @@ jobs:
         with:
           gradle-version: wrapper
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install Chrome for Testing
+        run: |
+          CFT_PATH="$HOME/.local/share/chrome-for-testing"
+          npx --yes @puppeteer/browsers install chrome@148.0.7778.178 --platform linux --path "$CFT_PATH"
+          npx --yes @puppeteer/browsers install chromedriver@148.0.7778.178 --platform linux --path "$CFT_PATH"
+
       - name: Start app stack
         working-directory: .
         run: docker compose up -d --build --wait
@@ -63,13 +74,13 @@ jobs:
         run: ./gradlew testApi -DpyramidStand=reference_local -DallureReportMode=none
 
       - name: Pyramid integration
-        run: ./gradlew testIntegration -DpyramidStand=reference_local -DallureReportMode=none
+        run: ./gradlew testIntegration -DpyramidStand=reference_local -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid e2e smoke
-        run: ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none
+        run: ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid visual
-        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none
+        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid summary
         if: always()
