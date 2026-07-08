@@ -227,16 +227,16 @@ jobs:
           case "${PROD_TARGET}" in
             prod_gate)
               run_slice "prod api" testApi "${COMMON[@]}" -DpyramidStand=reference_prod
-              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -Denv=reference_prod_e2e
+              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -DpyramidStand=reference_prod
               ;;
             prod_api)
               run_slice "prod api" testApi "${COMMON[@]}" -DpyramidStand=reference_prod
               ;;
             prod_e2e)
-              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -Denv=reference_prod_e2e
+              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -DpyramidStand=reference_prod
               ;;
             prod_visual)
-              run_slice "prod visual" testVisual "${COMMON[@]}" -Denv=reference_prod_visual
+              run_slice "prod visual" testVisual "${COMMON[@]}" -DpyramidStand=reference_prod
               ;;
             *)
               echo "Unknown PROD_TARGET=${PROD_TARGET}" >&2
