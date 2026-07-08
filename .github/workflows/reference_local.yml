@@ -79,14 +79,12 @@ jobs:
       - name: Pyramid e2e smoke
         run: ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none -Dheadless=true
 
-      - name: Pyramid visual
-        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none -Dheadless=true
-
       - name: Pyramid summary
         if: always()
         run: |
           {
             echo "## reference local pyramid"
-            echo "- backend unit + testUnit + testApi + testIntegration + testE2e + testVisual"
-            echo "- component skipped (needs design-system preview on :3000 — see monorepo dev/README)"
+            echo "- backend unit + testUnit + testApi + testIntegration + testE2e"
+            echo "- testVisual skipped (baselines are macOS; run testVisual locally or reference_prod_visual on Selenoid)"
+            echo "- testComponent skipped (needs design-system preview on :3000 — monorepo dev/README)"
           } >> "$GITHUB_STEP_SUMMARY"
