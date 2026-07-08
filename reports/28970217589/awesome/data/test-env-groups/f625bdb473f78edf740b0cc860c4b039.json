@@ -1,0 +1,1 @@
+{"id":"f625bdb473f78edf740b0cc860c4b039","fullName":"tests.api.AuthApiTests.loginWithInvalidPassword","name":"POST /api/auth/login rejects invalid password","status":"passed","testResultsByEnv":{"default":"7523a28a3ec8c2965f79ba927360fd15"}}
