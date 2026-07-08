@@ -1,0 +1,30 @@
+Full Name,Name,Status,Duration,Error,Stack Trace,Steps,Parent Suite,Suite,Sub Suite,Epic,Feature,Story
+"tests.RegisterTests.shouldRegisterNewUser","New user can register and land on home","passed","14s 348ms",,,"Open register page passed (8s 599ms)
+ Fill and submit register form passed (4s 763ms)
+   Type username: user_653ba82d passed (1s 373ms)
+   Type password passed (1s 192ms)
+   Type confirm password passed (1s 156ms)
+   Submit register form passed (1s 39ms)
+  Verify welcome message: Welcome, user_653ba82d! passed (961ms)",,"Register",,"Authentication","Register",
+"tests.HomeTests.pageLoadFetchesItems","Page load fetches health and items from API","passed","10s 717ms",,,"Open home page passed (8s 620ms)
+ Verify home layout is mounted passed (905ms)
+  Verify health status contains: service: reference-app passed (601ms)
+   Verify items list contains: Alpha passed (575ms)",,"Home",,"Home","Home load",
+"tests.LogoutTests.shouldLogoutAfterFormLogin","User can logout after form login","passed","15s 296ms",,,"Open login page passed (8s 744ms)
+ Fill and submit form passed (4s 239ms)
+   Type username: user1 passed (1s 646ms)
+   Type password passed (1s 405ms)
+   Submit login form passed (1s 188ms)
+  Verify welcome message: Welcome, user1! passed (980ms)
+   Click logout button passed (778ms)
+    Verify form title message: Login Form passed (552ms)",,"Logout",,"Authentication","Logout",
+"tests.LogoutTests.shouldLogoutAfterLocalStorageAuthentication","User can logout after localStorage authentication","passed","12s 640ms",,,"Open home page with local storage authentication passed (10s 220ms)
+ Verify welcome message: Welcome, user1! passed (1s 63ms)
+  Click logout button passed (789ms)
+   Verify form title message: Login Form passed (562ms)",,"Logout",,"Authentication","Logout",
+"tests.LoginTests.shouldLoginWithValidCredentials","User is logged in with valid credentials","passed","14s 6ms",,,"Open login page passed (8s 750ms)
+ Fill and submit form passed (4s 249ms)
+   Type username: user1 passed (1s 658ms)
+   Type password passed (1s 404ms)
+   Submit login form passed (1s 186ms)
+  Verify welcome message: Welcome, user1! passed (1s 3ms)",,"Login",,"Authentication","Login",
