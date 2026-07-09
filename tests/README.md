@@ -24,7 +24,7 @@ Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 | Workflow | Trigger | Slices |
 |----------|---------|--------|
 | `reference_pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → component → visual |
-| `reference_pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid) |
+| `reference_pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, sequential) |
 | `reference_pyramid.yml` | workflow_dispatch | `ci_pyramid` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
 | `reference_visual_baselines.yml` | workflow_dispatch | refresh Linux PNG baselines |
 

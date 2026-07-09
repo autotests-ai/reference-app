@@ -3,7 +3,7 @@
 # | Trigger              | Job           | Slices                                      |
 # |----------------------|---------------|---------------------------------------------|
 # | push / pull_request  | ci-pyramid    | unit + api + integration + component + e2e + visual |
-# | workflow_run deploy  | prod-pyramid  | api + e2e smoke (Selenoid)                  |
+# | workflow_run deploy  | prod-pyramid  | api + e2e smoke (Selenoid, parallelism=1)   |
 # | workflow_dispatch    | pick target   | ci_pyramid | prod_api | prod_e2e | prod_visual |
 #
 # Visual baseline refresh (Linux PNG SSOT): reference_visual_baselines.yml
@@ -268,7 +268,6 @@ jobs:
           set +e
           COMMON=(
             -DbrowserVersion="${BROWSER_VERSION}"
-            -Djunit.jupiter.execution.parallel.config.fixed.parallelism=3
           )
           EXIT=0
 
