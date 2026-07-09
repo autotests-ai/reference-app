@@ -132,7 +132,7 @@
   max-width: 320px;
 }
 
-/* Terminal mock — e2e-builder parity */
+/* Terminal mock — autotests-builder parity */
 .abv-terminal {
   --abv-code-bg: #1a1917;
   --abv-code-border: rgba(255, 255, 255, 0.08);
@@ -227,7 +227,7 @@
   color: var(--color-text-muted);
 }
 
-/* Baseline — как e2e-builder сейчас */
+/* Baseline — как autotests-builder сейчас */
 .abv-baseline {
   display: flex;
   flex-wrap: wrap;

@@ -1,14 +1,11 @@
-@import url("tokens.css");
+@import url("../tokens.css");
 
-/* Exploration — output panel variants for e2e-builder */
+/* Exploration — output panel variants for autotests-builder */
 
 .eov {
   --eov-code-bg: #1a1917;
   --eov-code-border: rgba(255, 255, 255, 0.08);
   --eov-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  max-width: min(var(--content-max-width), calc(100% - 2 * var(--page-padding-x)));
-  margin: 0 auto;
-  padding: calc(var(--header-height) + var(--space-4)) var(--page-padding-x) var(--space-6);
 }
 
 .eov__intro {

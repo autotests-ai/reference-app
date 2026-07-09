@@ -153,7 +153,7 @@
   border-top: 1px solid var(--panel-border);
 }
 
-/* Terminal panel — output format tabs in bar trail (e2e-builder) */
+/* Terminal panel — output format tabs in bar trail (autotests-builder) */
 .panel--terminal .panel__trail > .tabs {
   display: flex;
   flex-shrink: 0;

@@ -1,4 +1,4 @@
-/* Configurator page shell — prompt-builder, e2e-builder, playground, selenoid-ui */
+/* Configurator page shell — prompt-builder, autotests-builder, playground, selenoid-ui */
 
 /* Skill row — configurator-shell mock + prompt-builder skill pick */
 .skill-row {
@@ -80,7 +80,7 @@
   }
 }
 
-/* Terminal output — grid--2x1 base (1fr:1fr ≥769px); sticky panel chain (e2e-builder, autotests.ai) */
+/* Terminal output — grid--2x1 base (1fr:1fr ≥769px); sticky panel chain (autotests-builder, autotests.ai) */
 .configurator__layout--terminal {
   align-items: start;
 }
@@ -130,15 +130,15 @@
   }
 }
 
-/* e2e-builder params grid — card flow inside configurator__main */
-.e2e-builder__params-grid {
+/* autotests-builder params grid — card flow inside configurator__main */
+.autotests-builder__params-grid {
   display: grid;
   gap: var(--space-3);
   align-items: stretch;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.e2e-builder__params-grid > .e2e-builder__group {
+.autotests-builder__params-grid > .autotests-builder__group {
   min-width: 0;
 }
 
@@ -158,7 +158,7 @@
 }
 
 @media (min-width: 769px) and (max-width: 1279px) {
-  .e2e-builder__params-grid {
+  .autotests-builder__params-grid {
     grid-template-columns: 1fr;
   }
 
@@ -173,7 +173,7 @@
 }
 
 @media (max-width: 768px) {
-  .e2e-builder__params-grid {
+  .autotests-builder__params-grid {
     grid-template-columns: 1fr;
   }
 

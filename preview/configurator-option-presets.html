@@ -48,7 +48,7 @@
         <span><span class="configurator-option-presets__legend-id">E</span> divided select / text</span>
         <span><span class="configurator-option-presets__legend-id">T</span> seg 2-opt (boolean true/false)</span>
         <span><span class="configurator-option-presets__legend-id">G</span> plaque-field-grid--mixed — batch boolean seg</span>
-        <span><span class="configurator-option-presets__legend-id">J</span> plaque-field-seg__btn — multi-select tags (divided row)</span>
+        <span><span class="configurator-option-presets__legend-id">J</span> plaque-field-seg-track--many — multi-select tags (divided row)</span>
         <span><span class="configurator-option-presets__legend-id">O</span> plaque-field-option — 3–5 opt radiogroup (rootLogLevel)</span>
       </div>
     </header>
@@ -59,7 +59,7 @@
       <section id="build" class="configurator-option-presets__section" data-testid="copp-section-build">
         <h2 class="configurator-option-presets__section-title">Build</h2>
         <p class="configurator-option-presets__section-desc">
-          Группы <code>build</code> + <code>testFramework</code> + <code>run</code> + <code>allure</code> + <code>driver</code> + <code>remote</code> + <code>console_log</code> + <code>testops</code> + <code>code_style</code> + <code>code_structure</code> — build: OS, Language, javaVersion, buildTool, gradleBin, gradleVersion · test framework: <code>testFramework</code>, <code>testFrameworkVersion</code>, <code>junitParallelMode</code>, <code>parallelism</code> · run: configStand, pyramidLayer, testSuite, testMethod, junitTags · allure: <code>allureReportMode</code>, <code>allureVersion</code>, <code>allureAgentMode</code>, <code>allureQualityGate</code>, runtime batch (listener + все <code>attach*</code>) · driver: browser, browserVersion, headless, browserSize, closeBrowserAfterEach, closeBrowserAfterAll · remote: remoteUrl, enableVnc, enableVideo, enableHar · console: <code>logToConsole</code>, <code>selenideLogToConsole</code>, <code>rootLogLevel</code> (<strong>O</strong> option list) · testops: <code>testopsEnabled</code> on/off (≠ <code>-D</code>) · code style / PO structure — dense shell (генерация / RAG ladder). Канон build: <code>plaque-field-grid-stack--ratio-221</code> · 2 строки 2/2/1 · отдельные панели на группу · <code>--ratio-41</code> (mode + version) + <code>--ratio-32</code> (agent / execution) · console + testops + code — <code>e2e-builder__params-grid</code> 2 col · label col <code>--plaque-label-width</code> (5.5rem, winner C) · seg content-hug (<strong>T</strong>, без <code>--stretch</code>).
+          Группы <code>build</code> + <code>testFramework</code> + <code>run</code> + <code>allure</code> + <code>driver</code> + <code>remote</code> + <code>console_log</code> + <code>testops</code> + <code>code_style</code> + <code>code_structure</code> — build: OS, Language, javaVersion, buildTool, gradleBin, gradleVersion · test framework: <code>testFramework</code>, <code>testFrameworkVersion</code>, <code>junitParallelMode</code>, <code>parallelism</code> · run: configStand, pyramidLayer, testSuite, testMethod, junitTags · allure: <code>allureReportMode</code>, <code>allureVersion</code>, <code>allureAgentMode</code>, <code>allureQualityGate</code>, runtime batch (listener + все <code>attach*</code>) · driver: browser, browserVersion, headless, browserSize, closeBrowserAfterEach, closeBrowserAfterAll · remote: remoteUrl, enableVnc, enableVideo, enableHar · console: <code>logToConsole</code>, <code>selenideLogToConsole</code>, <code>rootLogLevel</code> (<strong>O</strong> option list) · testops: <code>testopsEnabled</code> on/off (≠ <code>-D</code>) · code style / PO structure — dense shell (генерация / RAG ladder). Канон build: <code>plaque-field-grid-stack--ratio-221</code> · 2 строки 2/2/1 · отдельные панели на группу · <code>--ratio-41</code> (mode + version) + <code>--ratio-32</code> (agent / execution) · console + testops + code — <code>autotests-builder__params-grid</code> 2 col · label col <code>--plaque-label-width</code> (5.5rem, winner C) · seg content-hug (<strong>T</strong>, без <code>--stretch</code>).
         </p>
         <div class="configurator-option-presets__presets">
 
@@ -67,7 +67,7 @@
             <div class="configurator-option-presets__preset-head">
               <h3 class="configurator-option-presets__preset-title">Build card</h3>
               <p class="configurator-option-presets__preset-desc">
-                10× <code>panel--content</code> (Build · Testing framework · Tests filters · Allure · Driver · Remote hub · Console log · TestOps · Стиль кода · Структура PO) · Build: <code>plaque-field-grid-stack--ratio-221</code> · row1: OS + Language (<strong>E</strong>, <code>--stretch</code>) + javaVersion (<strong>E</strong>, без label) · row2: buildTool (<strong>T</strong>, content-hug) + gradleBin (<strong>T</strong>) + gradleVersion (<strong>E</strong>, без label) · Testing framework: Framework (<strong>E</strong>, <code>--stretch</code>) + version (<strong>E</strong>, <code>--ratio-41</code>) · Execution (<strong>T</strong>) + Parallel threads (<strong>E</strong>, <code>--ratio-32</code>) · Tests filters: 4× select/seg (<strong>E</strong>) + junitTags (<strong>J</strong> tagstrip) · Allure: Report mode (<strong>E</strong>, <code>--ratio-41</code>) + version (<strong>E</strong>) · Agent (<strong>T</strong>) + Quality gate (<strong>T</strong>, <code>--ratio-32</code>) · runtime (<strong>G</strong>, 2×3 <code>__cell--md</code>: listener + все <code>attach*</code>) · Driver: browser + browserVersion (<strong>E</strong>, <code>__cell--lg</code>) · headless (<strong>T</strong>) + browserSize (<strong>E</strong>) · closeBrowserAfterEach + closeBrowserAfterAll (<strong>T</strong>, <code>--ratio-11</code>) · Remote hub: remoteUrl (<strong>E</strong>) + flags (<strong>G</strong>, 3× <code>__cell--md</code>: enableVnc, enableVideo, enableHar) · Console log: logToConsole + selenideLogToConsole (<strong>T</strong>) + rootLogLevel (<strong>O</strong>) · TestOps: on/off (<strong>T</strong>, labels on|off) · Стиль кода / Структура PO — <code>configurator__group--dense</code> shell · 2× <code>e2e-builder__params-grid</code> · кнопки <code>gradle|maven</code> (<code>title</code> на maven).
+                10× <code>panel--content</code> (Build · Testing framework · Tests filters · Allure · Driver · Remote hub · Console log · TestOps · Стиль кода · Структура PO) · Build: <code>plaque-field-grid-stack--ratio-221</code> · row1: OS + Language (<strong>E</strong>, <code>--stretch</code>) + javaVersion (<strong>E</strong>, без label) · row2: buildTool (<strong>T</strong>, content-hug) + gradleBin (<strong>T</strong>) + gradleVersion (<strong>E</strong>, без label) · Testing framework: Framework (<strong>E</strong>, <code>--stretch</code>) + version (<strong>E</strong>, <code>--ratio-41</code>) · Execution (<strong>T</strong>) + Parallel threads (<strong>E</strong>, <code>--ratio-32</code>) · Tests filters: 4× select/seg (<strong>E</strong>) + junitTags (<strong>J</strong> tagstrip) · Allure: Report mode (<strong>E</strong>, <code>--ratio-41</code>) + version (<strong>E</strong>) · Agent (<strong>T</strong>) + Quality gate (<strong>T</strong>, <code>--ratio-32</code>) · runtime (<strong>G</strong>, 2×3 <code>__cell--md</code>: listener + все <code>attach*</code>) · Driver: browser + browserVersion (<strong>E</strong>, <code>__cell--lg</code>) · headless (<strong>T</strong>) + browserSize (<strong>E</strong>) · closeBrowserAfterEach + closeBrowserAfterAll (<strong>T</strong>, <code>--ratio-11</code>) · Remote hub: remoteUrl (<strong>E</strong>) + flags (<strong>G</strong>, 3× <code>__cell--md</code>: enableVnc, enableVideo, enableHar) · Console log: logToConsole + selenideLogToConsole (<strong>T</strong>) + rootLogLevel (<strong>O</strong>) · TestOps: on/off (<strong>T</strong>, labels on|off) · Стиль кода / Структура PO — <code>configurator__group--dense</code> shell · 2× <code>autotests-builder__params-grid</code> · кнопки <code>gradle|maven</code> (<code>title</code> на maven).
               </p>
             </div>
             <div class="configurator-option-presets__demo">
@@ -127,7 +127,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="buildTool" data-testid="copp-seg-buildTool">
                         <span class="plaque-field__label" title="buildTool">buildTool</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="Build tool">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="gradle" aria-pressed="true">gradle</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="maven" aria-pressed="false" title="Apache Maven">maven</button>
@@ -139,7 +139,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="gradleBin" data-testid="copp-seg-gradleBin">
                         <span class="plaque-field__label" title="gradleBin">gradleBin</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="gradleBin">
                             <button type="button" class="plaque-field-seg__btn" data-value="gradle" aria-pressed="false" title="system gradle в PATH">gradle</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="gradlew" aria-pressed="true" title="./gradlew (wrapper в tests-java/)">gradlew</button>
@@ -206,7 +206,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="junitParallelMode" data-testid="copp-seg-junitParallelMode">
                         <span class="plaque-field__label" title="junitParallelMode">Execution</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="junitParallelMode">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="concurrent" aria-pressed="true" title="ExecutionMode.CONCURRENT — default для login/logout">CONCURRENT</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="same_thread" aria-pressed="false" title="ExecutionMode.SAME_THREAD — visual baselines">SAME_THREAD</button>
@@ -262,7 +262,7 @@
                     <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="e2e-seg-pyramidLayer">
                       <span class="plaque-field__label">Test layer (@Layer)</span>
                       <span class="plaque-divider" aria-hidden="true"></span>
-                      <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg-track plaque-field-seg-track--many plaque-field__control">
                         <div class="plaque-field-seg" role="radiogroup" aria-label="Test layer (@Layer)">
                           <button type="button" class="plaque-field-seg__btn" data-value="unit">unit</button>
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="component" aria-pressed="true">component</button>
@@ -279,7 +279,7 @@
                     <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="e2e-tagstrip-junitTags">
                       <span class="plaque-field__label">JUnit tags (@Tag)</span>
                       <span class="plaque-divider" aria-hidden="true"></span>
-                      <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg-track plaque-field-seg-track--many plaque-field__control">
                         <div class="plaque-field-seg" role="group" aria-label="JUnit tags (@Tag)" data-testid="copp-tagstrip-junitTags">
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="smoke" aria-pressed="true" data-testid="copp-tag-junitTags-smoke">smoke</button>
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="visual" aria-pressed="true" data-testid="copp-tag-junitTags-visual">visual</button>
@@ -361,7 +361,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="allureAgentMode" data-testid="copp-seg-allureAgentMode">
                         <span class="plaque-field__label" title="allureAgentMode">Agent</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="allureAgentMode">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="none" aria-pressed="true" title="post-test hook off">none</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="inspect" aria-pressed="false" title="allure agent inspect → build/agent-output/">inspect</button>
@@ -373,7 +373,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="allureQualityGate" data-testid="copp-seg-allureQualityGate">
                         <span class="plaque-field__label" title="allureQualityGate">Quality gate</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="allureQualityGate">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="post-test → allureQualityGate">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -388,7 +388,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="enableAllureSelenideListener" data-testid="copp-seg-enableAllureSelenideListener">
                         <span class="plaque-field__label" title="enableAllureSelenideListener">Selenide listener</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="enableAllureSelenideListener">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="AllureSelenide steps в TestBase.setup()">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -400,7 +400,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="attachLastScreenshot" data-testid="copp-seg-attachLastScreenshot">
                         <span class="plaque-field__label" title="attachLastScreenshot">Last screenshot</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="attachLastScreenshot">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="e2e overlay — attachLastScreenshot=true">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -412,7 +412,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="attachPageSource" data-testid="copp-seg-attachPageSource">
                         <span class="plaque-field__label" title="attachPageSource">Page source</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="attachPageSource">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="manual overlay — attachPageSource=true">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -427,7 +427,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="attachBrowserConsoleLogs" data-testid="copp-seg-attachBrowserConsoleLogs">
                         <span class="plaque-field__label" title="attachBrowserConsoleLogs">Browser console</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="attachBrowserConsoleLogs">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="browser console → Allure attachment">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -439,7 +439,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="attachVideo" data-testid="copp-seg-attachVideo">
                         <span class="plaque-field__label" title="attachVideo">Video</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="attachVideo">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="video link — нужен enableVideo=true на hub">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -451,7 +451,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="attachHarLogs" data-testid="copp-seg-attachHarLogs">
                         <span class="plaque-field__label" title="attachHarLogs">HAR logs</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="attachHarLogs">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="stub — Attachments.harLogs() не реализован">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -504,7 +504,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="headless" data-testid="copp-seg-headless">
                         <span class="plaque-field__label" title="headless">headless</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true">true</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
@@ -531,7 +531,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="closeBrowserAfterEach" data-testid="copp-seg-closeBrowserAfterEach">
                         <span class="plaque-field__label" title="closeBrowserAfterEach">closeBrowserAfterEach</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="closeBrowserAfterEach">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true" title="closeWebDriver() в @AfterEach">true</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false" title="reset cookies/storage между тестами">false</button>
@@ -543,7 +543,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="closeBrowserAfterAll" data-testid="copp-seg-closeBrowserAfterAll">
                         <span class="plaque-field__label" title="closeBrowserAfterAll">closeBrowserAfterAll</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="closeBrowserAfterAll">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true" title="closeWebDriver() в @AfterAll">true</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false" title="оставить driver открытым после класса">false</button>
@@ -584,7 +584,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="enableVnc" data-testid="copp-seg-enableVnc">
                         <span class="plaque-field__label" title="enableVnc">enableVnc</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -596,7 +596,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="enableVideo" data-testid="copp-seg-enableVideo">
                         <span class="plaque-field__label" title="enableVideo">enableVideo</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="enableVideo">
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true">true</button>
                             <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
@@ -608,7 +608,7 @@
                       <div class="plaque-field plaque-field--divided" data-param-id="enableHar" data-testid="copp-seg-enableHar">
                         <span class="plaque-field__label" title="enableHar">enableHar</span>
                         <span class="plaque-divider" aria-hidden="true"></span>
-                        <div class="plaque-field-seg-track plaque-field__control">
+                        <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                           <div class="plaque-field-seg" role="radiogroup" aria-label="enableHar">
                             <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
                             <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
@@ -621,7 +621,7 @@
                 </div>
               </div>
 
-              <div class="e2e-builder__params-grid">
+              <div class="autotests-builder__params-grid">
               <div class="panel panel--content configurator-option-presets__panel-group" id="console-log" data-group-id="console_log" data-testid="copp-group-console-log">
                 <div class="panel__bar">
                   <div class="panel__dots" aria-hidden="true">
@@ -640,7 +640,7 @@
                     <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="copp-seg-logToConsole">
                       <span class="plaque-field__label" title="logToConsole">logToConsole</span>
                       <span class="plaque-divider" aria-hidden="true"></span>
-                      <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                         <div class="plaque-field-seg" role="radiogroup" aria-label="logToConsole">
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true" title="мастер-переключатель stdout">true</button>
                           <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
@@ -653,7 +653,7 @@
                     <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="copp-seg-selenideLogToConsole">
                       <span class="plaque-field__label" title="selenideLogToConsole">selenideLogToConsole</span>
                       <span class="plaque-divider" aria-hidden="true"></span>
-                      <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                         <div class="plaque-field-seg" role="radiogroup" aria-label="selenideLogToConsole">
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true" title="Selenide SimpleReport (не AllureSelenide)">true</button>
                           <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
@@ -692,7 +692,7 @@
                     <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="copp-seg-testopsEnabled">
                       <span class="plaque-field__label" title="testopsEnabled">TestOps</span>
                       <span class="plaque-divider" aria-hidden="true"></span>
-                      <div class="plaque-field-seg-track plaque-field__control">
+                      <div class="plaque-field-seg-track plaque-field-seg-track--2 plaque-field__control">
                         <div class="plaque-field-seg" role="radiogroup" aria-label="TestOps">
                           <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false" title="allurectl watch + export ALLURE_*">on</button>
                           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">off</button>
@@ -704,7 +704,7 @@
               </div>
               </div>
 
-              <div class="e2e-builder__params-grid">
+              <div class="autotests-builder__params-grid">
               <div class="panel panel--content configurator-option-presets__panel-group configurator__group--dense" id="code-style" data-group-id="code_style" data-testid="copp-group-code-style">
                 <div class="panel__bar">
                   <div class="panel__dots" aria-hidden="true">

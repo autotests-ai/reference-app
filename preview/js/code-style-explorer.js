@@ -4,6 +4,7 @@
 
   var catalogRoot = document.getElementById("cse-catalog");
   var outputEl = document.getElementById("cse-output");
+  var reportEl = document.getElementById("cse-report");
   var titleEl = document.getElementById("cse-sample-title");
   var metaEl = document.getElementById("cse-sample-meta");
   var builderLinkEl = document.getElementById("cse-builder-link");
@@ -26,7 +27,7 @@
     if (!rag || !rag.length) return "—";
     return rag
       .map(function (id) {
-        return "docs/rag/e2e/" + id + ".md";
+        return window.resolveRagChunkPath(id);
       })
       .join(", ");
   }
@@ -45,6 +46,39 @@
       btn.classList.toggle("code-style-explorer__topic--active", btn.dataset.topicId === previewId);
       btn.setAttribute("aria-pressed", btn.dataset.topicId === previewId ? "true" : "false");
     });
+  }
+
+  function renderReportExample(reportExample) {
+    if (!reportEl) return;
+    if (!reportExample || !reportExample.tree || !reportExample.tree.length) {
+      reportEl.hidden = true;
+      reportEl.innerHTML = "";
+      return;
+    }
+
+    var html =
+      '<p class="code-style-explorer__report-title">В Allure-отчёте</p>' +
+      '<p class="code-style-explorer__report-lead">' +
+      escapeHtml(reportExample.lead || "") +
+      "</p>" +
+      '<ul class="code-style-explorer__report-tree" role="tree">';
+
+    reportExample.tree.forEach(function (node) {
+      var cls = "code-style-explorer__report-step";
+      if (node.kind === "test") cls += " code-style-explorer__report-step--test";
+      html +=
+        '<li class="' +
+        cls +
+        "\" role=\"treeitem\" style=\"--level:" +
+        (node.level || 0) +
+        '">' +
+        escapeHtml(node.label) +
+        "</li>";
+    });
+
+    html += "</ul>";
+    reportEl.innerHTML = html;
+    reportEl.hidden = false;
   }
 
   function renderTerminal(topicId) {
@@ -71,9 +105,10 @@
       '<span class="code-style-explorer__meta-item"><strong>ADR</strong> <code>docs/adr/002-e2e-canonical-patterns.md</code></span>';
 
     outputEl.textContent = topic.code;
+    renderReportExample(topic.reportExample);
 
     if (builderLinkEl) {
-      builderLinkEl.href = "e2e-builder.html?catalog=" + encodeURIComponent(topic.id);
+      builderLinkEl.href = "autotests-builder.html?catalog=" + encodeURIComponent(topic.id);
       builderLinkEl.hidden = false;
     }
   }

@@ -1,54 +1,54 @@
 @import url("tokens.css");
 
-.e2e-builder__links {
+.autotests-builder__links {
   display: inline-flex;
   flex-wrap: wrap;
   gap: var(--space-2);
   margin-left: var(--space-2);
 }
 
-.e2e-builder__links::before {
+.autotests-builder__links::before {
   content: "·";
   margin-right: var(--space-1);
   color: var(--color-text-muted);
 }
 
 /* Toolbar — panel--content shell */
-.e2e-builder__toolbar .panel__body {
+.autotests-builder__toolbar .panel__body {
   padding: var(--space-3) var(--space-4);
 }
 
-.e2e-builder__presets {
+.autotests-builder__presets {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
   width: 100%;
 }
 
-.e2e-builder__presets .chip {
+.autotests-builder__presets .chip {
   border-color: var(--color-border);
   background: var(--color-surface);
 }
 
 /* Group card — plaque stacks inside wide groups */
-.e2e-builder__group .plaque-field-grid-stack,
-.e2e-builder__group .plaque-field-panel-stack {
+.autotests-builder__group .plaque-field-grid-stack,
+.autotests-builder__group .plaque-field-panel-stack {
   min-width: 0;
   width: 100%;
 }
 
-.e2e-builder__group .plaque-field-grid-stack .configurator__param,
-.e2e-builder__group .plaque-field-panel-stack .configurator__param,
-.e2e-builder__group .plaque-field-grid__cell > .plaque-field {
+.autotests-builder__group .plaque-field-grid-stack .configurator__param,
+.autotests-builder__group .plaque-field-panel-stack .configurator__param,
+.autotests-builder__group .plaque-field-grid__cell > .plaque-field {
   min-width: 0;
 }
 
-.e2e-builder__group {
+.autotests-builder__group {
   height: 100%;
   min-width: 0;
 }
 
-.e2e-builder__group .panel__body {
+.autotests-builder__group .panel__body {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -56,7 +56,7 @@
   padding: var(--space-3);
 }
 
-.e2e-builder__group-desc {
+.autotests-builder__group-desc {
   margin: 0 0 var(--space-1);
 }
 
@@ -65,29 +65,29 @@
   display: none;
 }
 
-.e2e-builder__param-warn {
+.autotests-builder__param-warn {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-warning);
 }
 
 /* Output panel — page-specific hooks only; layout chain in configurator.css */
-.e2e-builder__output-panel {
+.autotests-builder__output-panel {
   gap: var(--space-3);
 }
 
-.e2e-builder__output-sticky {
+.autotests-builder__output-sticky {
   gap: var(--space-3);
 }
 
-.e2e-builder__output-foot {
+.autotests-builder__output-foot {
   display: flex;
   flex: 0 0 auto;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-.e2e-builder__hash-badge {
+.autotests-builder__hash-badge {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -110,24 +110,24 @@
 }
 
 @container (max-width: 560px) {
-  .e2e-builder__hash-badge {
+  .autotests-builder__hash-badge {
     display: none;
   }
 }
 
 @media (max-width: 768px) {
-  .e2e-builder__hash-badge {
+  .autotests-builder__hash-badge {
     display: none;
   }
 }
 
-.e2e-builder__status {
+.autotests-builder__status {
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
   min-height: 1.5em;
 }
 
-.e2e-builder__status:empty {
+.autotests-builder__status:empty {
   visibility: hidden;
 }

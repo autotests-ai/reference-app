@@ -13,13 +13,13 @@ HTML **фрагменты** для копирования в downstream-прое
 |-------------------|----------------------|------------|
 | `badge.html` | `components.html#section-badge` | каталог |
 | `button.html` | `components.html#section-button` | exploration: `button-variants.html`, `button-color-variants.html` |
-| `callout.html` | — | только в tooling (`e2e-builder.html`) |
+| `callout.html` | — | только в tooling (`autotests-builder.html`) |
 | `chart-tile.html` | `components.html#section-chart-tile` | |
 | `checkbox.html` | `components.html#section-checkbox` | |
 | `checkbox-card.html` | `components.html#section-checkbox-card` | |
 | `chip.html` | `components.html#section-chip` | |
 | `code-highlight.html` | `components.html#section-code-highlight` | exploration: `code-highlight-variants.html` |
-| `configurator-layout.html` | `configurator.html` | shell content+terminal; card-shell tooling — `panel panel--content` (не `.section`); options: `configurator-options.html`; варианты: `configurator-output-only.html`, `e2e-builder.html`, `prompt-builder.html` |
+| `configurator-layout.html` | `configurator.html` | shell content+terminal; card-shell tooling — `panel panel--content` (не `.section`); options: `configurator-options.html`; варианты: `configurator-output-only.html`, `autotests-builder.html`, `prompt-builder.html` |
 | `field-caption.html` | `components.html#section-field-caption` | |
 | `grid.html` | `components.html#section-grid` | |
 | `header.html` | `header.html`, `header-examples.html` | gallery: `header-variant-*.html`; mount — HTTP-only |
@@ -55,7 +55,7 @@ Exploration и tooling — только в `preview/`, не дублироват
 | `components.html` | SSOT каталога примитивов |
 | `configurator.html` | configurator shell |
 | `configurator-options.html` | options layout inside `panel--content` (exploration) |
-| `e2e-builder.html` | e2e configurator |
+| `autotests-builder.html` | e2e configurator |
 | `playground.html` | header config editor |
 | `prompt-builder.html` | prompt map editor |
 | `selenoid-ui.html` | Status tile + metrics (HTTP-only) |

@@ -8,7 +8,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   var map = window.testParamsMap;
   if (!map) return;
 
-  var STORAGE_KEY = "e2e-builder-v1";
+  var STORAGE_KEY = "autotests-builder-v1";
   var values = {};
   var activePresetId = null;
   var activeTab = "gradle";
@@ -22,13 +22,13 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   var presetsRoot = document.getElementById("e2e-presets");
   var paramsRoot = document.getElementById("e2e-params");
   var conflictsEl = document.getElementById("e2e-conflicts");
-  var outputEl = document.getElementById("e2e-output");
+  var outputEl = document.getElementById("autotests-output");
   var hashEl = document.getElementById("e2e-hash");
   var terminalEl = document.getElementById("e2e-terminal");
-  var copyBtn = document.getElementById("e2e-copy");
+  var copyBtn = document.getElementById("autotests-copy");
   var resetBtn = document.getElementById("e2e-reset");
-  var statusEl = document.getElementById("e2e-status");
-  var tabsRoot = document.getElementById("e2e-tabs");
+  var statusEl = document.getElementById("autotests-status");
+  var tabsRoot = document.getElementById("autotests-tabs");
 
   function paramById(id) {
     return map.params.find(function (p) {
@@ -818,7 +818,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
         "## Header RAG",
         headerRagChunks()
           .map(function (c) {
-            return "- `docs/rag/e2e-header/" + c + ".md`";
+            return "- `" + map.resolveRagChunkPath(c) + "`";
           })
           .join("\n")
       );
@@ -840,7 +840,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       "",
       "## RAG chunks",
       ragChunksForSelection().map(function (c) {
-        return "- `docs/rag/e2e/" + c + ".md`";
+        return "- `" + map.resolveRagChunkPath(c) + "`";
       }).join("\n"),
       "",
       "## Terminal (из конструктора)",
@@ -1057,7 +1057,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
     if (param.envHint) {
       var hint = document.createElement("p");
-      hint.className = "e2e-builder__param-warn";
+      hint.className = "autotests-builder__param-warn";
       hint.textContent = param.envHint;
       wrap.appendChild(hint);
     }
@@ -1142,7 +1142,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
     map.groups.forEach(function (group) {
       section = document.createElement("div");
-      section.className = "panel panel--content e2e-builder__group";
+      section.className = "panel panel--content autotests-builder__group";
       if (group.groupLayout === "wide") section.classList.add("configurator__group--wide");
       else if (group.groupLayout === "dense") section.classList.add("configurator__group--dense");
       section.dataset.groupId = group.id;
@@ -1155,7 +1155,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       var trail = document.createElement("div");
       trail.className = "panel__trail";
       var title = document.createElement("span");
-      title.className = "panel__title e2e-builder__group-title";
+      title.className = "panel__title autotests-builder__group-title";
       title.textContent = group.title;
       trail.appendChild(title);
       bar.appendChild(trail);
@@ -1166,7 +1166,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
       if (group.desc) {
         var groupDesc = document.createElement("p");
-        groupDesc.className = "text text--sm text--muted e2e-builder__group-desc";
+        groupDesc.className = "text text--sm text--muted autotests-builder__group-desc";
         groupDesc.textContent = group.desc;
         body.appendChild(groupDesc);
       }
@@ -1262,6 +1262,38 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     }
   }
 
+  function applyCatalogFromUrl() {
+    var catalogId = new URLSearchParams(window.location.search).get("catalog");
+    if (!catalogId || !window.codeStyleCatalog) return false;
+
+    var topic = window.codeStyleCatalog.topics.find(function (t) {
+      return t.id === catalogId;
+    });
+    if (!topic) return false;
+
+    if (topic.builderPreset) {
+      var preset = map.presets.find(function (p) {
+        return p.id === topic.builderPreset;
+      });
+      if (preset) {
+        activePresetId = preset.id;
+        Object.keys(preset.values).forEach(function (key) {
+          if (values.hasOwnProperty(key)) values[key] = preset.values[key];
+        });
+      }
+    } else {
+      activePresetId = null;
+    }
+
+    if (topic.vector) {
+      Object.keys(topic.vector).forEach(function (key) {
+        if (values.hasOwnProperty(key)) values[key] = topic.vector[key];
+      });
+    }
+
+    return true;
+  }
+
   function loadState() {
     try {
       var storedJson = localStorage.getItem(STORAGE_KEY);
@@ -1338,6 +1370,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   initValues();
   loadState();
+  applyCatalogFromUrl();
   syncAllureListenerFromMode();
   renderPresets();
   renderParams();

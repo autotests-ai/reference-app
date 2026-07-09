@@ -1,6 +1,6 @@
 /**
- * Test-run parameter schema for e2e-builder (all pyramid layers, Gradle -D*, TestConfig keys).
- * Канон осей: ADR 002, docs/rag/e2e/*, ladder ethalon — tests-java/src/test/java/_ethalon/ladder/.
+ * Test-run parameter schema for autotests-builder (all pyramid layers, Gradle -D*, TestConfig keys).
+ * Канон осей: ADR 002, docs/rag/config/* + docs/rag/testing/*, ladder ethalon — tests-java/src/test/java/_ethalon/ladder/.
  * Синхронизировать при добавлении новых RAG-чанков (sync-agent-meta).
  */
 window.testParamsMap = {
@@ -896,7 +896,7 @@ window.testParamsMap = {
       label: "po.cross_page_assert",
       default: "explicit_instance",
       options: [
-        { value: "explicit_instance", label: "explicit_instance", hint: "loggedInPage.should… после loginPage" },
+        { value: "explicit_instance", label: "explicit_instance", hint: "homePage.should… после loginPage" },
         { value: "chained_return", label: "chained_return", hint: "цепочка через return type" },
         { value: "mixed", label: "mixed", hint: "login explicit + logout chain" },
       ],
@@ -974,7 +974,7 @@ window.testParamsMap = {
       label: "po.page_transition",
       default: "new_page_instance",
       options: [
-        { value: "new_page_instance", label: "new_page_instance", hint: "submit() → new LoggedInPage()" },
+        { value: "new_page_instance", label: "new_page_instance", hint: "submit() → new HomePage()" },
         { value: "return_this", label: "return_this", hint: "остаёмся на том же PO" },
         { value: "optional_navigator", label: "optional_navigator", hint: "отдельный flow helper" },
       ],
@@ -1163,5 +1163,24 @@ window.testParamsMap = {
     allureListenerMode: { global_on: "allure-selenide-listener", per_test_on: "allure-selenide-listener" },
     allureReportMode: { allure3: "e2e-config-keys", none: "e2e-config-keys" },
     logToConsole: { false: "e2e-config-keys" },
+  },
+  resolveRagChunkPath: function (id) {
+    if (typeof window.resolveRagChunkPath === "function") {
+      return window.resolveRagChunkPath(id);
+    }
+    if (id === "e2e-config-keys") return "docs/rag/config/config-keys.md";
+    if (id === "e2e-layers") return "docs/rag/testing/layers.md";
+    if (id.indexOf("hdr-") === 0) return "docs/rag/testing-header/" + id + ".md";
+    if (id.indexOf("alr-") === 0) return "docs/rag/analytics/" + id + ".md";
+    if (
+      id === "cfg-env-profile" ||
+      id === "cfg-base-url" ||
+      id === "gen-python-policy" ||
+      id === "ci-workflow-ethalon" ||
+      id === "ci-gradle-args"
+    ) {
+      return "docs/rag/config/" + id + ".md";
+    }
+    return "docs/rag/testing/" + id + ".md";
   },
 };

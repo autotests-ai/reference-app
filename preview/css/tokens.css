@@ -43,6 +43,7 @@
   --plaque-label-width-wide: 10rem;
   --plaque-mixed-label-cqi: 44cqi;
   --plaque-seg-gap: 5px;
+  --plaque-seg-inset-end: var(--plaque-seg-gap);
   --plaque-chevron-size: 10px;
   --plaque-select-text-gap: 17px;
   --plaque-chevron-inset: calc(var(--space-2) + var(--plaque-seg-gap));

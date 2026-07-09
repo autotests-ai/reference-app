@@ -1,7 +1,7 @@
 @import url("tokens.css");
 @import url("plaque-divider.css");
 
-/* Plaque field — compact label+control shell (e2e-builder, forms) */
+/* Plaque field — compact label+control shell (autotests-builder, forms) */
 
 .plaque-field {
   display: flex;
@@ -31,7 +31,7 @@
   white-space: nowrap;
 }
 
-/* Human caption — not a config param id (e2e-builder uses __label) */
+/* Human caption — not a config param id (autotests-builder uses __label) */
 
 .plaque-field__text {
   flex-shrink: 0;
@@ -298,7 +298,6 @@ select.plaque-field__control option {
   width: fit-content;
   max-width: 100%;
   gap: var(--plaque-seg-gap);
-  padding-right: 0;
 }
 
 .plaque-field--divided .plaque-field-seg-track.plaque-field__control {
@@ -415,19 +414,41 @@ select.plaque-field__control option {
   flex-shrink: 0;
 }
 
-.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+/* Seg track — layout modes (markup: --2 | --many; SSOT component-sizes.md) */
+
+.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2 {
   justify-self: stretch;
   width: 100%;
   padding-right: 0;
 }
 
-.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg {
+.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2 .plaque-field-seg {
   width: 100%;
 }
 
-.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg__btn {
+.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2 .plaque-field-seg__btn {
   flex: 1 1 50%;
   min-width: 0;
+}
+
+.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--many {
+  justify-self: end;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  min-height: calc(var(--plaque-control-height) - 8px);
+}
+
+.plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  width: auto;
+  max-width: 100%;
+}
+
+.plaque-field--divided > .plaque-field-seg-track--many .plaque-field-seg__btn {
+  flex: 0 0 auto;
+  min-width: min-content;
 }
 
 .plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control, .input.plaque-field__control),
@@ -458,41 +479,17 @@ select.plaque-field__control option {
   grid-template-columns: min(var(--plaque-label-width-wide), var(--plaque-mixed-label-cqi)) 1px minmax(0, 1fr);
 }
 
-.plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+.plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--many {
   justify-self: end;
   width: auto;
 }
 
-.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track,
-.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track {
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2,
+.plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2 {
   justify-self: stretch;
   width: 100%;
   min-width: 0;
   max-width: 100%;
-}
-
-/* Multi-option seg (3+ btn) — content-hug; 50/50 stretch is 2-opt only (component-sizes.md T) */
-.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track:has(.plaque-field-seg > .plaque-field-seg__btn:nth-child(3)),
-.plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track:has(.plaque-field-checkstrip--seg > .plaque-field-checkstrip__item:nth-child(3)),
-.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track:has(.plaque-field-seg > .plaque-field-seg__btn:nth-child(3)),
-.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track:has(.plaque-field-checkstrip--seg > .plaque-field-checkstrip__item:nth-child(3)) {
-  justify-self: end;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  min-height: calc(var(--plaque-control-height) - 8px);
-}
-
-.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg:has(> .plaque-field-seg__btn:nth-child(3)) {
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  width: auto;
-  max-width: 100%;
-}
-
-.plaque-field--divided.plaque-field--stretch .plaque-field-seg-track .plaque-field-seg:has(> .plaque-field-seg__btn:nth-child(3)) .plaque-field-seg__btn {
-  flex: 0 0 auto;
-  min-width: min-content;
 }
 
 .plaque-field--seg-shell {
@@ -520,7 +517,7 @@ select.plaque-field__control option {
   align-self: stretch;
 }
 
-/* Checkstrip — compact multi-select (e2e-builder junitTags, …) */
+/* Checkstrip — compact multi-select (autotests-builder junitTags, …) */
 
 .plaque-field-checkstrip {
   display: flex;
@@ -688,7 +685,7 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   gap: var(--plaque-seg-gap);
 }
 
-/* Tagstrip — chip-like multi-select (e2e-builder junitTags) */
+/* Tagstrip — chip-like multi-select (autotests-builder junitTags) */
 .plaque-field-tagstrip {
   display: flex;
   flex-wrap: wrap;
@@ -959,7 +956,7 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
   min-width: 0;
 }
 
-.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track,
+.plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > .plaque-field-seg-track--2,
 .plaque-field-grid-stack .plaque-field--divided.plaque-field--stretch > :is(select.plaque-field__control, input.plaque-field__control) {
   justify-self: stretch;
   width: 100%;
@@ -1007,10 +1004,6 @@ html.theme-light .plaque-field-checkstrip--pill .plaque-field-checkstrip__item:h
 .plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--label-wide .plaque-field--divided:has(.plaque-field-seg-track),
 .plaque-field-grid-stack .plaque-field-grid--mixed .plaque-field-grid__cell--label-wide .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
   grid-template-columns: 7rem 1px minmax(0, 1fr);
-}
-
-.plaque-field-grid-stack .plaque-field--divided:has(.plaque-field-seg-track) {
-  padding-right: var(--space-2);
 }
 
 .plaque-field-grid-stack .plaque-field--divided > .plaque-field-seg-track {

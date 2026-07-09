@@ -1,7 +1,7 @@
 @import url("../tokens.css");
 @import url("../plaque-field.css");
 
-/* Plaque seg overflow — exploration only (e2e-builder Build / gradleInvoker) */
+/* Plaque seg overflow — exploration only (autotests-builder Build / gradleInvoker) */
 
 .psv__intro {
   margin-bottom: var(--space-6);
@@ -101,7 +101,7 @@
   padding: var(--space-3);
 }
 
-.psv-build-panel .e2e-builder__group-desc {
+.psv-build-panel .autotests-builder__group-desc {
   margin: 0;
 }
 
@@ -300,7 +300,7 @@
   min-width: 0;
 }
 
-.psv-build-row .e2e-builder__param {
+.psv-build-row .autotests-builder__param {
   min-width: 0;
 }
 

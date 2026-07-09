@@ -22,12 +22,12 @@
       <h1 class="configurator__title">Code style explorer</h1>
       <p class="configurator__lead text text--sm">
         Каталог <strong>паттернов</strong> (не 17 осей). Каждая тема — готовый пример + overlay-вектор для
-        <a href="e2e-builder.html" class="link link--nav">e2e-builder</a>.
+        <a href="autotests-builder.html" class="link link--nav">autotests-builder</a>.
         Канон генератора — <code>js/test-params-map.js</code>; каталог — <code>js/code-style-catalog.js</code>.
       </p>
       <nav class="code-style-explorer__nav" aria-label="Навигация">
         <a href="configurator-option-presets.html#code-style" class="link link--nav">Option presets</a>
-        <a href="e2e-builder.html" class="link link--nav">E2e builder</a>
+        <a href="autotests-builder.html" class="link link--nav">Autotests builder</a>
         <a href="field-variants.html" class="link link--nav">Field variants</a>
       </nav>
     </header>
@@ -56,11 +56,12 @@
                 <div class="code-style-explorer__sample-meta" id="cse-sample-meta"></div>
               </div>
               <pre class="panel__code" id="cse-output" data-testid="cse-output" aria-label="Code sample"></pre>
+              <div class="code-style-explorer__report" id="cse-report" data-testid="cse-report" hidden></div>
               <div class="code-style-explorer__terminal-foot">
                 <a
                   id="cse-builder-link"
                   class="link link--nav"
-                  href="e2e-builder.html"
+                  href="autotests-builder.html"
                   data-testid="cse-builder-link"
                   hidden
                 >Открыть в builder →</a>

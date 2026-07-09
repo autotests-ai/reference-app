@@ -1,65 +1,19 @@
 (function () {
-  var map = window.testParamsMap;
-  var samples = window.codeStyleSamples;
-  if (!map || !samples) return;
+  var catalog = window.codeStyleCatalog;
+  if (!catalog) return;
 
-  var GROUP_IDS = ["code_style", "code_structure"];
-  var paramsRoot = document.getElementById("cse-params");
+  var catalogRoot = document.getElementById("cse-catalog");
   var outputEl = document.getElementById("cse-output");
+  var reportEl = document.getElementById("cse-report");
   var titleEl = document.getElementById("cse-sample-title");
   var metaEl = document.getElementById("cse-sample-meta");
-  var values = {};
+  var builderLinkEl = document.getElementById("cse-builder-link");
+  var previewId = "canon-smoke";
 
-  function defaultValue(param) {
-    return param.default !== undefined ? String(param.default) : "";
-  }
-
-  function initValues() {
-    map.params.forEach(function (param) {
-      if (GROUP_IDS.indexOf(param.group) === -1) return;
-      values[param.id] = defaultValue(param);
+  function topicById(id) {
+    return catalog.topics.find(function (t) {
+      return t.id === id;
     });
-  }
-
-  function matchesShowWhen(param) {
-    if (!param.showWhen) return true;
-    return Object.keys(param.showWhen).every(function (key) {
-      return param.showWhen[key].indexOf(values[key]) !== -1;
-    });
-  }
-
-  function ragChunkFor(paramId, value) {
-    var hints = map.ragChunkHints && map.ragChunkHints[paramId];
-    if (hints && hints[value]) return hints[value];
-    if (paramId === "poFluent" && (value === "true" || value === "mixed")) return "po-fluent";
-    if (paramId === "locatorStyle" && value === "data_testid") return "po-locators";
-    if (paramId === "stepsLocation" && (value === "po_annotated" || value === "hybrid")) return "po-step";
-    return null;
-  }
-
-  function sampleKey(paramId, value) {
-    return paramId + ":" + value;
-  }
-
-  function lookupSample(paramId, value) {
-    var key = sampleKey(paramId, value);
-    if (samples[key]) return samples[key];
-    var rag = ragChunkFor(paramId, value);
-    var param = map.params.find(function (p) {
-      return p.id === paramId;
-    });
-    var opt = param && param.options
-      ? param.options.find(function (o) {
-          return o.value === value;
-        })
-      : null;
-    return {
-      title: (param ? param.label : paramId) + " = " + value,
-      source: "—",
-      rag: rag || "—",
-      language: "text",
-      code: (opt && opt.hint) || "Пример для этой оси пока не добавлен в code-style-samples.js",
-    };
   }
 
   function escapeHtml(text) {
@@ -69,133 +23,168 @@
       .replace(/>/g, "&gt;");
   }
 
-  function renderTerminal(paramId, value) {
-    var sample = lookupSample(paramId, value);
-    var param = map.params.find(function (p) {
-      return p.id === paramId;
-    });
-    var ragId = sample.rag && sample.rag !== "—" ? sample.rag : ragChunkFor(paramId, value);
-    var ragLine = ragId ? "docs/rag/e2e/" + ragId + ".md" : "—";
-    var adrLine = "docs/adr/002-e2e-canonical-patterns.md";
+  function formatRag(rag) {
+    if (!rag || !rag.length) return "—";
+    return rag
+      .map(function (id) {
+        return window.resolveRagChunkPath(id);
+      })
+      .join(", ");
+  }
 
-    titleEl.textContent = sample.title;
+  function formatVector(vector) {
+    if (!vector) return "—";
+    return Object.keys(vector)
+      .map(function (key) {
+        return key + "=" + vector[key];
+      })
+      .join(" · ");
+  }
+
+  function syncPreviewHighlight() {
+    catalogRoot.querySelectorAll(".code-style-explorer__topic").forEach(function (btn) {
+      btn.classList.toggle("code-style-explorer__topic--active", btn.dataset.topicId === previewId);
+      btn.setAttribute("aria-pressed", btn.dataset.topicId === previewId ? "true" : "false");
+    });
+  }
+
+  function renderReportExample(reportExample) {
+    if (!reportEl) return;
+    if (!reportExample || !reportExample.tree || !reportExample.tree.length) {
+      reportEl.hidden = true;
+      reportEl.innerHTML = "";
+      return;
+    }
+
+    var html =
+      '<p class="code-style-explorer__report-title">В Allure-отчёте</p>' +
+      '<p class="code-style-explorer__report-lead">' +
+      escapeHtml(reportExample.lead || "") +
+      "</p>" +
+      '<ul class="code-style-explorer__report-tree" role="tree">';
+
+    reportExample.tree.forEach(function (node) {
+      var cls = "code-style-explorer__report-step";
+      if (node.kind === "test") cls += " code-style-explorer__report-step--test";
+      html +=
+        '<li class="' +
+        cls +
+        "\" role=\"treeitem\" style=\"--level:" +
+        (node.level || 0) +
+        '">' +
+        escapeHtml(node.label) +
+        "</li>";
+    });
+
+    html += "</ul>";
+    reportEl.innerHTML = html;
+    reportEl.hidden = false;
+  }
+
+  function renderTerminal(topicId) {
+    var topic = topicById(topicId);
+    if (!topic) return;
+
+    previewId = topicId;
+    syncPreviewHighlight();
+
+    titleEl.textContent = topic.title;
     metaEl.innerHTML =
-      '<span class="code-style-explorer__meta-item"><strong>ось</strong> ' +
-      escapeHtml(param ? param.label : paramId) +
-      " · <code>" +
-      escapeHtml(value) +
-      '</code></span>' +
+      '<span class="code-style-explorer__meta-item">' +
+      escapeHtml(topic.summary) +
+      "</span>" +
       '<span class="code-style-explorer__meta-item"><strong>источник</strong> ' +
-      escapeHtml(sample.source) +
+      escapeHtml(topic.source) +
       "</span>" +
       '<span class="code-style-explorer__meta-item"><strong>RAG</strong> <code>' +
-      escapeHtml(ragLine) +
+      escapeHtml(formatRag(topic.rag)) +
       '</code></span>' +
-      '<span class="code-style-explorer__meta-item"><strong>ADR</strong> <code>' +
-      escapeHtml(adrLine) +
-      "</code></span>";
+      '<span class="code-style-explorer__meta-item"><strong>вектор</strong> <code class="code-style-explorer__vector">' +
+      escapeHtml(formatVector(topic.vector)) +
+      '</code></span>' +
+      '<span class="code-style-explorer__meta-item"><strong>ADR</strong> <code>docs/adr/002-e2e-canonical-patterns.md</code></span>';
 
-    outputEl.textContent = sample.code;
+    outputEl.textContent = topic.code;
+    renderReportExample(topic.reportExample);
+
+    if (builderLinkEl) {
+      builderLinkEl.href = "autotests-builder.html?catalog=" + encodeURIComponent(topic.id);
+      builderLinkEl.hidden = false;
+    }
   }
 
-  function syncButtons(paramId, value) {
-    paramsRoot.querySelectorAll('[data-param-id="' + paramId + '"] .plaque-field-option').forEach(function (btn) {
-      var on = btn.dataset.value === value;
-      btn.classList.toggle("plaque-field-option--on", on);
-      btn.setAttribute("aria-pressed", on ? "true" : "false");
+  function renderTopic(topic) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "code-style-explorer__topic";
+    btn.dataset.topicId = topic.id;
+    btn.dataset.testid = "cse-topic-" + topic.id;
+    btn.setAttribute("aria-pressed", "false");
+
+    var name = document.createElement("span");
+    name.className = "code-style-explorer__topic-title";
+    name.textContent = topic.title;
+
+    var summary = document.createElement("span");
+    summary.className = "code-style-explorer__topic-summary text text--muted";
+    summary.textContent = topic.summary;
+
+    btn.appendChild(name);
+    btn.appendChild(summary);
+    btn.addEventListener("click", function () {
+      renderTerminal(topic.id);
+    });
+    return btn;
+  }
+
+  function renderSection(section) {
+    var topics = catalog.topics.filter(function (t) {
+      return t.section === section.id;
+    });
+    if (!topics.length) return null;
+
+    var block = document.createElement("section");
+    block.className = "code-style-explorer__section";
+    if (section.collapsed) block.classList.add("code-style-explorer__section--collapsed");
+
+    var heading = document.createElement("h2");
+    heading.className = "code-style-explorer__section-title";
+
+    if (section.collapsed) {
+      var toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "code-style-explorer__section-toggle";
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.innerHTML =
+        '<span class="code-style-explorer__section-chevron" aria-hidden="true"></span>' +
+        escapeHtml(section.title);
+      toggle.addEventListener("click", function () {
+        var open = block.classList.toggle("code-style-explorer__section--open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      heading.appendChild(toggle);
+    } else {
+      heading.textContent = section.title;
+    }
+    block.appendChild(heading);
+
+    var body = document.createElement("div");
+    body.className = "code-style-explorer__section-body";
+    topics.forEach(function (topic) {
+      body.appendChild(renderTopic(topic));
+    });
+    block.appendChild(body);
+    return block;
+  }
+
+  function renderCatalog() {
+    catalogRoot.innerHTML = "";
+    catalog.sections.forEach(function (section) {
+      var node = renderSection(section);
+      if (node) catalogRoot.appendChild(node);
     });
   }
 
-  function onValueChange(paramId, value) {
-    values[paramId] = value;
-    syncButtons(paramId, value);
-    renderParams();
-    renderTerminal(paramId, value);
-  }
-
-  function renderOptionList(param) {
-    var wrap = document.createElement("div");
-    wrap.className = "configurator__param";
-    wrap.dataset.paramId = param.id;
-    wrap.dataset.testid = "cse-param-" + param.id;
-
-    var list = document.createElement("div");
-    list.className = "plaque-field-list plaque-field-list--dense";
-    list.setAttribute("role", "radiogroup");
-    list.setAttribute("aria-label", param.label);
-
-    param.options.forEach(function (opt) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "plaque-field-option";
-      btn.dataset.value = opt.value;
-      btn.textContent = opt.label;
-      if (opt.hint) btn.title = opt.hint;
-      if (values[param.id] === opt.value) {
-        btn.classList.add("plaque-field-option--on");
-        btn.setAttribute("aria-pressed", "true");
-      } else {
-        btn.setAttribute("aria-pressed", "false");
-      }
-      btn.addEventListener("click", function () {
-        if (values[param.id] === opt.value) {
-          renderTerminal(param.id, opt.value);
-          return;
-        }
-        onValueChange(param.id, opt.value);
-      });
-      list.appendChild(btn);
-    });
-
-    wrap.appendChild(list);
-    return wrap;
-  }
-
-  function renderParams() {
-    paramsRoot.innerHTML = "";
-    map.groups
-      .filter(function (group) {
-        return GROUP_IDS.indexOf(group.id) !== -1;
-      })
-      .forEach(function (group) {
-        var section = document.createElement("div");
-        section.className =
-          "panel panel--content configurator-option-presets__panel-group configurator__group--dense";
-        section.dataset.groupId = group.id;
-        section.dataset.testid = "cse-group-" + group.id;
-
-        var bar = document.createElement("div");
-        bar.className = "panel__bar";
-        bar.innerHTML =
-          '<div class="panel__dots" aria-hidden="true"><span class="panel__dot"></span><span class="panel__dot"></span><span class="panel__dot"></span></div>' +
-          '<div class="panel__trail"><span class="panel__title">' +
-          group.title +
-          "</span></div>";
-        section.appendChild(bar);
-
-        var body = document.createElement("div");
-        body.className = "panel__body";
-        if (group.desc) {
-          var desc = document.createElement("p");
-          desc.className = "text text--sm text--muted configurator-option-presets__panel-group-desc";
-          desc.textContent = group.desc;
-          body.appendChild(desc);
-        }
-
-        map.params
-          .filter(function (p) {
-            return p.group === group.id && p.type === "radio";
-          })
-          .forEach(function (param) {
-            if (matchesShowWhen(param)) body.appendChild(renderOptionList(param));
-          });
-
-        section.appendChild(body);
-        paramsRoot.appendChild(section);
-      });
-  }
-
-  initValues();
-  renderParams();
-  renderTerminal("testStyle", values.testStyle);
+  renderCatalog();
+  renderTerminal(previewId);
 })();

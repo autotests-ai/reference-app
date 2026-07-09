@@ -124,17 +124,17 @@
   height: auto;
 }
 
-.configurator-option-presets__main > .e2e-builder__params-grid {
+.configurator-option-presets__main > .autotests-builder__params-grid {
   width: 100%;
 }
 
-.configurator-option-presets__main > .e2e-builder__params-grid > .configurator-option-presets__panel-group {
+.configurator-option-presets__main > .autotests-builder__params-grid > .configurator-option-presets__panel-group {
   min-width: 0;
   height: auto;
 }
 
 /* Panel group card — param stack inside panel--content */
-/* Wide groups (grid-stack bundles) — span 2 in e2e-builder params-grid via .configurator__group--wide in configurator.css */
+/* Wide groups (grid-stack bundles) — span 2 in autotests-builder params-grid via .configurator__group--wide in configurator.css */
 .configurator-option-presets__panel-group {
   height: 100%;
   min-width: 0;

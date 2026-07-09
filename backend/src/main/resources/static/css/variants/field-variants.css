@@ -223,7 +223,7 @@ select.fv-stacked__input {
   flex: 1 1 auto;
 }
 
-/* A — baseline stacked (current e2e-builder) */
+/* A — baseline stacked (current autotests-builder) */
 .fv-stacked {
   display: flex;
   flex-direction: column;

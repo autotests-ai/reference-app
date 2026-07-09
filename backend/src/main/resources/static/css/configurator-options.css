@@ -97,12 +97,12 @@
   padding: var(--space-3);
 }
 
-.configurator-options__panel-grid .e2e-builder__params-grid {
+.configurator-options__panel-grid .autotests-builder__params-grid {
   gap: var(--space-2);
 }
 
 @media (max-width: 768px) {
-  .configurator-options__panel-grid .e2e-builder__params-grid {
+  .configurator-options__panel-grid .autotests-builder__params-grid {
     grid-template-columns: 1fr;
   }
 
