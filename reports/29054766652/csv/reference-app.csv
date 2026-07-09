@@ -1,0 +1,54 @@
+Full Name,Name,Status,Duration,Error,Stack Trace,Steps,Parent Suite,Suite,Sub Suite,Epic,Feature,Story
+"tests.LoginTests.shouldShowValidationErrorWhenPasswordIsEmpty","Empty password shows validation error","passed","12s 443ms",,,"Open login page passed (7s 152ms)
+ Type username: user1 passed (1s 487ms)
+  Submit login form expecting validation error passed (1s 476ms)
+   Verify error message: Password is required (minimum 6 characters) passed (607ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowValidationErrorWhenUsernameIsEmpty","Empty username shows validation error","passed","9s 282ms",,,"Open login page passed (4s 208ms)
+ Type password passed (1s 478ms)
+  Submit login form expecting validation error passed (1s 405ms)
+   Verify error message: Login is required (minimum 3 characters) passed (622ms)",,"Login",,"Authentication","Login",
+"tests.api.AuthApiTests.profileWithBearerToken","GET /api/auth/me returns profile for bearer token","passed","2s 637ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.profileWithoutToken","GET /api/auth/me without token returns 401","passed","653ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.ReferenceApiTests.healthEndpointReturnsOk","GET /api/health returns ok","passed","665ms",,,,,"Reference API",,"Home","Health and items",
+"tests.api.ReferenceApiTests.itemsEndpointReturnsSeed","GET /api/items returns seeded PostgreSQL items","passed","805ms",,,,,"Reference API",,"Home","Health and items",
+"tests.RegisterTests.shouldRegisterNewUser","New user can register and land on home","passed","11s 838ms",,,"Open register page passed (3s 451ms)
+ Fill and submit register form passed (5s 547ms)
+   Type username: user_6fc545be passed (1s 542ms)
+   Type password passed (1s 425ms)
+   Type confirm password passed (1s 399ms)
+   Submit register form passed (1s 181ms)
+  Verify welcome message: Welcome, user_6fc545be! passed (1s 141ms)",,"Register",,"Authentication","Register",
+"tests.HomeTests.pageLoadFetchesItems","Page load fetches health and items from API","passed","11s 165ms",,,"Open home page passed (7s 33ms)
+ Verify home layout is mounted passed (1s 95ms)
+  Verify health status contains: service: reference-app passed (650ms)
+   Verify items list contains: Alpha passed (644ms)",,"Home",,"Home","Home load",
+"tests.api.AuthApiTests.loginRejectsEmptyCredentials","POST /api/auth/login rejects empty credentials with 400","passed","673ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.loginWithInvalidPassword","POST /api/auth/login rejects invalid password","passed","760ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.loginWithValidCredentials","POST /api/auth/login returns token for seeded user","passed","780ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.logoutReturnsNoContent","POST /api/auth/logout returns 204","passed","667ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerNewUser","POST /api/auth/register creates user and returns token","passed","862ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerDuplicateUsername","POST /api/auth/register rejects duplicate username","passed","666ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerRejectsShortPassword","POST /api/auth/register rejects short password with 400","passed","2s 846ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.LogoutTests.shouldLogoutAfterFormLogin","User can logout after form login","passed","11s 276ms",,,"Open login page passed (3s 263ms)
+ Fill and submit form passed (3s 754ms)
+   Type username: user1 passed (1s 435ms)
+   Type password passed (1s 250ms)
+   Submit login form passed (1s 66ms)
+  Verify welcome message: Welcome, user1! passed (1s 9ms)
+   Click logout button passed (966ms)
+    Verify form title message: Login Form passed (614ms)",,"Logout",,"Authentication","Logout",
+"tests.LogoutTests.shouldLogoutAfterLocalStorageAuthentication","User can logout after localStorage authentication","passed","12s 715ms",,,"Open home page with local storage authentication passed (8s 103ms)
+ Verify welcome message: Welcome, user1! passed (1s 185ms)
+  Click logout button passed (1s 37ms)
+   Verify form title message: Login Form passed (593ms)",,"Logout",,"Authentication","Logout",
+"tests.LoginTests.shouldLoginWithValidCredentials","User is logged in with valid credentials","passed","10s 423ms",,,"Open login page passed (4s 68ms)
+ Fill and submit form passed (3s 791ms)
+   Type username: user1 passed (1s 468ms)
+   Type password passed (1s 246ms)
+   Submit login form passed (1s 76ms)
+  Verify welcome message: Welcome, user1! passed (1s 21ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowErrorWhenPasswordIsWrong","Wrong password shows readable error","passed","9s 632ms",,,"Open login page passed (3s 368ms)
+ Type username: user1 passed (1s 449ms)
+  Type password passed (1s 326ms)
+   Submit login form expecting validation error passed (1s 318ms)
+    Verify error message: Wrong login or password passed (599ms)",,"Login",,"Authentication","Login",
