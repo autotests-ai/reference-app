@@ -14,7 +14,7 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 | `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
-| `.github/workflows/reference_pyramid.yml` | CI orchestrator: local pyramid (PR/push) + prod gate (post-deploy) |
+| `.github/workflows/reference_pyramid.yml` | CI orchestrator: `ci-pyramid` (PR/push) + `prod-pyramid` (post-deploy) |
 | `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
 
 ## Auth
@@ -50,23 +50,23 @@ cd backend && ./gradlew test jacocoTestCoverageVerification
 # open build/reports/jacoco/test/html/index.html
 
 # Pyramid unit (config + helpers) — 100% line gate on unit slice
-cd tests && ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_local
+cd tests && ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_ci
 
 # API
-cd tests && ./gradlew testApi -DpyramidStand=reference_local
+cd tests && ./gradlew testApi -DpyramidStand=reference_ci
 
 # E2E smoke (login + home)
-cd tests && ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none
+cd tests && ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
 ```
 
-Regenerate `reference_local_*` env profiles: `python scripts/gen-env-configs.py`
+Regenerate `reference_ci_*` env profiles: `python scripts/gen-env-configs.py`
 
 ## Env profiles
 
 | Stand | Example | baseUrl |
 |-------|---------|---------|
-| `reference_local` | `reference_local_e2e` | `http://localhost:8080/` |
-| `reference_local` | `reference_local_component` | `http://localhost:3000/` (design-system preview) |
+| `reference_ci` | `reference_ci_e2e` | `http://localhost:8080/` |
+| `reference_ci` | `reference_ci_component` | `http://localhost:3000/` (design-system preview) |
 | `reference_prod` | `reference_prod_e2e` | `https://reference-app.autotests.ai/` + remote Selenoid cloud |
 
 ## Component tests
@@ -76,7 +76,7 @@ Committed snapshot in `preview/` (regenerate after design-system changes):
 ```bash
 ./scripts/sync-component-preview.sh
 cd preview && python -m http.server 3000
-cd ../tests && ./gradlew testComponent -DpyramidStand=reference_local -DallureReportMode=none
+cd ../tests && ./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none
 ```
 
 Monorepo dev may also use `projects/design-system-home/design-system/preview/` on `:3000` — see `../dev/README.md`.
@@ -106,11 +106,11 @@ sudo NGINX_CONF_SRC=./deploy/nginx/reference-app.autotests.ai.conf \
   bash deploy/nginx/sync-nginx.sh
 ```
 
-**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), then post-deploy [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) (`prod-gate`: api + e2e on Selenoid).
+**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), then post-deploy [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) (`prod-pyramid`: api + e2e on Selenoid).
 
-**CI pyramid (PR / push):** [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) job `local-pyramid` — full stack without Selenoid.
+**CI pyramid (PR / push):** [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) job `ci-pyramid` — full stack on docker compose + headless Chrome (no Selenoid).
 
-**Manual slices:** `workflow_dispatch` → `reference pyramid` → `prod_api` | `prod_e2e` | `prod_visual` | `local_full`.
+**Manual slices:** `workflow_dispatch` → `reference pyramid` → `ci_pyramid` | `prod_api` | `prod_e2e` | `prod_visual`.
 
 **Visual baselines (Linux SSOT):** [`.github/workflows/reference_visual_baselines.yml`](.github/workflows/reference_visual_baselines.yml).
 

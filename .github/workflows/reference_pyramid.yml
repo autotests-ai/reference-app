@@ -2,9 +2,9 @@
 #
 # | Trigger              | Job           | Slices                                      |
 # |----------------------|---------------|---------------------------------------------|
-# | push / pull_request  | local-pyramid | unit + api + integration + component + e2e + visual |
-# | workflow_run deploy  | prod-gate     | api + e2e smoke (Selenoid)                  |
-# | workflow_dispatch    | pick target   | local_full | prod_api | prod_e2e | prod_visual |
+# | push / pull_request  | ci-pyramid    | unit + api + integration + component + e2e + visual |
+# | workflow_run deploy  | prod-pyramid  | api + e2e smoke (Selenoid)                  |
+# | workflow_dispatch    | pick target   | ci_pyramid | prod_api | prod_e2e | prod_visual |
 #
 # Visual baseline refresh (Linux PNG SSOT): reference_visual_baselines.yml
 
@@ -23,10 +23,10 @@ on:
       target:
         description: "Pyramid slice"
         required: true
-        default: local_full
+        default: ci_pyramid
         type: choice
         options:
-          - local_full
+          - ci_pyramid
           - prod_api
           - prod_e2e
           - prod_visual
@@ -47,12 +47,12 @@ permissions:
   contents: write
 
 jobs:
-  local-pyramid:
-    name: Local pyramid
+  ci-pyramid:
+    name: CI pyramid
     if: >-
       github.event_name == 'push' ||
       github.event_name == 'pull_request' ||
-      (github.event_name == 'workflow_dispatch' && inputs.target == 'local_full')
+      (github.event_name == 'workflow_dispatch' && inputs.target == 'ci_pyramid')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults:
@@ -131,7 +131,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Pyramid unit (tests)
-        run: ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_local -DallureReportMode=none
+        run: ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_ci -DallureReportMode=none
 
       - name: Pyramid unit coverage summary
         if: always()
@@ -165,13 +165,13 @@ jobs:
           if-no-files-found: ignore
 
       - name: Pyramid api
-        run: ./gradlew testApi -DpyramidStand=reference_local -DallureReportMode=none
+        run: ./gradlew testApi -DpyramidStand=reference_ci -DallureReportMode=none
 
       - name: Pyramid integration
-        run: ./gradlew testIntegration -DpyramidStand=reference_local -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testIntegration -DpyramidStand=reference_ci -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid e2e smoke
-        run: ./gradlew testE2e -Denv=reference_local_e2e -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none -Dheadless=true
 
       - name: Start component preview
         working-directory: preview
@@ -185,22 +185,22 @@ jobs:
           exit 1
 
       - name: Pyramid component
-        run: ./gradlew testComponent -DpyramidStand=reference_local -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid visual
-        run: ./gradlew testVisual -Denv=reference_local_visual -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testVisual -Denv=reference_ci_visual -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid summary
         if: always()
         run: |
           {
-            echo "## reference local pyramid"
+            echo "## reference CI pyramid"
             echo "- backend unit + JaCoCo + pyramid unit JaCoCo + testApi + testIntegration + testComponent + testE2e + testVisual"
             echo "- baselines SSOT: Linux headless Chrome 148 (\`reference_visual_baselines.yml\`)"
           } >> "$GITHUB_STEP_SUMMARY"
 
-  prod-gate:
-    name: Prod gate
+  prod-pyramid:
+    name: Prod pyramid
     if: >-
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
       (github.event_name == 'workflow_dispatch' &&
@@ -217,7 +217,7 @@ jobs:
       REPORT_ID: ${{ github.run_id }}
       TEST_CLASS: ${{ github.event.inputs.test_class || '' }}
       TEST_CASE_ID: ${{ github.event.inputs.test_case_id || '' }}
-      PROD_TARGET: ${{ github.event_name == 'workflow_run' && 'prod_gate' || github.event.inputs.target }}
+      PROD_TARGET: ${{ github.event_name == 'workflow_run' && 'prod_pyramid' || github.event.inputs.target }}
 
     steps:
       - name: Checkout
@@ -289,7 +289,7 @@ jobs:
           }
 
           case "${PROD_TARGET}" in
-            prod_gate)
+            prod_pyramid)
               run_slice "prod api" testApi "${COMMON[@]}" -DpyramidStand=reference_prod
               run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -DpyramidStand=reference_prod
               ;;
@@ -330,7 +330,7 @@ jobs:
           if [ -n "$TEST_CASE_ID" ]; then
             export ALLURE_LAUNCH_NAME="TestOps #${TEST_CASE_ID} — ${GITHUB_REPOSITORY} #${GITHUB_RUN_NUMBER}"
           else
-            export ALLURE_LAUNCH_NAME="Prod gate — ${GITHUB_REPOSITORY} #${GITHUB_RUN_NUMBER}"
+            export ALLURE_LAUNCH_NAME="Prod pyramid — ${GITHUB_REPOSITORY} #${GITHUB_RUN_NUMBER}"
           fi
           allurectl upload build/allure-results 2>&1 | tee allurectl-upload.log
           UPLOAD_EXIT=${PIPESTATUS[0]}
@@ -423,7 +423,7 @@ jobs:
         if: always()
         run: |
           REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/${REPORT_ID}/awesome/index.html"
-          echo "## reference prod gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "## reference prod pyramid" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "- Target: \`${PROD_TARGET}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "- [GitHub Actions run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> "$GITHUB_STEP_SUMMARY"

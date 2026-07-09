@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate reference_local_* env profiles for reference-app tests/."""
+"""Generate reference_ci_* and reference_prod_* env profiles for reference-app tests/."""
 
 from __future__ import annotations
 
@@ -50,7 +50,7 @@ ATTACH_OFF = {
 }
 
 STANDS = {
-    "reference_local": {
+    "reference_ci": {
         "baseUrl": "http://localhost:8080/",
         "apiBaseUrl": "http://localhost:8080/",
         "remoteUrl": "",

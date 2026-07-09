@@ -31,7 +31,7 @@ buildscript {
         junitVersion        = '5.11.4'
         slf4jVersion        = '2.0.17'
         testParallelForks   = 1
-        defaultEnv          = 'reference_local_e2e'
+        defaultEnv          = 'reference_ci_e2e'
     }
 }
 
@@ -88,7 +88,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-def pyramidStand = System.getProperty('pyramidStand', 'reference_local')
+def pyramidStand = System.getProperty('pyramidStand', 'reference_ci')
 def healthCheckEnvRef = [env: System.getProperty('env', defaultEnv)]
 
 def resolveConfiguredBaseUrl = { String env ->
