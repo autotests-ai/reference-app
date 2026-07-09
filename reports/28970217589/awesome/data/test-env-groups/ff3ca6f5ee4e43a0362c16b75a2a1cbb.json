@@ -1,1 +1,0 @@
-{"id":"ff3ca6f5ee4e43a0362c16b75a2a1cbb","fullName":"tests.api.ReferenceApiTests.healthEndpointReturnsOk","name":"GET /api/health returns ok","status":"passed","testResultsByEnv":{"default":"ab3e3a94e8eacd3b2752212f96ed214f"}}
