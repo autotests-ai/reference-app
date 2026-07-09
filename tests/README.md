@@ -12,6 +12,18 @@ Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 | **CI job** | `ci-pyramid` | full pyramid on `reference_ci` (push/PR or `workflow_dispatch` → `ci_pyramid`) |
 | **CI job** | `prod-pyramid` | post-deploy smoke on `reference_prod` (or manual `prod_*` slices) |
 
+## Remote e2e (canon)
+
+Selenide `WebDriver` — **thread-local**. JUnit parallel (даже `parallelism=1`) ротирует worker threads → `SessionNotCreatedException` на Selenoid.
+
+| Слой | Правило |
+|------|---------|
+| `junit-platform.properties` | `junit.jupiter.execution.parallel.enabled=false` |
+| `*_prod_e2e` | `closeBrowserAfterEach=true` (`gen-env-configs.py`) |
+| `prod-pyramid` workflow | `testE2e` + `-Djunit.jupiter.execution.parallel.enabled=false` |
+
+Локальная отладка с parallelism — rule `e2e-debug-run` (`-D` override), не менять SSOT properties.
+
 ## Prerequisites
 
 - JDK 21
