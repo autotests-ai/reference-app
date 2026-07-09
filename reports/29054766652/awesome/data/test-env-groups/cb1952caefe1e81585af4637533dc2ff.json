@@ -1,1 +1,0 @@
-{"id":"cb1952caefe1e81585af4637533dc2ff","fullName":"tests.api.AuthApiTests.registerDuplicateUsername","name":"POST /api/auth/register rejects duplicate username","status":"passed","testResultsByEnv":{"default":"f6272cee2f23199dc8199c77f31635b5"}}

@@ -1,1 +1,0 @@
-{"id":"993b23e101a61a43056d302f2f1d7584","fullName":"tests.api.AuthApiTests.logoutReturnsNoContent","name":"POST /api/auth/logout returns 204","status":"passed","testResultsByEnv":{"default":"e80f8345c6f7aa7723c334e1b1b47b9d"}}
