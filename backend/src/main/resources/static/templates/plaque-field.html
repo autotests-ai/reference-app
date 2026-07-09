@@ -1,6 +1,7 @@
 <!-- Full-width row — label column left, options right (components.html #plaque-field) -->
 <label class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-select">
   <span class="plaque-field__label">configStand</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <select class="plaque-field__control">
     <option>local_http</option>
     <option>prod</option>
@@ -9,6 +10,7 @@
 
 <div class="plaque-field plaque-field--divided plaque-field--stretch" data-testid="plaque-field-stretch-seg">
   <span class="plaque-field__label">headless</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <div class="plaque-field-seg-track plaque-field__control">
     <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
       <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
@@ -20,6 +22,7 @@
 <!-- Param id label + select -->
 <label class="plaque-field plaque-field--divided" data-testid="plaque-field-select">
   <span class="plaque-field__label">configStand</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <select class="plaque-field__control">
     <option>local_http</option>
     <option>prod</option>
@@ -29,24 +32,28 @@
 <!-- Human caption (not param id) + text input -->
 <label class="plaque-field plaque-field--divided" data-testid="plaque-field-caption-input">
   <span class="plaque-field__text">Метка бенчмарка</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
 </label>
 
 <!-- Param id label + text input -->
 <label class="plaque-field plaque-field--divided" data-testid="plaque-field-text">
   <span class="plaque-field__label">benchmarkLabel</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <input type="text" class="plaque-field__control" value="smoke-local" placeholder="label">
 </label>
 
 <!-- Read-only value (not an input) -->
 <div class="plaque-field plaque-field--divided" data-testid="plaque-field-value">
   <span class="plaque-field__label">testSuite</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <span class="plaque-field__value">login</span>
 </div>
 
 <!-- 2-option seg inside divided plaque — канон boolean true/false и не-boolean 2-opt -->
 <div class="plaque-field plaque-field--divided" data-testid="plaque-field-seg">
   <span class="plaque-field__label">headless</span>
+  <span class="plaque-divider" aria-hidden="true"></span>
   <div class="plaque-field-seg-track plaque-field__control">
     <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
       <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>

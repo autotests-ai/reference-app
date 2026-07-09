@@ -1,0 +1,170 @@
+@import url("../tokens.css");
+@import url("../plaque-field.css");
+@import url("../panel.css");
+@import url("field-variants.css");
+
+/* Plaque divider variants — exploration only. Overrides beat production stack CSS. */
+
+.plaque-divider-variants__intro {
+  margin-bottom: var(--space-4);
+}
+
+.plaque-divider-variants__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.plaque-divider-variants__section {
+  scroll-margin-top: var(--space-6);
+}
+
+.plaque-divider-variants__section-title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.plaque-divider-variants__section-desc {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.plaque-divider-variants__grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 959px) {
+  .plaque-divider-variants__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.plaque-divider-variants__variant {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  min-width: 0;
+}
+
+.plaque-divider-variants__variant--recommended {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--color-surface-soft));
+}
+
+.plaque-divider-variants__variant-id {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.plaque-divider-variants__variant-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.plaque-divider-variants__variant-desc {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.plaque-divider-variants__meta {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.plaque-divider-variants__panel .panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.plaque-divider-variants__panel-desc {
+  margin: 0 0 var(--space-1);
+}
+
+.plaque-divider-variants__problems {
+  margin: 0;
+  padding-left: var(--space-4);
+  line-height: 1.5;
+}
+
+.plaque-divider-variants__problems li + li {
+  margin-top: var(--space-2);
+}
+
+/* Demo width: mimic Build card left column in terminal layout (~596px panel → cell ~222px) */
+.plaque-divider-variants__demo {
+  width: 100%;
+  max-width: 22rem;
+  min-width: 0;
+}
+
+.plaque-divider-variants__demo--panel {
+  max-width: 36rem;
+}
+
+/* Force label-column strategy on ALL divided fields in the demo stack */
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided,
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided:has(.plaque-field-seg-track),
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided:has(> :is(input, select).plaque-field__control),
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided,
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(.plaque-field-seg-track),
+.pdv [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided:has(> :is(input, select).plaque-field__control) {
+  display: grid !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  column-gap: 0 !important;
+}
+
+/* A — hug label (max-content): zigzag by design */
+.pdv--a-hug [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided,
+.pdv--a-hug [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided {
+  grid-template-columns: max-content 1px minmax(0, 1fr) !important;
+}
+
+/* B — current production: fixed 7.5rem */
+.pdv--b-fixed [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided,
+.pdv--b-fixed [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided {
+  grid-template-columns: var(--plaque-label-width) 1px minmax(0, 1fr) !important;
+}
+
+/* C — tighter: 5.5rem */
+.pdv--c-tight [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided,
+.pdv--c-tight [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided {
+  grid-template-columns: 5.5rem 1px minmax(0, 1fr) !important;
+}
+
+/* D — wide: 10rem */
+.pdv--d-wide [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell .plaque-field--divided,
+.pdv--d-wide [class*="plaque-field-grid-stack"] .plaque-field-grid--mixed > .plaque-field-grid__cell:first-child .plaque-field--divided {
+  grid-template-columns: var(--plaque-label-width-wide) 1px minmax(0, 1fr) !important;
+}
+
+.pdv .plaque-field--divided:has(.plaque-field-seg-track) {
+  padding-right: var(--space-2);
+}
+
+.pdv .plaque-field--divided > .plaque-field-seg-track {
+  grid-column: 3;
+  justify-self: end;
+  width: auto;
+}
+

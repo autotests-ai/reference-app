@@ -8,7 +8,7 @@
   margin-bottom: var(--space-4);
 }
 
-/* Empty main keeps 1fr slot on desktop; hidden on mobile stack */
+/* Empty main keeps 2fr slot on desktop; hidden on mobile stack */
 .configurator-output-only__main {
   min-height: 0;
   margin: 0;
@@ -23,7 +23,7 @@
 
 @media (min-width: 769px) {
   .configurator-output-only__workspace {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     align-items: stretch;
   }
 }

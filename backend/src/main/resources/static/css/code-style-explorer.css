@@ -1,0 +1,57 @@
+/* Code style explorer — debug page for ADR 002 axes */
+
+.code-style-explorer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.code-style-explorer__workspace .e2e-builder__params-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-content: start;
+}
+
+@media (max-width: 768px) {
+  .code-style-explorer__workspace .e2e-builder__params-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.code-style-explorer__sample-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.code-style-explorer__sample-title {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.code-style-explorer__sample-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.code-style-explorer__meta-item code {
+  font-size: 0.95em;
+}
+
+.code-style-explorer__terminal .panel__code {
+  min-height: 280px;
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+}

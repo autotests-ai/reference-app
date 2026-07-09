@@ -30,114 +30,17 @@
   background: var(--color-surface);
 }
 
-/* Workspace — 2×1 with right sticky output (≥769px) → 1×1 (narrow) */
-.e2e-builder__workspace {
-  align-items: start;
-}
-
-.e2e-builder__main,
-.e2e-builder__aside {
+/* Group card — plaque stacks inside wide groups */
+.e2e-builder__group .plaque-field-grid-stack,
+.e2e-builder__group .plaque-field-panel-stack {
   min-width: 0;
+  width: 100%;
 }
 
-/* Params — 2-col flow inside main */
-.e2e-builder__params-grid {
-  display: grid;
-  gap: var(--space-3);
-  align-items: stretch;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.e2e-builder__params-grid > .e2e-builder__group {
+.e2e-builder__group .plaque-field-grid-stack .configurator__param,
+.e2e-builder__group .plaque-field-panel-stack .configurator__param,
+.e2e-builder__group .plaque-field-grid__cell > .plaque-field {
   min-width: 0;
-}
-
-/* Dense groups (5+ params) — full-width card + 2-col param grid inside */
-.e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) {
-  grid-column: span 2;
-}
-
-.e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) .panel__body {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2) var(--space-3);
-}
-
-/* Tablet+: 2×1 — params 1/3 left, output 2/3 right sticky (prompt-builder parity) */
-@media (min-width: 769px) {
-  .e2e-builder__workspace {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    align-items: stretch;
-  }
-
-  .e2e-builder__main {
-    align-self: start;
-  }
-
-  .e2e-builder__aside {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .e2e-builder__output-panel {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .e2e-builder__aside .e2e-builder__output-sticky {
-    flex: 1 1 auto;
-    min-height: 0;
-  }
-
-  .panel__code {
-    max-height: none;
-    min-height: 240px;
-  }
-
-  .panel--tall .panel__code {
-    max-height: none;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1279px) {
-  .e2e-builder__params-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) {
-    grid-column: span 1;
-  }
-
-  .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) .panel__body {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Narrow: 1×1 — single column stack */
-@media (max-width: 768px) {
-  .e2e-builder__params-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) {
-    grid-column: span 1;
-  }
-
-  .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) .panel__body {
-    grid-template-columns: 1fr;
-  }
-
-  .panel__code {
-    min-height: 160px;
-    max-height: min(40vh, 360px);
-  }
-
-  .panel--tall .panel__code {
-    max-height: min(52vh, 480px);
-  }
 }
 
 .e2e-builder__group {
@@ -157,25 +60,9 @@
   margin: 0 0 var(--space-1);
 }
 
-/* Param — plaque shell or option list */
-.e2e-builder__param {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  align-items: stretch;
-  min-width: 0;
-}
-
-.e2e-builder__param--hidden {
+/* Page-specific param modifiers (wrapper in configurator.css) */
+.configurator__param--hidden {
   display: none;
-}
-
-.e2e-builder__param-caption {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  line-height: 1.35;
-  color: var(--color-text-muted);
 }
 
 .e2e-builder__param-warn {
@@ -184,50 +71,13 @@
   color: var(--color-warning);
 }
 
-.e2e-builder__param .plaque-field,
-.e2e-builder__param > label.plaque-field {
-  width: 100%;
-}
-
-.e2e-builder__param--tagstrip {
-  gap: var(--space-1);
-}
-
-.e2e-builder__param--tagstrip .plaque-field-tagstrip {
-  width: 100%;
-}
-
-.e2e-builder__param .plaque-field-list {
-  width: 100%;
-}
-
-.e2e-builder__param .plaque-field-list.plaque-field-list--dense {
-  gap: var(--space-1);
-}
-
-/* Output panel */
+/* Output panel — page-specific hooks only; layout chain in configurator.css */
 .e2e-builder__output-panel {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-3);
 }
 
 .e2e-builder__output-sticky {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-3);
-  min-height: 0;
-}
-
-.e2e-builder__output-sticky .panel {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-@media (min-width: 769px) {
-  .e2e-builder__output-sticky .panel--sticky {
-    z-index: 1;
-  }
 }
 
 .e2e-builder__output-foot {
@@ -239,6 +89,12 @@
 
 .e2e-builder__hash-badge {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 20px;
+  padding: 0 var(--space-2);
+  line-height: 1;
   border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-primary) 18%, transparent);
@@ -249,7 +105,7 @@
 }
 
 /* Narrow panel: tabs + badge + actions need ~560px — hide badge before it clips */
-.panel--terminal:has(.e2e-builder__terminal-tabs) {
+.panel--terminal:has(.panel__trail > .tabs) {
   container-type: inline-size;
 }
 
@@ -263,53 +119,6 @@
   .e2e-builder__hash-badge {
     display: none;
   }
-}
-
-.e2e-builder__terminal-tabs {
-  display: flex;
-  flex-shrink: 0;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: var(--space-1);
-  min-width: 0;
-  margin-left: 50px;
-}
-
-.e2e-builder__terminal-tabs .tab,
-.e2e-builder__hash-badge {
-  display: inline-flex;
-  align-items: center;
-  box-sizing: border-box;
-  height: 20px;
-  padding: 0 var(--space-2);
-  line-height: 1;
-}
-
-.e2e-builder__terminal-tabs .tab {
-  flex: 0 0 auto;
-  min-width: 0;
-  border-radius: 999px;
-  border-color: rgba(255, 255, 255, 0.12);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.e2e-builder__terminal-tabs .tab:hover:not(:disabled) {
-  border-color: rgba(255, 255, 255, 0.28);
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.e2e-builder__terminal-tabs .tab--active {
-  border-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
-  background: transparent;
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.e2e-builder__terminal-tabs .tab:focus-visible {
-  outline-color: rgba(255, 255, 255, 0.65);
 }
 
 .e2e-builder__status {

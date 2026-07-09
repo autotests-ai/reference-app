@@ -106,8 +106,7 @@
     grid-template-columns: 1fr;
   }
 
-  .configurator-options__panel-grid
-    .e2e-builder__group:has(.panel__body > :nth-child(5 of .e2e-builder__param)) {
+  .configurator-options__panel-grid .configurator__group--dense {
     grid-column: span 1;
   }
 }

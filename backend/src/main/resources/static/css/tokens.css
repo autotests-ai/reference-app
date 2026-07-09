@@ -13,6 +13,14 @@
   --color-border: rgba(255, 255, 255, 0.1);
   --color-brand-logo: #ffffff;
 
+  /* Testing pyramid @Layer — palette A (cool → warm) */
+  --layer-unit: #64748b;
+  --layer-component: #3b82f6;
+  --layer-integration: #06b6d4;
+  --layer-api: #8b5cf6;
+  --layer-e2e: #f59e0b;
+  --layer-manual: #f97316;
+
   /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
@@ -31,13 +39,15 @@
   /* Component sizes — canonical; see docs/component-sizes.md */
   --control-height-md: 36px;
   --plaque-control-height: 32px;
-  --plaque-label-width: 7.5rem;
+  --plaque-label-width: 5.5rem;
   --plaque-label-width-wide: 10rem;
+  --plaque-mixed-label-cqi: 44cqi;
   --plaque-seg-gap: 5px;
   --plaque-chevron-size: 10px;
   --plaque-select-text-gap: 17px;
   --plaque-chevron-inset: calc(var(--space-2) + var(--plaque-seg-gap));
   --plaque-select-trail: calc(var(--plaque-chevron-inset) + var(--plaque-select-text-gap));
+  --plaque-divider-height: calc(var(--font-size-sm) * 1.35);
   --plaque-chevron-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23f1f5f9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --icon-size-md: 18px;
   --input-min-width: 200px;
@@ -91,5 +101,11 @@ html.theme-light {
   --color-primary-on: #f1f5f9;
   --color-warning: #b45309;
   --color-brand-logo: #1c1917;
+  --layer-unit: #94a3b8;
+  --layer-component: #2563eb;
+  --layer-integration: #0891b2;
+  --layer-api: #7c3aed;
+  --layer-e2e: #d97706;
+  --layer-manual: #ea580c;
   --hover-bg: rgba(28, 25, 23, 0.06);
 }

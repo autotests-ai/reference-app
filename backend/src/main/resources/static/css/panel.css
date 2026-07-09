@@ -152,3 +152,46 @@
   padding: var(--space-2) var(--space-3);
   border-top: 1px solid var(--panel-border);
 }
+
+/* Terminal panel — output format tabs in bar trail (e2e-builder) */
+.panel--terminal .panel__trail > .tabs {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.panel--terminal .panel__trail > .tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 20px;
+  padding: 0 var(--space-2);
+  line-height: 1;
+  flex: 0 0 auto;
+  min-width: 0;
+  border-radius: 999px;
+  border-color: rgba(255, 255, 255, 0.12);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.panel--terminal .panel__trail > .tabs .tab:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.panel--terminal .panel__trail > .tabs .tab--active {
+  border-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.panel--terminal .panel__trail > .tabs .tab:focus-visible {
+  outline-color: rgba(255, 255, 255, 0.65);
+}

@@ -39,7 +39,7 @@
   /* Component sizes — canonical; see docs/component-sizes.md */
   --control-height-md: 36px;
   --plaque-control-height: 32px;
-  --plaque-label-width: 7.5rem;
+  --plaque-label-width: 5.5rem;
   --plaque-label-width-wide: 10rem;
   --plaque-mixed-label-cqi: 44cqi;
   --plaque-seg-gap: 5px;

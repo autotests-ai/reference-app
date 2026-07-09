@@ -1,0 +1,14 @@
+@import url("tokens.css");
+
+/* Plaque divider — vertical rule between label and control (Login ref) */
+
+.plaque-divider {
+  flex-shrink: 0;
+  align-self: center;
+  width: 1px;
+  height: var(--plaque-divider-height, calc(var(--font-size-sm) * 1.35));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-border);
+}

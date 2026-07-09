@@ -1,8 +1,9 @@
-<!-- 3-col dense grid (default) — boolean / 2-opt seg fields -->
+<!-- 3-col dense grid (container queries) — catalog demo; configurator canon → --mixed below -->
 <div class="plaque-field-grid" data-testid="plaque-field-grid">
   <div class="plaque-field-grid__cell">
     <div class="plaque-field plaque-field--divided">
       <span class="plaque-field__label" title="logToConsole">logToConsole</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
       <div class="plaque-field-seg-track plaque-field__control">
         <div class="plaque-field-seg" role="radiogroup" aria-label="logToConsole">
           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
@@ -14,6 +15,7 @@
   <div class="plaque-field-grid__cell">
     <div class="plaque-field plaque-field--divided">
       <span class="plaque-field__label" title="selenideLogToConsole">selenideLogToConsole</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
       <div class="plaque-field-seg-track plaque-field__control">
         <div class="plaque-field-seg" role="radiogroup" aria-label="selenideLogToConsole">
           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
@@ -25,6 +27,7 @@
   <div class="plaque-field-grid__cell">
     <div class="plaque-field plaque-field--divided">
       <span class="plaque-field__label" title="headless">headless</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
       <div class="plaque-field-seg-track plaque-field__control">
         <div class="plaque-field-seg" role="radiogroup" aria-label="headless">
           <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" aria-pressed="true">true</button>
@@ -35,16 +38,121 @@
   </div>
 </div>
 
-<!-- 4-col variant -->
+<!-- 4-cell batch (legacy --4) — prefer --mixed for configurator -->
 <div class="plaque-field-grid plaque-field-grid--4" data-testid="plaque-field-grid-4">
   <!-- same cell pattern × 4–8 -->
+</div>
+
+<!-- Remote hub — mixed md (канон panel group remote): enableVnc / enableVideo / enableHar -->
+<div class="plaque-field-grid plaque-field-grid--mixed" data-testid="plaque-field-grid-remote-hub" role="group" aria-label="Remote hub flags">
+  <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+    <div class="plaque-field plaque-field--divided" data-param-id="enableVnc" data-testid="e2e-seg-enableVnc">
+      <span class="plaque-field__label" title="enableVnc">enableVnc</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
+          <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+    <div class="plaque-field plaque-field--divided" data-param-id="enableVideo" data-testid="e2e-seg-enableVideo">
+      <span class="plaque-field__label" title="enableVideo">enableVideo</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="enableVideo">
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="true" aria-pressed="true">true</button>
+          <button type="button" class="plaque-field-seg__btn" data-value="false" aria-pressed="false">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plaque-field-grid__cell plaque-field-grid__cell--md">
+    <div class="plaque-field plaque-field--divided" data-param-id="enableHar" data-testid="e2e-seg-enableHar">
+      <span class="plaque-field__label" title="enableHar">enableHar</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
+      <div class="plaque-field-seg-track plaque-field__control">
+        <div class="plaque-field-seg" role="radiogroup" aria-label="enableHar">
+          <button type="button" class="plaque-field-seg__btn" data-value="true" aria-pressed="false">true</button>
+          <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="false" aria-pressed="true">false</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Build panel — ratio-221 stack (канон configurator-option-presets#build): 2 rows × 2/2/1, divider sync via stack -->
+<div class="plaque-field-grid-stack plaque-field-grid-stack--ratio-221" data-testid="plaque-field-grid-build-stack">
+  <div class="plaque-field-grid plaque-field-grid--mixed plaque-field-grid--ratio-221" role="group" aria-label="OS, language and java version">
+    <div class="plaque-field-grid__cell">
+      <label class="plaque-field plaque-field--divided plaque-field--stretch" data-param-id="buildOs">
+        <span class="plaque-field__label">OS</span>
+        <span class="plaque-divider" aria-hidden="true"></span>
+        <select class="plaque-field__control">
+          <option value="linux" selected>linux</option>
+        </select>
+      </label>
+    </div>
+    <div class="plaque-field-grid__cell">
+      <label class="plaque-field plaque-field--divided plaque-field--stretch" data-param-id="buildLanguage">
+        <span class="plaque-field__label">Language</span>
+        <span class="plaque-divider" aria-hidden="true"></span>
+        <select class="plaque-field__control">
+          <option value="java" selected>java</option>
+        </select>
+      </label>
+    </div>
+    <div class="plaque-field-grid__cell">
+      <label class="plaque-field plaque-field--stretch" data-param-id="javaVersion" aria-label="javaVersion">
+        <select class="plaque-field__control" aria-label="javaVersion">
+          <option value="21" selected>21</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="plaque-field-grid plaque-field-grid--mixed plaque-field-grid--ratio-221" role="group" aria-label="Build tool chain">
+    <div class="plaque-field-grid__cell">
+      <div class="plaque-field plaque-field--divided" data-param-id="buildTool">
+        <span class="plaque-field__label" title="buildTool">buildTool</span>
+        <span class="plaque-divider" aria-hidden="true"></span>
+        <div class="plaque-field-seg-track plaque-field__control">
+          <div class="plaque-field-seg" role="radiogroup" aria-label="buildTool">
+            <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="gradle" aria-pressed="true">gradle</button>
+            <button type="button" class="plaque-field-seg__btn" data-value="maven" aria-pressed="false" title="Apache Maven">maven</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="plaque-field-grid__cell">
+      <div class="plaque-field plaque-field--divided" data-param-id="gradleBin">
+        <span class="plaque-field__label" title="gradleBin">gradleBin</span>
+        <span class="plaque-divider" aria-hidden="true"></span>
+        <div class="plaque-field-seg-track plaque-field__control">
+          <div class="plaque-field-seg" role="radiogroup" aria-label="gradleBin">
+            <button type="button" class="plaque-field-seg__btn" data-value="gradle" aria-pressed="false" title="system gradle в PATH">gradle</button>
+            <button type="button" class="plaque-field-seg__btn plaque-field-seg__btn--on" data-value="gradlew" aria-pressed="true" title="./gradlew (wrapper)">gradlew</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="plaque-field-grid__cell">
+      <label class="plaque-field plaque-field--stretch" data-param-id="gradleVersion" aria-label="gradleVersion">
+        <select class="plaque-field__control" aria-label="gradleVersion">
+          <option value="9.6.0" selected>9.6.0</option>
+        </select>
+      </label>
+    </div>
+  </div>
 </div>
 
 <!-- Mixed layout — 4 sm + 3 md + 2 lg (12-col); shell 32px -->
 <div class="plaque-field-grid plaque-field-grid--mixed" data-testid="plaque-field-grid-mixed">
   <div class="plaque-field-grid__cell plaque-field-grid__cell--sm">
     <div class="plaque-field plaque-field--divided">
-      <span class="plaque-field__label" title="enableVnc">vnc</span>
+      <span class="plaque-field__label" title="enableVnc">enableVnc</span>
+      <span class="plaque-divider" aria-hidden="true"></span>
       <div class="plaque-field-seg-track plaque-field__control">
         <div class="plaque-field-seg" role="radiogroup" aria-label="enableVnc">
           <button type="button" class="plaque-field-seg__btn" aria-pressed="false">true</button>

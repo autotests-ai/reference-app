@@ -40,7 +40,7 @@ const I18N = {
     qualityGatePassed: "Quality gate passed",
     qualityGateFailed: "Quality gate failed",
     metricsNote:
-      "Charts load from analytics-index.json after ./gradlew allureReport or test with allure results. Native dashboard in iframe below.",
+      "Tests table from analytics-index.json after ./gradlew allureReport. Charts and pyramid — native Allure 3 dashboard in iframe below.",
     liveBadge: "Live",
     liveWaiting: "Waiting for run…",
     reportMissing:
@@ -85,7 +85,7 @@ const I18N = {
     qualityGatePassed: "Quality gate пройден",
     qualityGateFailed: "Quality gate не пройден",
     metricsNote:
-      "Графики из analytics-index.json после ./gradlew allureReport или test с allure-results. Нативный дашборд — в iframe ниже.",
+      "Таблица тестов из analytics-index.json после ./gradlew allureReport. Графики и пирамида — в нативном дашборде Allure 3 (iframe ниже).",
     liveBadge: "Live",
     liveWaiting: "Ожидание прогона…",
     reportMissing:
@@ -112,7 +112,6 @@ const ANALYTICS_CANDIDATES = [
 const LIVE_POLL_MS_DEFAULT = 500;
 const LIVE_POLL_MS_MIN = 100;
 const LIVE_POLL_MS_MAX = 5000;
-const CHART_ANIM_MS = 350;
 const TESTS_PAGE_SIZES = [10, 25, 50];
 const STATUS_SORT_WEIGHT = {
   failed: 0,
@@ -139,11 +138,6 @@ const linkedFiltersState = {
 let testsTableControlsWired = false;
 let linkedFiltersWired = false;
 
-let passRateChart = null;
-let durationChart = null;
-let failureTaxonomyChart = null;
-let testingPyramidChart = null;
-let epicBreakdownChart = null;
 let lastAnalyticsIndex = null;
 let livePollTimer = null;
 let livePollingActive = false;
@@ -156,10 +150,6 @@ function getLivePollMs() {
   const parsed = Number(raw);
   if (!Number.isFinite(parsed)) return LIVE_POLL_MS_DEFAULT;
   return Math.min(LIVE_POLL_MS_MAX, Math.max(LIVE_POLL_MS_MIN, Math.round(parsed)));
-}
-
-function getChartAnimMs() {
-  return Math.min(CHART_ANIM_MS, Math.max(0, getLivePollMs() - 50));
 }
 
 function isLiveQueryMode() {
@@ -197,15 +187,6 @@ function updateLiveBadge(index) {
   badge.textContent = t("liveBadge");
 }
 
-function destroyMetricCharts() {
-  passRateChart?.destroy();
-  passRateChart = null;
-  durationChart?.destroy();
-  durationChart = null;
-  failureTaxonomyChart?.destroy();
-  failureTaxonomyChart = null;
-}
-
 function startLivePolling() {
   if (livePollTimer) return;
   livePollingActive = true;
@@ -226,16 +207,6 @@ function stopLivePolling() {
 function applyAnalyticsIndex(analyticsIndex, options = {}) {
   const { liveTick = false } = options;
   lastAnalyticsIndex = analyticsIndex;
-
-  if (liveTick && passRateChart) {
-    if (!updateMetricCharts(analyticsIndex)) initCharts(analyticsIndex);
-    if (!updateEpicBreakdown(analyticsIndex)) initEpicBreakdown(analyticsIndex);
-    if (!updateTestingPyramid(analyticsIndex)) initTestingPyramid(analyticsIndex);
-  } else {
-    initCharts(analyticsIndex);
-    initEpicBreakdown(analyticsIndex);
-    initTestingPyramid(analyticsIndex);
-  }
 
   initQualityGateCallout(analyticsIndex);
   initTestsTable(analyticsIndex, { incremental: liveTick });
@@ -310,46 +281,7 @@ function syncShellTheme() {
     AllureShell.applyDashboardTheme(frame, theme);
   }
 
-  updateChartThemes(theme);
-  initEpicBreakdown(lastAnalyticsIndex);
-  initTestingPyramid(lastAnalyticsIndex);
   initTestsTable(lastAnalyticsIndex);
-  updateChartFilterHighlights();
-}
-
-function updateChartThemes(theme = getSiteTheme()) {
-  const palette = getChartTheme(theme);
-  if (passRateChart) {
-    passRateChart.update(
-      {
-        chart: { backgroundColor: palette.backgroundColor },
-        legend: { itemStyle: { color: palette.textColor } },
-      },
-      false
-    );
-  }
-  if (durationChart) {
-    durationChart.update(
-      {
-        chart: { backgroundColor: palette.backgroundColor },
-        xAxis: { labels: { style: { color: palette.textColor } } },
-        yAxis: {
-          gridLineColor: palette.gridColor,
-          labels: { style: { color: palette.textColor } },
-        },
-      },
-      false
-    );
-  }
-  if (failureTaxonomyChart) {
-    failureTaxonomyChart.update(
-      {
-        chart: { backgroundColor: palette.backgroundColor },
-        legend: { itemStyle: { color: palette.textColor } },
-      },
-      false
-    );
-  }
 }
 
 async function probeUrl(path) {
@@ -748,13 +680,22 @@ function toggleTestsTableSort(sortKey) {
   initTestsTable(lastAnalyticsIndex);
 }
 
-function statusFromChartName(name) {
-  const normalized = (name || "").toLowerCase();
-  if (normalized.startsWith("pass")) return "passed";
-  if (normalized.startsWith("fail")) return "failed";
-  if (normalized.startsWith("brok")) return "broken";
-  if (normalized.startsWith("skip")) return "skipped";
-  return "unknown";
+function toggleLinkedFilter(type, value) {
+  if (!value) return;
+  linkedFiltersState[type] = linkedFiltersState[type] === value ? null : value;
+  testsTableState.page = 1;
+  initTestsTable(lastAnalyticsIndex);
+  updateLinkedFilterUi();
+}
+
+function clearLinkedFilters() {
+  linkedFiltersState.status = null;
+  linkedFiltersState.category = null;
+  linkedFiltersState.layer = null;
+  linkedFiltersState.epic = null;
+  testsTableState.page = 1;
+  initTestsTable(lastAnalyticsIndex);
+  updateLinkedFilterUi();
 }
 
 function applyLinkedFilters(tests) {
@@ -771,26 +712,6 @@ function applyLinkedFilters(tests) {
     if (linkedFiltersState.epic && test.epic !== linkedFiltersState.epic) return false;
     return true;
   });
-}
-
-function toggleLinkedFilter(type, value) {
-  if (!value) return;
-  linkedFiltersState[type] = linkedFiltersState[type] === value ? null : value;
-  testsTableState.page = 1;
-  initTestsTable(lastAnalyticsIndex);
-  updateLinkedFilterUi();
-  updateChartFilterHighlights();
-}
-
-function clearLinkedFilters() {
-  linkedFiltersState.status = null;
-  linkedFiltersState.category = null;
-  linkedFiltersState.layer = null;
-  linkedFiltersState.epic = null;
-  testsTableState.page = 1;
-  initTestsTable(lastAnalyticsIndex);
-  updateLinkedFilterUi();
-  updateChartFilterHighlights();
 }
 
 function linkedFilterChipLabel(type, value) {
@@ -832,69 +753,10 @@ function updateLinkedFilterUi() {
     .join("");
 }
 
-function highlightPieSelection(chart, isSelected) {
-  if (!chart?.series?.[0]?.data) return;
-  chart.series[0].data.forEach((point) => {
-    const selected = isSelected(point);
-    point.update({ opacity: selected ? 1 : 0.35, sliced: selected }, false);
-  });
-  chart.redraw(false);
-}
-
-function highlightBarSelection(chart, selectedIndex) {
-  if (!chart?.series?.[0]?.data) return;
-  chart.series[0].data.forEach((point, index) => {
-    point.update({ opacity: selectedIndex === null || index === selectedIndex ? 1 : 0.35 }, false);
-  });
-  chart.redraw(false);
-}
-
-function updateChartFilterHighlights() {
-  highlightPieSelection(passRateChart, (point) => {
-    if (!linkedFiltersState.status) return true;
-    const status = point.options?.status || statusFromChartName(point.name);
-    return status === linkedFiltersState.status;
-  });
-
-  highlightPieSelection(failureTaxonomyChart, (point) => {
-    if (!linkedFiltersState.category) return true;
-    return point.name === linkedFiltersState.category;
-  });
-
-  if (testingPyramidChart) {
-    const categories = testingPyramidChart.xAxis?.[0]?.categories ?? [];
-    const selectedIndex = linkedFiltersState.layer
-      ? categories.indexOf(linkedFiltersState.layer)
-      : null;
-    highlightBarSelection(testingPyramidChart, selectedIndex >= 0 ? selectedIndex : null);
-  }
-
-  if (epicBreakdownChart) {
-    const categories = epicBreakdownChart.xAxis?.[0]?.categories ?? [];
-    const selectedIndex = linkedFiltersState.epic
-      ? categories.indexOf(linkedFiltersState.epic)
-      : null;
-    highlightBarSelection(epicBreakdownChart, selectedIndex >= 0 ? selectedIndex : null);
-  }
-}
-
 function wireLinkedFilters() {
   if (linkedFiltersWired) return;
   linkedFiltersWired = true;
   document.getElementById("tests-filters-clear")?.addEventListener("click", clearLinkedFilters);
-}
-
-function piePointClickHandler(filterType) {
-  return function onPointClick() {
-    if (filterType === "status") {
-      const status = this.options?.status || statusFromChartName(this.name);
-      toggleLinkedFilter("status", status);
-      return;
-    }
-    if (filterType === "category") {
-      toggleLinkedFilter("category", this.name);
-    }
-  };
 }
 
 function wireTestsTableControls() {
@@ -1038,302 +900,6 @@ function initQualityGateCallout(analyticsIndex) {
   renderQualityGateCallout(analyticsIndex?.qualityGate);
 }
 
-function pyramidBarColor(successRate, theme) {
-  if (successRate >= 100) return theme.pass;
-  if (successRate >= 90) return theme.accent;
-  if (successRate > 0) return theme.broken;
-  return theme.skip;
-}
-
-function initEpicBreakdown(chartData) {
-  const slot = document.getElementById("chart-epic-breakdown");
-  const tile = document.querySelector('[data-testid="chart-epic-breakdown"]');
-  if (!slot || !tile || !window.Highcharts) return;
-
-  const rows = (chartData?.charts?.epicBreakdown ?? []).filter((row) => row.y > 0);
-  if (!rows.length) {
-    tile.hidden = true;
-    epicBreakdownChart?.destroy();
-    epicBreakdownChart = null;
-    slot.innerHTML = "";
-    slot.classList.remove("chart-tile__empty");
-    return;
-  }
-
-  tile.hidden = false;
-  slot.classList.remove("chart-tile__empty");
-  epicBreakdownChart?.destroy();
-  epicBreakdownChart = null;
-  slot.innerHTML = "";
-  const theme = getChartTheme(getSiteTheme());
-  const categories = rows.map((row) => row.name);
-  const data = rows.map((row) => ({
-    y: row.y,
-    color: row.color || theme.accent,
-  }));
-
-  epicBreakdownChart = Highcharts.chart("chart-epic-breakdown", {
-    chart: {
-      type: "bar",
-      backgroundColor: theme.backgroundColor,
-      height: Math.max(120, rows.length * 28),
-      spacing: [8, 8, 4, 0],
-    },
-    credits: { enabled: false },
-    title: { text: null },
-    xAxis: {
-      categories,
-      labels: { style: { color: theme.textColor, fontSize: "11px" } },
-      lineColor: theme.gridColor,
-      tickLength: 0,
-    },
-    yAxis: {
-      min: 0,
-      allowDecimals: false,
-      gridLineColor: theme.gridColor,
-      title: { text: null },
-      labels: { style: { color: theme.textColor, fontSize: "10px" } },
-    },
-    legend: { enabled: false },
-    tooltip: {
-      pointFormat: "<b>{point.y}</b> tests",
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 3,
-        pointPadding: 0.12,
-        groupPadding: 0.08,
-        cursor: "pointer",
-        colorByPoint: true,
-        point: {
-          events: {
-            click: function onEpicBarClick() {
-              toggleLinkedFilter("epic", categories[this.index]);
-            },
-          },
-        },
-        dataLabels: {
-          enabled: true,
-          style: { color: theme.textColor, fontSize: "10px", textOutline: "none" },
-          format: "{y}",
-        },
-      },
-    },
-    series: [{ name: "Tests", data }],
-  });
-  updateChartFilterHighlights();
-}
-
-function initTestingPyramid(chartData) {
-  const slot = document.getElementById("chart-testing-pyramid");
-  const tile = document.querySelector('[data-testid="chart-testing-pyramid"]');
-  if (!slot || !tile || !window.Highcharts) return;
-
-  const rows = (chartData?.charts?.testingPyramid ?? []).filter((row) => row.testCount > 0);
-  if (!rows.length) {
-    tile.hidden = true;
-    testingPyramidChart?.destroy();
-    testingPyramidChart = null;
-    slot.innerHTML = "";
-    slot.classList.remove("chart-tile__empty");
-    return;
-  }
-
-  tile.hidden = false;
-  slot.classList.remove("chart-tile__empty");
-  testingPyramidChart?.destroy();
-  testingPyramidChart = null;
-  slot.innerHTML = "";
-  const theme = getChartTheme(getSiteTheme());
-  const categories = rows.map((row) => row.layer);
-  const data = rows.map((row) => ({
-    y: row.testCount,
-    successRate: row.successRate,
-    color: pyramidBarColor(row.successRate, theme),
-  }));
-
-  testingPyramidChart = Highcharts.chart("chart-testing-pyramid", {
-    chart: {
-      type: "bar",
-      backgroundColor: theme.backgroundColor,
-      height: Math.max(140, rows.length * 28),
-      spacing: [8, 8, 4, 0],
-    },
-    credits: { enabled: false },
-    title: { text: null },
-    xAxis: {
-      categories,
-      labels: { style: { color: theme.textColor, fontSize: "11px" } },
-      lineColor: theme.gridColor,
-      tickLength: 0,
-    },
-    yAxis: {
-      min: 0,
-      allowDecimals: false,
-      gridLineColor: theme.gridColor,
-      title: { text: null },
-      labels: { style: { color: theme.textColor, fontSize: "10px" } },
-    },
-    legend: { enabled: false },
-    tooltip: {
-      pointFormat: "<b>{point.y}</b> tests · {point.successRate}% passed",
-    },
-    plotOptions: {
-      bar: {
-        borderRadius: 3,
-        pointPadding: 0.12,
-        groupPadding: 0.08,
-        cursor: "pointer",
-        point: {
-          events: {
-            click: function onPyramidBarClick() {
-              toggleLinkedFilter("layer", categories[this.index]);
-            },
-          },
-        },
-        dataLabels: {
-          enabled: true,
-          style: { color: theme.textColor, fontSize: "10px", textOutline: "none" },
-          format: "{y}",
-        },
-      },
-    },
-    series: [{ name: "Tests", data }],
-  });
-  updateChartFilterHighlights();
-}
-
-function sampleChartData(theme) {
-  return {
-    passRate: [
-      { name: "Passed", y: 42, status: "passed", color: theme.pass },
-      { name: "Failed", y: 3, status: "failed", color: theme.fail },
-      { name: "Broken", y: 1, status: "broken", color: theme.broken },
-      { name: "Skipped", y: 2, status: "skipped", color: theme.skip },
-    ],
-    duration: {
-      categories: ["R1", "R2", "R3", "R4", "R5", "R6", "R7"],
-      valuesSec: [1.2, 0.95, 1.1, 0.88, 1.02, 1.15, 0.91],
-    },
-    failureTaxonomy: [
-      { name: "Таймауты", y: 2, color: theme.fail },
-      { name: "Ошибки проверок", y: 1, color: theme.broken },
-      { name: "Прочее", y: 1, color: theme.skip },
-    ],
-    epicBreakdown: [
-      { name: "One Page Form", y: 3, color: theme.accent },
-      { name: "Component Catalog", y: 2, color: theme.pass },
-    ],
-  };
-}
-
-function mapPassRateSeries(series, theme) {
-  const palette = {
-    passed: theme.pass,
-    failed: theme.fail,
-    broken: theme.broken,
-    skipped: theme.skip,
-    unknown: theme.skip,
-  };
-  return (series ?? []).map((point) => ({
-    ...point,
-    color: point.color || palette[point.status] || theme.accent,
-  }));
-}
-
-function resolveMetricChartPayload(chartData, theme) {
-  const fallback = sampleChartData(theme);
-  const passRate = mapPassRateSeries(chartData?.charts?.passRate, theme);
-  const duration = chartData?.charts?.duration ?? fallback.duration;
-  return {
-    passRateData: passRate.length ? passRate : fallback.passRate,
-    durationCategories: duration.categories?.length ? duration.categories : fallback.duration.categories,
-    durationValues: duration.valuesSec?.length ? duration.valuesSec : fallback.duration.valuesSec,
-    failureTaxonomy: chartData ? (chartData.charts?.failureTaxonomy ?? []) : fallback.failureTaxonomy,
-  };
-}
-
-function updateMetricCharts(chartData) {
-  if (!window.Highcharts || !passRateChart || !durationChart) return false;
-
-  const theme = getChartTheme(getSiteTheme());
-  const { passRateData, durationCategories, durationValues, failureTaxonomy } =
-    resolveMetricChartPayload(chartData, theme);
-  const anim = { duration: getChartAnimMs() };
-
-  passRateChart.series[0].setData(passRateData, true, anim);
-  durationChart.xAxis[0].setCategories(durationCategories, false);
-  durationChart.series[0].setData(durationValues, true, anim);
-
-  if (failureTaxonomy.length) {
-    if (failureTaxonomyChart) {
-      failureTaxonomyChart.series[0].setData(failureTaxonomy, true, anim);
-    } else {
-      return false;
-    }
-  } else if (failureTaxonomyChart) {
-    return false;
-  }
-
-  updateChartFilterHighlights();
-  return true;
-}
-
-function updateEpicBreakdown(chartData) {
-  if (!window.Highcharts) return false;
-
-  const rows = (chartData?.charts?.epicBreakdown ?? []).filter((row) => row.y > 0);
-  const slot = document.getElementById("chart-epic-breakdown");
-  const tile = document.querySelector('[data-testid="chart-epic-breakdown"]');
-  if (!slot || !tile) return false;
-
-  if (!rows.length) return !epicBreakdownChart;
-  if (!epicBreakdownChart) return false;
-
-  const theme = getChartTheme(getSiteTheme());
-  const categories = rows.map((row) => row.name);
-  const data = rows.map((row) => ({
-    y: row.y,
-    color: row.color || theme.accent,
-  }));
-  const currentCategories = epicBreakdownChart.xAxis?.[0]?.categories ?? [];
-  if (currentCategories.length !== categories.length) return false;
-
-  epicBreakdownChart.update({ chart: { height: Math.max(120, rows.length * 28) } }, false);
-  epicBreakdownChart.xAxis[0].setCategories(categories, false);
-  epicBreakdownChart.series[0].setData(data, true, { duration: getChartAnimMs() });
-  updateChartFilterHighlights();
-  return true;
-}
-
-function updateTestingPyramid(chartData) {
-  if (!window.Highcharts) return false;
-
-  const rows = (chartData?.charts?.testingPyramid ?? []).filter((row) => row.testCount > 0);
-  const slot = document.getElementById("chart-testing-pyramid");
-  const tile = document.querySelector('[data-testid="chart-testing-pyramid"]');
-  if (!slot || !tile) return false;
-
-  if (!rows.length) return !testingPyramidChart;
-  if (!testingPyramidChart) return false;
-
-  const theme = getChartTheme(getSiteTheme());
-  const categories = rows.map((row) => row.layer);
-  const data = rows.map((row) => ({
-    y: row.testCount,
-    successRate: row.successRate,
-    color: pyramidBarColor(row.successRate, theme),
-  }));
-  const currentCategories = testingPyramidChart.xAxis?.[0]?.categories ?? [];
-  if (currentCategories.length !== categories.length) return false;
-
-  testingPyramidChart.update({ chart: { height: Math.max(140, rows.length * 28) } }, false);
-  testingPyramidChart.xAxis[0].setCategories(categories, false);
-  testingPyramidChart.series[0].setData(data, true, { duration: getChartAnimMs() });
-  updateChartFilterHighlights();
-  return true;
-}
-
 async function loadAnalyticsIndex() {
   const url = await resolveFirst(ANALYTICS_CANDIDATES);
   if (!url) return null;
@@ -1344,127 +910,6 @@ async function loadAnalyticsIndex() {
   } catch {
     return null;
   }
-}
-
-function initCharts(chartData) {
-  if (!window.Highcharts) return;
-
-  destroyMetricCharts();
-
-  const theme = getChartTheme(getSiteTheme());
-  const { passRateData, durationCategories, durationValues, failureTaxonomy } =
-    resolveMetricChartPayload(chartData, theme);
-
-  passRateChart = Highcharts.chart("chart-pass-rate", {
-    chart: {
-      type: "pie",
-      backgroundColor: theme.backgroundColor,
-      height: 140,
-      spacing: [0, 0, 0, 0],
-    },
-    credits: { enabled: false },
-    title: { text: null },
-    tooltip: { pointFormat: "<b>{point.y}</b> ({point.percentage:.1f}%)" },
-    plotOptions: {
-      pie: {
-        innerSize: "58%",
-        dataLabels: { enabled: false },
-        showInLegend: true,
-        cursor: "pointer",
-        point: {
-          events: {
-            click: piePointClickHandler("status"),
-          },
-        },
-      },
-    },
-    legend: {
-      align: "right",
-      verticalAlign: "middle",
-      layout: "vertical",
-      itemStyle: { color: theme.textColor, fontSize: "11px" },
-    },
-    series: [{ name: "Tests", data: passRateData }],
-  });
-
-  durationChart = Highcharts.chart("chart-duration", {
-    chart: {
-      type: "column",
-      backgroundColor: theme.backgroundColor,
-      height: 140,
-      spacing: [8, 0, 4, 0],
-    },
-    credits: { enabled: false },
-    title: { text: null },
-    xAxis: {
-      categories: durationCategories,
-      labels: { style: { color: theme.textColor, fontSize: "10px" } },
-      lineColor: theme.gridColor,
-      tickLength: 0,
-    },
-    yAxis: {
-      min: 0,
-      gridLineColor: theme.gridColor,
-      title: { text: null },
-      labels: { style: { color: theme.textColor, fontSize: "10px" } },
-    },
-    legend: { enabled: false },
-    tooltip: { valueSuffix: " s" },
-    plotOptions: {
-      column: {
-        borderRadius: 3,
-        color: theme.accent,
-        pointPadding: 0.15,
-        groupPadding: 0.08,
-      },
-    },
-    series: [{ name: "Duration", data: durationValues }],
-  });
-
-  failureTaxonomyChart = null;
-  const failureTaxonomySlot = document.getElementById("chart-failure-taxonomy");
-  if (failureTaxonomySlot) {
-    failureTaxonomySlot.classList.remove("chart-tile__empty");
-    failureTaxonomySlot.textContent = "";
-  }
-  if (failureTaxonomy.length && failureTaxonomySlot) {
-    failureTaxonomyChart = Highcharts.chart("chart-failure-taxonomy", {
-      chart: {
-        type: "pie",
-        backgroundColor: theme.backgroundColor,
-        height: 140,
-        spacing: [0, 0, 0, 0],
-      },
-      credits: { enabled: false },
-      title: { text: null },
-      tooltip: { pointFormat: "<b>{point.y}</b> ({point.percentage:.1f}%)" },
-      plotOptions: {
-        pie: {
-          innerSize: "58%",
-          dataLabels: { enabled: false },
-          showInLegend: true,
-          cursor: "pointer",
-          point: {
-            events: {
-              click: piePointClickHandler("category"),
-            },
-          },
-        },
-      },
-      legend: {
-        align: "right",
-        verticalAlign: "middle",
-        layout: "vertical",
-        itemStyle: { color: theme.textColor, fontSize: "11px" },
-      },
-      series: [{ name: "Failures", data: failureTaxonomy }],
-    });
-  } else if (chartData && failureTaxonomySlot) {
-    failureTaxonomySlot.textContent = t("noFailures");
-    failureTaxonomySlot.classList.add("chart-tile__empty");
-  }
-
-  updateChartFilterHighlights();
 }
 
 async function waitForHeaderToggle() {
@@ -1521,14 +966,8 @@ async function init() {
 
   document.addEventListener("header:lang-change", () => {
     applyI18n();
-    const failureSlot = document.getElementById("chart-failure-taxonomy");
-    if (failureSlot?.classList.contains("chart-tile__empty")) {
-      failureSlot.textContent = t("noFailures");
-    }
     initTestsTable(lastAnalyticsIndex);
     initQualityGateCallout(lastAnalyticsIndex);
-    initEpicBreakdown(lastAnalyticsIndex);
-    initTestingPyramid(lastAnalyticsIndex);
     updateLinkedFilterUi();
     updateLiveBadge(lastAnalyticsIndex);
   });

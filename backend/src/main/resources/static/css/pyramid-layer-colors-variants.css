@@ -1,0 +1,429 @@
+@import url("tokens.css");
+@import url("plaque-field.css");
+@import url("plaque-divider.css");
+
+/* Pyramid layer colors — exploration only (allure chart + pyramidLayer seg) */
+
+.plc {
+  --plc-bar-max: 12;
+}
+
+.plc__intro {
+  margin-bottom: var(--space-6);
+}
+
+.plc__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.plc__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.plc__lead {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.plc__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.plc__theme-btn {
+  flex-shrink: 0;
+  min-height: var(--control-height-md);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.plc__theme-btn:hover {
+  background: var(--hover-bg);
+}
+
+.plc__theme-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.plc__grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1280px) {
+  .plc__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .plc__card--e {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 959px) {
+  .plc__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plc__card--e {
+    grid-column: auto;
+  }
+}
+
+.plc__card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-soft);
+  min-width: 0;
+}
+
+.plc__card-id {
+  margin: 0 0 var(--space-1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.plc__card-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+}
+
+.plc__card-desc {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.plc__swatches {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, auto) 1fr 1fr;
+  gap: var(--space-1) var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.625rem;
+  line-height: 1.35;
+}
+
+.plc__swatches-head {
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.plc__swatch-row {
+  display: contents;
+}
+
+.plc__swatch-key {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.plc__swatch-hex {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-muted);
+}
+
+.plc__swatch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  flex-shrink: 0;
+}
+
+.plc__demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.plc__demo-label {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Horizontal bar chart mock (Allure testing pyramid) */
+
+.plc-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.plc-bar-row {
+  display: grid;
+  grid-template-columns: 4.75rem minmax(0, 1fr) 1.25rem;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 22px;
+}
+
+.plc-bar-row__label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plc-bar-row__track {
+  height: 14px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-border) 35%, transparent);
+  overflow: hidden;
+}
+
+.plc-bar-row__fill {
+  height: 100%;
+  min-width: 4px;
+  border-radius: 3px;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.plc-bar-row__count {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Seg mock — 6 pyramidLayer buttons */
+
+.plc-seg-mock .plaque-field {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: var(--plaque-control-height);
+}
+
+.plc-seg-mock .plaque-field--divided.plaque-field--stretch {
+  --plaque-mixed-label-col: 5.5rem;
+}
+
+.plc-seg-mock .plaque-field-seg-track {
+  justify-self: stretch;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.plc-seg-mock .plaque-field-seg {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: min-content;
+}
+
+.plc-seg-mock .plaque-field-seg .plaque-field-seg__btn {
+  flex: 1 1 0;
+  min-width: calc(3.5ch + var(--space-1));
+  padding: 0 2px;
+  font-size: 0.625rem;
+}
+
+.plc-seg-mock .plaque-field-seg .plaque-field-seg__btn--on {
+  border-color: var(--plc-active, var(--color-primary));
+  background: color-mix(in srgb, var(--plc-active, var(--color-primary)) 18%, var(--color-surface));
+  color: var(--color-text);
+}
+
+/* Palette A — cool → warm */
+
+.plc__card--a {
+  --plc-unit: #64748b;
+  --plc-component: #3b82f6;
+  --plc-integration: #06b6d4;
+  --plc-api: #8b5cf6;
+  --plc-e2e: #f59e0b;
+  --plc-manual: #f97316;
+}
+
+html.theme-light .plc__card--a {
+  --plc-unit: #94a3b8;
+  --plc-component: #2563eb;
+  --plc-integration: #0891b2;
+  --plc-api: #7c3aed;
+  --plc-e2e: #d97706;
+  --plc-manual: #ea580c;
+}
+
+/* Palette B — stone / neutral */
+
+.plc__card--b {
+  --plc-unit: #57534e;
+  --plc-component: #78716c;
+  --plc-integration: #a8a29e;
+  --plc-api: #d6d3d1;
+  --plc-e2e: #c4a882;
+  --plc-manual: #b8956b;
+}
+
+html.theme-light .plc__card--b {
+  --plc-unit: #78716c;
+  --plc-component: #a8a29e;
+  --plc-integration: #d6d3d1;
+  --plc-api: #e7e5e4;
+  --plc-e2e: #b8956b;
+  --plc-manual: #92704a;
+}
+
+/* Palette C — semantic */
+
+.plc__card--c {
+  --plc-unit: #818cf8;
+  --plc-component: #4ade80;
+  --plc-integration: #2dd4bf;
+  --plc-api: #60a5fa;
+  --plc-e2e: #fbbf24;
+  --plc-manual: #f472b6;
+}
+
+html.theme-light .plc__card--c {
+  --plc-unit: #6366f1;
+  --plc-component: #16a34a;
+  --plc-integration: #0d9488;
+  --plc-api: #2563eb;
+  --plc-e2e: #d97706;
+  --plc-manual: #db2777;
+}
+
+/* Palette D — monochrome gradient */
+
+.plc__card--d {
+  --plc-unit: #1e293b;
+  --plc-component: #334155;
+  --plc-integration: #475569;
+  --plc-api: #64748b;
+  --plc-e2e: #94a3b8;
+  --plc-manual: #cbd5e1;
+}
+
+html.theme-light .plc__card--d {
+  --plc-unit: #334155;
+  --plc-component: #475569;
+  --plc-integration: #64748b;
+  --plc-api: #94a3b8;
+  --plc-e2e: #cbd5e1;
+  --plc-manual: #e2e8f0;
+}
+
+/* Palette E — pastel soft */
+
+.plc__card--e {
+  --plc-unit: #a5b4fc;
+  --plc-component: #93c5fd;
+  --plc-integration: #6ee7b7;
+  --plc-api: #c4b5fd;
+  --plc-e2e: #fcd34d;
+  --plc-manual: #fdba74;
+}
+
+html.theme-light .plc__card--e {
+  --plc-unit: #818cf8;
+  --plc-component: #60a5fa;
+  --plc-integration: #34d399;
+  --plc-api: #a78bfa;
+  --plc-e2e: #fbbf24;
+  --plc-manual: #fb923c;
+}
+
+.plc__card--a .plc-bar-row--unit .plc-bar-row__fill { background: var(--plc-unit); }
+.plc__card--a .plc-bar-row--component .plc-bar-row__fill { background: var(--plc-component); }
+.plc__card--a .plc-bar-row--integration .plc-bar-row__fill { background: var(--plc-integration); }
+.plc__card--a .plc-bar-row--api .plc-bar-row__fill { background: var(--plc-api); }
+.plc__card--a .plc-bar-row--e2e .plc-bar-row__fill { background: var(--plc-e2e); }
+.plc__card--a .plc-bar-row--manual .plc-bar-row__fill { background: var(--plc-manual); }
+
+.plc__card--b .plc-bar-row--unit .plc-bar-row__fill { background: var(--plc-unit); }
+.plc__card--b .plc-bar-row--component .plc-bar-row__fill { background: var(--plc-component); }
+.plc__card--b .plc-bar-row--integration .plc-bar-row__fill { background: var(--plc-integration); }
+.plc__card--b .plc-bar-row--api .plc-bar-row__fill { background: var(--plc-api); }
+.plc__card--b .plc-bar-row--e2e .plc-bar-row__fill { background: var(--plc-e2e); }
+.plc__card--b .plc-bar-row--manual .plc-bar-row__fill { background: var(--plc-manual); }
+
+.plc__card--c .plc-bar-row--unit .plc-bar-row__fill { background: var(--plc-unit); }
+.plc__card--c .plc-bar-row--component .plc-bar-row__fill { background: var(--plc-component); }
+.plc__card--c .plc-bar-row--integration .plc-bar-row__fill { background: var(--plc-integration); }
+.plc__card--c .plc-bar-row--api .plc-bar-row__fill { background: var(--plc-api); }
+.plc__card--c .plc-bar-row--e2e .plc-bar-row__fill { background: var(--plc-e2e); }
+.plc__card--c .plc-bar-row--manual .plc-bar-row__fill { background: var(--plc-manual); }
+
+.plc__card--d .plc-bar-row--unit .plc-bar-row__fill { background: var(--plc-unit); }
+.plc__card--d .plc-bar-row--component .plc-bar-row__fill { background: var(--plc-component); }
+.plc__card--d .plc-bar-row--integration .plc-bar-row__fill { background: var(--plc-integration); }
+.plc__card--d .plc-bar-row--api .plc-bar-row__fill { background: var(--plc-api); }
+.plc__card--d .plc-bar-row--e2e .plc-bar-row__fill { background: var(--plc-e2e); }
+.plc__card--d .plc-bar-row--manual .plc-bar-row__fill { background: var(--plc-manual); }
+
+.plc__card--e .plc-bar-row--unit .plc-bar-row__fill { background: var(--plc-unit); }
+.plc__card--e .plc-bar-row--component .plc-bar-row__fill { background: var(--plc-component); }
+.plc__card--e .plc-bar-row--integration .plc-bar-row__fill { background: var(--plc-integration); }
+.plc__card--e .plc-bar-row--api .plc-bar-row__fill { background: var(--plc-api); }
+.plc__card--e .plc-bar-row--e2e .plc-bar-row__fill { background: var(--plc-e2e); }
+.plc__card--e .plc-bar-row--manual .plc-bar-row__fill { background: var(--plc-manual); }
+
+.plc__card[data-active-layer="unit"] { --plc-active: var(--plc-unit); }
+.plc__card[data-active-layer="component"] { --plc-active: var(--plc-component); }
+.plc__card[data-active-layer="integration"] { --plc-active: var(--plc-integration); }
+.plc__card[data-active-layer="api"] { --plc-active: var(--plc-api); }
+.plc__card[data-active-layer="e2e"] { --plc-active: var(--plc-e2e); }
+.plc__card[data-active-layer="manual"] { --plc-active: var(--plc-manual); }
+
+.plc__meta {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}

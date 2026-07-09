@@ -62,9 +62,13 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return map.suiteClassMap[suite] || "LoginTests";
   }
 
-  /** Env suffix: visual suite → run profile `*_visual`, not a separate @Layer. */
+  function isVisualSliceSuite(suite) {
+    return map.visualSliceSuites && map.visualSliceSuites.indexOf(suite || values.testSuite) !== -1;
+  }
+
+  /** Env suffix: baseline suite → run profile `*_visual`, not a separate @Layer. */
   function configEnvSuffix() {
-    if (values.testSuite === "visual") return "visual";
+    if (isVisualSliceSuite()) return "visual";
     return values.pyramidLayer;
   }
 
@@ -74,7 +78,6 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   }
 
   function gradleTestFilter() {
-    if (values.testSuite === "visual") return null;
     var cls = suiteClassFilter();
     if (cls === "*") return "tests.*";
     if (cls.charAt(0) === "*") return cls;
@@ -83,8 +86,11 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return "tests." + cls;
   }
 
-  function buildGradleBin() {
-    return values.gradleInvoker === "gradle" ? "gradle" : "./gradlew";
+  function buildToolBin() {
+    if (values.buildTool === "maven") {
+      return values.mavenInvoker === "mvn" ? "mvn" : "./mvnw";
+    }
+    return values.gradleBin === "gradle" ? "gradle" : "./gradlew";
   }
 
   function syncAllureListenerFromMode() {
@@ -98,7 +104,15 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   function shouldUseSelect(param) {
     if (param.type === "select") return true;
-    if (param.id === "configStand" || param.id === "pyramidLayer" || param.id === "testSuite") return true;
+    if (
+      param.id === "configStand" ||
+      param.id === "pyramidLayer" ||
+      param.id === "testSuite" ||
+      param.id === "parallelism" ||
+      param.id === "browserSize"
+    ) {
+      return true;
+    }
     if (param.options && param.options.length >= 6) return true;
     return false;
   }
@@ -125,9 +139,9 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   function createParamWrap(param) {
     var wrap = document.createElement("div");
-    wrap.className = "e2e-builder__param";
+    wrap.className = "configurator__param";
     wrap.dataset.paramId = param.id;
-    if (!matchesShowWhen(param)) wrap.classList.add("e2e-builder__param--hidden");
+    if (!matchesShowWhen(param)) wrap.classList.add("configurator__param--hidden");
     return wrap;
   }
 
@@ -144,7 +158,8 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return label;
   }
 
-  function renderSegTogglePlaque(param) {
+  function renderSegTogglePlaque(param, opts) {
+    opts = opts || {};
     var plaque = clonePlaqueTemplate("plaque-field-seg");
     plaque.dataset.paramId = param.id;
     plaque.dataset.testid = "e2e-seg-" + param.id;
@@ -178,7 +193,213 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       seg.appendChild(btn);
     });
 
+    if (opts.stretch === false) return plaque;
     return applyPlaqueStretch(plaque);
+  }
+
+  function isRemoteHubFlag(param) {
+    return map.remoteHubFlagIds && map.remoteHubFlagIds.indexOf(param.id) !== -1;
+  }
+
+  function gridCell(cellClass) {
+    var cell = document.createElement("div");
+    cell.className = "plaque-field-grid__cell" + (cellClass ? " " + cellClass : "");
+    return cell;
+  }
+
+  function mixedGrid(ratio, ariaLabel, testid) {
+    var grid = document.createElement("div");
+    grid.className = "plaque-field-grid plaque-field-grid--mixed";
+    if (ratio) grid.classList.add("plaque-field-grid--ratio-" + ratio);
+    grid.setAttribute("role", "group");
+    if (ariaLabel) grid.setAttribute("aria-label", ariaLabel);
+    if (testid) grid.dataset.testid = testid;
+    return grid;
+  }
+
+  function appendParamCell(grid, cellClass, param, opts) {
+    if (!param || !matchesShowWhen(param)) return;
+    var cell = gridCell(cellClass);
+    var nodeOpts = Object.assign({ inGrid: true }, opts || {});
+    cell.appendChild(renderParamNode(param, nodeOpts));
+    grid.appendChild(cell);
+  }
+
+  function renderParamNode(param, opts) {
+    opts = opts || {};
+    if (opts.compactSelect || param.compact) {
+      return renderCompactSelectParam(param);
+    }
+    if (opts.segNoStretch) {
+      return renderSegTogglePlaque(param, { stretch: false });
+    }
+    return renderParam(param, opts);
+  }
+
+  function renderBuildGroupGrid() {
+    var stack = document.createElement("div");
+    stack.className = "plaque-field-grid-stack plaque-field-grid-stack--ratio-221";
+    stack.dataset.testid = "e2e-build-grid";
+
+    var row1 = mixedGrid("221", "OS, language and java version", "e2e-build-os-lang-row");
+    appendParamCell(row1, null, paramById("buildOs"));
+    appendParamCell(row1, null, paramById("buildLanguage"));
+    appendParamCell(row1, null, paramById("javaVersion"), { compactSelect: true });
+    if (row1.childElementCount) stack.appendChild(row1);
+
+    var row2 = mixedGrid("221", "Build tool chain", "e2e-build-tool-row");
+    appendParamCell(row2, null, paramById("buildTool"), { segNoStretch: true });
+    if (values.buildTool === "maven") {
+      appendParamCell(row2, null, paramById("mavenInvoker"), { segNoStretch: true });
+      appendParamCell(row2, null, paramById("mavenVersion"), { compactSelect: true });
+    } else {
+      appendParamCell(row2, null, paramById("gradleBin"), { segNoStretch: true });
+      appendParamCell(row2, null, paramById("gradleVersion"), { compactSelect: true });
+    }
+    if (row2.childElementCount) stack.appendChild(row2);
+
+    return stack;
+  }
+
+  function renderRunGroupPanelStack() {
+    var stack = document.createElement("div");
+    stack.className = "plaque-field-panel-stack";
+    stack.dataset.testid = "e2e-run-panel-stack";
+
+    (map.runPanelStackParamIds || []).forEach(function (id) {
+      var param = paramById(id);
+      if (!param || !matchesShowWhen(param)) return;
+      stack.appendChild(renderParam(param));
+    });
+
+    return stack.childElementCount ? stack : document.createDocumentFragment();
+  }
+
+  function renderDriverGroupGridStack() {
+    var stack = document.createElement("div");
+    stack.className = "plaque-field-grid-stack";
+    stack.dataset.testid = "e2e-driver-grid";
+
+    var browserRow = mixedGrid(null, "Browser identity", "e2e-driver-browser-row");
+    appendParamCell(browserRow, "plaque-field-grid__cell--lg", paramById("browser"));
+    appendParamCell(browserRow, "plaque-field-grid__cell--lg", paramById("browserVersion"));
+    if (browserRow.childElementCount) stack.appendChild(browserRow);
+
+    var runtimeRow = mixedGrid(null, "Driver runtime", "e2e-driver-runtime-row");
+    appendParamCell(runtimeRow, "plaque-field-grid__cell--lg", paramById("headless"), { segNoStretch: true });
+    appendParamCell(runtimeRow, "plaque-field-grid__cell--lg", paramById("browserSize"));
+    if (runtimeRow.childElementCount) stack.appendChild(runtimeRow);
+
+    var afterEachRow = mixedGrid(null, "closeBrowserAfterEach", "e2e-driver-closeBrowserAfterEach-row");
+    appendParamCell(afterEachRow, "plaque-field-grid__cell--full", paramById("closeBrowserAfterEach"), {
+      segNoStretch: true,
+    });
+    if (afterEachRow.childElementCount) stack.appendChild(afterEachRow);
+
+    var afterAllRow = mixedGrid(null, "closeBrowserAfterAll", "e2e-driver-closeBrowserAfterAll-row");
+    appendParamCell(afterAllRow, "plaque-field-grid__cell--full", paramById("closeBrowserAfterAll"), {
+      segNoStretch: true,
+    });
+    if (afterAllRow.childElementCount) stack.appendChild(afterAllRow);
+
+    return stack.childElementCount ? stack : document.createDocumentFragment();
+  }
+
+  function syncTestFrameworkVersionOptions(selectEl, keepCurrent) {
+    if (!selectEl) return;
+    var framework = values.testFramework || "junit5";
+    var versions = (map.testFrameworkVersions && map.testFrameworkVersions[framework]) || [];
+    var preferred =
+      (map.testFrameworkDefaults && map.testFrameworkDefaults[framework]) ||
+      (versions.length ? versions[0] : "");
+    var current = keepCurrent ? values.testFrameworkVersion : preferred;
+    if (versions.indexOf(current) === -1) current = preferred;
+    values.testFrameworkVersion = current;
+    selectEl.replaceChildren();
+    versions.forEach(function (version) {
+      var option = document.createElement("option");
+      option.value = version;
+      option.textContent = version;
+      option.selected = version === current;
+      selectEl.appendChild(option);
+    });
+  }
+
+  function renderParallelGroupGridStack() {
+    var stack = document.createElement("div");
+    stack.className = "plaque-field-grid-stack plaque-field-grid-stack--parallel";
+    stack.dataset.testid = "e2e-parallel-grid";
+
+    var frameworkRow = mixedGrid("41", "Test framework and version", "e2e-parallel-framework-row");
+    appendParamCell(frameworkRow, null, paramById("testFramework"));
+    appendParamCell(frameworkRow, null, paramById("testFrameworkVersion"), { compactSelect: true });
+    if (frameworkRow.childElementCount) stack.appendChild(frameworkRow);
+
+    var executionRow = mixedGrid("11", "Execution mode and parallel threads", "e2e-parallel-row");
+    appendParamCell(executionRow, null, paramById("junitParallelMode"), { segNoStretch: true });
+    appendParamCell(executionRow, null, paramById("parallelism"));
+    if (executionRow.childElementCount) stack.appendChild(executionRow);
+
+    var versionSelect = stack.querySelector('[data-param-id="testFrameworkVersion"] select');
+    syncTestFrameworkVersionOptions(versionSelect, true);
+
+    return stack.childElementCount ? stack : document.createDocumentFragment();
+  }
+
+  function renderRemoteGroupPanelStack() {
+    var stack = document.createElement("div");
+    stack.className = "plaque-field-panel-stack";
+    stack.dataset.testid = "e2e-remote-panel-stack";
+
+    var remoteUrl = paramById("remoteUrl");
+    if (remoteUrl && matchesShowWhen(remoteUrl)) {
+      stack.appendChild(renderParam(remoteUrl));
+    }
+
+    var flagsGrid = renderRemoteHubFlagsGrid();
+    if (flagsGrid.nodeType === 1) {
+      stack.appendChild(flagsGrid);
+    }
+
+    return stack.childElementCount ? stack : document.createDocumentFragment();
+  }
+
+  function mixedGridCellClass(flagCount) {
+    if (flagCount >= 4) return "plaque-field-grid__cell--sm";
+    if (flagCount === 3) return "plaque-field-grid__cell--md";
+    if (flagCount === 2) return "plaque-field-grid__cell--lg";
+    return "plaque-field-grid__cell--md";
+  }
+
+  function renderRemoteHubFlagsGrid() {
+    if (!map.remoteHubFlagIds || !map.remoteHubFlagIds.length) {
+      return document.createDocumentFragment();
+    }
+
+    var visibleIds = map.remoteHubFlagIds.filter(function (id) {
+      var param = paramById(id);
+      return param && matchesShowWhen(param);
+    });
+    if (!visibleIds.length) {
+      return document.createDocumentFragment();
+    }
+
+    var grid = clonePlaqueTemplate("plaque-field-grid-remote-hub");
+    grid.replaceChildren();
+    grid.dataset.testid = "e2e-remote-flags-grid";
+
+    var cellClass = mixedGridCellClass(visibleIds.length);
+
+    visibleIds.forEach(function (id) {
+      var param = paramById(id);
+
+      var cell = document.createElement("div");
+      cell.className = "plaque-field-grid__cell " + cellClass;
+      cell.appendChild(renderSegTogglePlaque(param, { stretch: false }));
+      grid.appendChild(cell);
+    });
+
+    return grid;
   }
 
   function renderToggleButtons(param, wrap) {
@@ -291,11 +512,11 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     if (values.testSuite === "login-embed" && values.configStand === "one-page-form_prod") {
       issues.push("LoginEmbedTests нужен local HTTP (frontend/ на :3000), не prod profile");
     }
-    if (values.testSuite === "visual" && values.pyramidLayer !== "e2e") {
-      issues.push("@Tag(visual): Test layer должен быть e2e (@Layer(\"e2e\")), не " + values.pyramidLayer);
+    if (isVisualSliceSuite() && values.pyramidLayer !== "e2e") {
+      issues.push("BaselineTests: Test layer должен быть e2e (@Layer(\"e2e\")), не " + values.pyramidLayer);
     }
-    if (values.testSuite === "visual" && values.configStand === "one-page-form_prod") {
-      issues.push("@Tag(visual) нужен local HTTP (frontend/ на :3000), не prod profile");
+    if (isVisualSliceSuite() && values.configStand === "one-page-form_prod") {
+      issues.push("BaselineTests нужен local HTTP (frontend/ на :3000), не prod profile");
     }
     if (values.testMethod) {
       var methodOpt = paramById("testMethod").options.find(function (o) {
@@ -305,8 +526,8 @@ import { highlightJson, highlightShell } from './code-highlight.js';
         issues.push("testMethod относится к " + methodOpt.suite + ", а выбран suite " + values.testSuite);
       }
     }
-    if (values.parallelism !== "1" && values.testSuite === "visual" && values.junitParallelMode === "same_thread") {
-      issues.push("@Tag(visual) @SAME_THREAD: parallelism > 1 даёт выигрыш только в suite, не внутри класса");
+    if (values.parallelism !== "1" && isVisualSliceSuite() && values.junitParallelMode === "same_thread") {
+      issues.push("BaselineTests @SAME_THREAD: parallelism > 1 даёт выигрыш только в suite, не внутри класса");
     }
 
     return issues;
@@ -390,7 +611,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   function allurePostStep(mode) {
     if (mode === "allure3") {
-      var gradleBin = buildGradleBin();
+      var gradleBin = buildToolBin();
       return (
         "\n" + gradleBin + " allureQualityGate -q\n" +
         gradleBin + " allureReport -q\n" +
@@ -425,14 +646,14 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
     lines.push("");
     lines.push("allurectl watch --results build/allure-results -- \\");
-    lines = lines.concat(joinContinuedLines("  " + buildGradleBin() + " test \\", gradleBody));
+    lines = lines.concat(joinContinuedLines("  " + buildToolBin() + " test \\", gradleBody));
 
     var mode = values.allureReportMode || "allure3";
     if (mode === "allure3") {
       lines.push("");
       lines.push("# После upload — quality gate + локальный HTML (опционально):");
-      lines.push(buildGradleBin() + " allureQualityGate -q");
-      lines.push(buildGradleBin() + " allureReport -q");
+      lines.push(buildToolBin() + " allureQualityGate -q");
+      lines.push(buildToolBin() + " allureReport -q");
     }
 
     return lines.join("\n");
@@ -446,17 +667,13 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     var iter = parseInt(values.benchmarkIterations, 10);
 
     var gradleBody = gradleFlagLines(flags);
-    if (values.testSuite === "visual") {
-      gradleBody.push("  -DincludeTags=visual");
-    } else {
-      gradleBody.push("  --tests '" + testFilter + "'");
-    }
+    gradleBody.push("  --tests '" + testFilter + "'");
 
     if (testopsOn) {
       return buildTestOpsShell(gradleBody, testFilter);
     }
 
-    var gradleBin = buildGradleBin();
+    var gradleBin = buildToolBin();
     var header = mode === "none" ? gradleBin + " test -q \\" : gradleBin + " test \\";
     var lines = joinContinuedLines(header, gradleBody);
 
@@ -583,7 +800,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
         "## Канон vs ladder ethalon",
         "- CI / pyramid: `tests-java/` — smoke `LoginTests`, `LoginFormTests`, `LoginEmbedTests`; `@Manual` на методе в `LoginTests`",
         "- Ladder code: `tests-java/src/test/java/_ethalon/ladder/` — full style ladder `LoginTests`/`LogoutTests` (`@Tag(\"ladder-ethalon\")`, `" +
-          buildGradleBin() +
+          buildToolBin() +
           " testLadderEthalon`)",
         "- RAG split: `test-pyramid` (канон), `test-style-ladder` + `test-logout-flow` (паттерны)"
       );
@@ -607,13 +824,12 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       );
     }
 
-    if (values.testSuite === "visual") {
+    if (isVisualSliceSuite()) {
       lines.push(
         "",
         "## Visual baselines (UI e2e, не отдельный @Layer)",
-        "- `@Layer(\"e2e\")` на классе (`LoginBaselineTests`, `LoggedInBaselineTests`); отбор — `@Tag(\"visual\")`",
-        "- Terminal: `-DincludeTags=visual` (`testVisual` slice), не wildcard по классу",
-        "- Env profile: `" + configEnvName() + "` — run profile `*_visual`, не Test Layer",
+        "- `@Layer(\"e2e\")` на классе (`" + suiteClassFilter() + "`); CI slice — env `*_visual`",
+        "- Terminal: `--tests '" + gradleTestFilter() + "'` с env `" + configEnvName() + "`",
         "- Target: `frontend/` через `python -m http.server 3000`",
         "- `attachLastScreenshot=false` — element crop из `ScreenshotBaseline`, не full page",
         "- `-DupdateBaselines=true` — перезаписать PNG в `src/test/resources/screenshots/`"
@@ -686,6 +902,14 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   function onValueChange(paramId, newValue) {
     values[paramId] = newValue;
     if (paramId === "allureListenerMode") syncAllureListenerFromMode();
+    if (paramId === "buildTool") {
+      renderParams();
+    }
+    if (paramId === "testFramework") {
+      var preferred = (map.testFrameworkDefaults && map.testFrameworkDefaults[newValue]) || "";
+      if (preferred) values.testFrameworkVersion = preferred;
+      renderParams();
+    }
     if (paramId === "logToConsole" && newValue === "false") {
       renderParams();
     }
@@ -693,7 +917,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       renderParams();
     }
     if (paramId === "testSuite") {
-      if (newValue === "visual") {
+      if (isVisualSliceSuite(newValue)) {
         values.pyramidLayer = "e2e";
         syncControlButtons("pyramidLayer", "e2e");
       }
@@ -713,7 +937,13 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     rebuildOutputs();
   }
 
-  function renderRadioParam(param) {
+  function renderRadioParam(param, opts) {
+    opts = opts || {};
+    if (param.id === "pyramidLayer") {
+      var wrap = createParamWrap(param);
+      wrap.appendChild(applyPlaqueStretch(renderSegTogglePlaque(param)));
+      return wrap;
+    }
     var mode = radioUiMode(param);
     if (mode === "select") return renderSelectParam(param);
 
@@ -732,9 +962,49 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return renderOptionButtons(param, wrap, false);
   }
 
-  function renderSelectParam(param) {
-    var wrap = createParamWrap(param);
+  function renderCompactSelectParam(param) {
+    var label = document.createElement("label");
+    label.className = "plaque-field plaque-field--stretch";
+    label.dataset.paramId = param.id;
+    label.dataset.testid = "e2e-param-" + param.id;
+    label.setAttribute("aria-label", param.label || param.id);
+
+    var select = document.createElement("select");
+    select.className = "plaque-field__control";
+    select.id = "e2e-select-" + param.id;
+    select.setAttribute("aria-label", param.label || param.id);
+    if (param.id === "testFrameworkVersion") {
+      select.dataset.testid = "e2e-select-testFrameworkVersion";
+    }
+
+    param.options.forEach(function (opt) {
+      if (opt.suite && opt.suite !== values.testSuite && opt.value) return;
+      var option = document.createElement("option");
+      option.value = opt.value;
+      option.textContent = opt.label;
+      if (opt.hint) option.title = opt.hint;
+      select.appendChild(option);
+    });
+
+    if (param.id === "testFrameworkVersion") {
+      syncTestFrameworkVersionOptions(select, true);
+    } else {
+      select.value = values[param.id] || "";
+    }
+
+    select.addEventListener("change", function () {
+      onValueChange(param.id, select.value);
+    });
+
+    label.appendChild(select);
+    return label;
+  }
+
+  function renderSelectParam(param, opts) {
+    opts = opts || {};
     var plaque = clonePlaqueTemplate("plaque-field-select");
+    plaque.dataset.paramId = param.id;
+    plaque.dataset.testid = "e2e-param-" + param.id;
 
     plaqueLabelEl(param, {}, plaque);
 
@@ -756,12 +1026,15 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       onValueChange(param.id, select.value);
     });
 
-    wrap.appendChild(applyPlaqueStretch(plaque));
+    var field = applyPlaqueStretch(plaque);
+    if (opts.inGrid) return field;
+    var wrap = createParamWrap(param);
+    wrap.appendChild(field);
     return wrap;
   }
 
-  function renderTextParam(param) {
-    var wrap = createParamWrap(param);
+  function renderTextParam(param, opts) {
+    opts = opts || {};
     var plaque = clonePlaqueTemplate("plaque-field-text");
 
     plaqueLabelEl(param, {}, plaque);
@@ -776,7 +1049,11 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       onValueChange(param.id, input.value);
     });
 
-    wrap.appendChild(applyPlaqueStretch(plaque));
+    var field = applyPlaqueStretch(plaque);
+    if (opts.inGrid) return field;
+
+    var wrap = createParamWrap(param);
+    wrap.appendChild(field);
 
     if (param.envHint) {
       var hint = document.createElement("p");
@@ -825,10 +1102,10 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
   function renderCheckboxParam(param) {
     var wrap = createParamWrap(param);
-    wrap.classList.add("e2e-builder__param--tagstrip");
+    wrap.classList.add("configurator__param--tagstrip");
     if (param.label) {
       var caption = document.createElement("p");
-      caption.className = "e2e-builder__param-caption";
+      caption.className = "text text--sm text--muted configurator__param-caption";
       caption.textContent = param.label;
       if (param.warn) caption.title = param.warn;
       wrap.appendChild(caption);
@@ -836,10 +1113,11 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     return renderTagStrip(param, wrap);
   }
 
-  function renderParam(param) {
-    if (param.type === "radio") return renderRadioParam(param);
-    if (param.type === "select") return renderSelectParam(param);
-    if (param.type === "text" || param.type === "password") return renderTextParam(param);
+  function renderParam(param, opts) {
+    opts = opts || {};
+    if (param.type === "radio") return renderRadioParam(param, opts);
+    if (param.type === "select") return renderSelectParam(param, opts);
+    if (param.type === "text" || param.type === "password") return renderTextParam(param, opts);
     if (param.type === "checkbox") return renderCheckboxParam(param);
     return document.createDocumentFragment();
   }
@@ -865,6 +1143,8 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     map.groups.forEach(function (group) {
       section = document.createElement("div");
       section.className = "panel panel--content e2e-builder__group";
+      if (group.groupLayout === "wide") section.classList.add("configurator__group--wide");
+      else if (group.groupLayout === "dense") section.classList.add("configurator__group--dense");
       section.dataset.groupId = group.id;
       section.dataset.testid = "e2e-group-" + group.id;
 
@@ -893,15 +1173,34 @@ import { highlightJson, highlightShell } from './code-highlight.js';
 
       section.appendChild(body);
 
-      map.params
-        .filter(function (p) {
-          return p.group === group.id;
-        })
-        .forEach(function (param) {
-          if (matchesShowWhen(param)) {
-            body.appendChild(renderParam(param));
-          }
-        });
+      if (group.id === "build") {
+        body.appendChild(renderBuildGroupGrid());
+      } else if (group.id === "run") {
+        body.appendChild(renderRunGroupPanelStack());
+        map.params
+          .filter(function (p) {
+            return p.group === group.id && p.id === "junitTags";
+          })
+          .forEach(function (param) {
+            if (matchesShowWhen(param)) body.appendChild(renderParam(param));
+          });
+      } else if (group.id === "driver") {
+        body.appendChild(renderDriverGroupGridStack());
+      } else if (group.id === "parallel") {
+        body.appendChild(renderParallelGroupGridStack());
+      } else if (group.id === "remote") {
+        body.appendChild(renderRemoteGroupPanelStack());
+      } else {
+        map.params
+          .filter(function (p) {
+            return p.group === group.id;
+          })
+          .forEach(function (param) {
+            if (matchesShowWhen(param)) {
+              body.appendChild(renderParam(param));
+            }
+          });
+      }
 
       paramsRoot.appendChild(section);
       currentGroup = group.id;
@@ -977,8 +1276,25 @@ import { highlightJson, highlightShell } from './code-highlight.js';
         }
         if (values.pyramidLayer === "visual") {
           values.pyramidLayer = "e2e";
-          if (values.testSuite !== "visual") values.testSuite = "visual";
+          if (!isVisualSliceSuite(values.testSuite)) values.testSuite = "login-baseline";
         }
+        if (values.testSuite === "visual") {
+          values.testSuite = "login-baseline";
+        }
+        if (!values.buildTool) values.buildTool = "gradle";
+        if (!values.buildOs) values.buildOs = "mac";
+        if (!values.buildLanguage) values.buildLanguage = "java";
+        if (!values.javaVersion) values.javaVersion = "21";
+        if (values.gradleInvoker && !values.gradleBin) {
+          values.gradleBin = values.gradleInvoker;
+        }
+        if (!values.gradleBin) values.gradleBin = "gradlew";
+        if (!values.testFramework) values.testFramework = "junit5";
+        if (!values.testFrameworkVersion) {
+          values.testFrameworkVersion =
+            (map.testFrameworkDefaults && map.testFrameworkDefaults.junit5) || "5.11.4";
+        }
+        if (!values.closeBrowserAfterAll) values.closeBrowserAfterAll = "true";
       }
       if (state.activeTab) activeTab = state.activeTab;
       if (state.activePresetId) activePresetId = state.activePresetId;
