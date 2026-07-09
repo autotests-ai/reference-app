@@ -37,6 +37,7 @@ buildscript {
 
 plugins {
     id 'java-library'
+    id 'jacoco'
     id 'io.qameta.allure' version "${allurePluginVersion}"
 }
 
@@ -408,4 +409,50 @@ if (allureAgentMode == 'inspect' && allureReportMode != 'none') {
             finalizedBy 'allureAgentInspect'
         }
     }
+}
+
+def pyramidUnitClassDirectories = {
+    sourceSets.test.output.classesDirs.collect { classDir ->
+        fileTree(dir: classDir, include: [
+                'config/ConfigReader.class',
+                'helpers/LayoutCss.class',
+                'helpers/TokensCss.class',
+        ])
+    }
+}
+
+tasks.register('jacocoTestUnitReport', JacocoReport) {
+    group = 'verification'
+    description = 'JaCoCo report for pyramid unit slice (config + helpers infrastructure)'
+    dependsOn tasks.named('testUnit')
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    classDirectories.setFrom(files(pyramidUnitClassDirectories()))
+    sourceDirectories.setFrom(files(sourceSets.test.java.srcDirs))
+    executionData.setFrom(file("${layout.buildDirectory.get()}/jacoco/testUnit.exec"))
+}
+
+tasks.register('jacocoTestUnitCoverageVerification', JacocoCoverageVerification) {
+    group = 'verification'
+    description = 'Fail when pyramid unit helpers/config drop below 80% line coverage'
+    dependsOn tasks.named('jacocoTestUnitReport')
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.80
+            }
+        }
+    }
+    classDirectories.setFrom(tasks.named('jacocoTestUnitReport', JacocoReport).get().classDirectories)
+    executionData.setFrom(tasks.named('jacocoTestUnitReport', JacocoReport).get().executionData)
+}
+
+tasks.named('testUnit', Test).configure {
+    jacoco {
+        destinationFile = layout.buildDirectory.file('jacoco/testUnit.exec').get().asFile
+    }
+    finalizedBy 'jacocoTestUnitReport', 'jacocoTestUnitCoverageVerification'
 }
