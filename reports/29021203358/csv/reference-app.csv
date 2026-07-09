@@ -1,0 +1,112 @@
+Full Name,Name,Status,Duration,Error,Stack Trace,Steps,Parent Suite,Suite,Sub Suite,Epic,Feature,Story
+"tests.LoginTests.shouldShowValidationErrorWhenPasswordIsEmpty","Empty password shows validation error","broken","15s 820ms","Could not start a new session. Response code 500. Message: session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause. 
+Host info: host: 'runnervm5mmn9', ip: '10.1.1.211'
+Build info: version: '4.44.0', revision: 'da2039b'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.17.0-1018-azure', java.version: '21.0.11'
+selenide.remote: https://***@selenoid.autotests.cloud/wd/hub
+Driver info: org.openqa.selenium.remote.RemoteWebDriver
+Command: [null, newSession {capabilities=[Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 148.0, goog:chromeOptions: {args: [--headless=new, --proxy-bypass-list=<-loopb..., --disable-dev-shm-usage, --disable-search-engine-cho..., --unsafely-disable-devtools..., --disable-smooth-scrolling, --disable-background-networ..., --enable-features=NetworkSe..., --disable-background-timer-..., --disable-backgrounding-occ..., --disable-breakpad, --disable-client-side-phish..., --disable-component-extensi..., --disable-default-apps, --disable-features=TranslateUI, --disable-hang-monitor, --disable-ipc-flooding-prot..., --disable-popup-blocking, --disable-prompt-on-repost, --disable-renderer-backgrou..., --disable-sync, --force-color-profile=srgb, --metrics-recording-only, --no-first-run, --password-store=basic, --use-mock-keychain, --hide-scrollbars, --mute-audio, --window-size=1740,1080], excludeSwitches: [enable-automation, load-extension], extensions: [], prefs: {autofill.credit_card_enabled: false, autofill.profile_enabled: false, credentials_enable_service: false, plugins.always_open_pdf_externally: true, profile.default_content_setting_values.automatic_downloads: 1, profile.password_manager_enabled: false, profile.password_manager_leak_detection: false, safebrowsing.enabled: true}}, pageLoadStrategy: normal, selenoid:options: {enableHar: false, enableVNC: false, enableVideo: false, headless: true}, unhandledPromptBehavior: ignore}]}]
+selenide.url: https://reference-app.autotests.ai/login
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 148.0, goog:chromeOptions: {args: [--headless=new, --proxy-bypass-list=<-loopb..., --disable-dev-shm-usage, --disable-search-engine-cho..., --unsafely-disable-devtools..., --disable-smooth-scrolling, --disable-background-networ..., --enable-features=NetworkSe..., --disable-background-timer-..., --disable-backgrounding-occ..., --disable-breakpad, --disable-client-side-phish..., --disable-component-extensi..., --disable-default-apps, --disable-features=TranslateUI, --disable-hang-monitor, --disable-ipc-flooding-prot..., --disable-popup-blocking, --disable-prompt-on-repost, --disable-renderer-backgrou..., --disable-sync, --force-color-profile=srgb, --metrics-recording-only, --no-first-run, --password-store=basic, --use-mock-keychain, --hide-scrollbars, --mute-audio, --window-size=1740,1080], excludeSwitches: [enable-automation, load-extension], extensions: [], prefs: {autofill.credit_card_enabled: false, autofill.profile_enabled: false, credentials_enable_service: false, plugins.always_open_pdf_externally: true, profile.default_content_setting_values.automatic_downloads: 1, profile.password_manager_enabled: false, profile.password_manager_leak_detection: false, safebrowsing.enabled: true}}, pageLoadStrategy: normal, selenoid:options: {enableHar: false, enableVNC: false, enableVideo: false, headless: true}, unhandledPromptBehavior: ignore}
+selenide.baseUrl: https://reference-app.autotests.ai","org.openqa.selenium.SessionNotCreatedException: Could not start a new session. Response code 500. Message: session not created: Chrome instance exited. Examine ChromeDriver verbose log to determine the cause. 
+Host info: host: 'runnervm5mmn9', ip: '10.1.1.211'
+Build info: version: '4.44.0', revision: 'da2039b'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.17.0-1018-azure', java.version: '21.0.11'
+selenide.remote: https://***@selenoid.autotests.cloud/wd/hub
+Driver info: org.openqa.selenium.remote.RemoteWebDriver
+Command: [null, newSession {capabilities=[Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 148.0, goog:chromeOptions: {args: [--headless=new, --proxy-bypass-list=<-loopb..., --disable-dev-shm-usage, --disable-search-engine-cho..., --unsafely-disable-devtools..., --disable-smooth-scrolling, --disable-background-networ..., --enable-features=NetworkSe..., --disable-background-timer-..., --disable-backgrounding-occ..., --disable-breakpad, --disable-client-side-phish..., --disable-component-extensi..., --disable-default-apps, --disable-features=TranslateUI, --disable-hang-monitor, --disable-ipc-flooding-prot..., --disable-popup-blocking, --disable-prompt-on-repost, --disable-renderer-backgrou..., --disable-sync, --force-color-profile=srgb, --metrics-recording-only, --no-first-run, --password-store=basic, --use-mock-keychain, --hide-scrollbars, --mute-audio, --window-size=1740,1080], excludeSwitches: [enable-automation, load-extension], extensions: [], prefs: {autofill.credit_card_enabled: false, autofill.profile_enabled: false, credentials_enable_service: false, plugins.always_open_pdf_externally: true, profile.default_content_setting_values.automatic_downloads: 1, profile.password_manager_enabled: false, profile.password_manager_leak_detection: false, safebrowsing.enabled: true}}, pageLoadStrategy: normal, selenoid:options: {enableHar: false, enableVNC: false, enableVideo: false, headless: true}, unhandledPromptBehavior: ignore}]}]
+selenide.url: https://reference-app.autotests.ai/login
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 148.0, goog:chromeOptions: {args: [--headless=new, --proxy-bypass-list=<-loopb..., --disable-dev-shm-usage, --disable-search-engine-cho..., --unsafely-disable-devtools..., --disable-smooth-scrolling, --disable-background-networ..., --enable-features=NetworkSe..., --disable-background-timer-..., --disable-backgrounding-occ..., --disable-breakpad, --disable-client-side-phish..., --disable-component-extensi..., --disable-default-apps, --disable-features=TranslateUI, --disable-hang-monitor, --disable-ipc-flooding-prot..., --disable-popup-blocking, --disable-prompt-on-repost, --disable-renderer-backgrou..., --disable-sync, --force-color-profile=srgb, --metrics-recording-only, --no-first-run, --password-store=basic, --use-mock-keychain, --hide-scrollbars, --mute-audio, --window-size=1740,1080], excludeSwitches: [enable-automation, load-extension], extensions: [], prefs: {autofill.credit_card_enabled: false, autofill.profile_enabled: false, credentials_enable_service: false, plugins.always_open_pdf_externally: true, profile.default_content_setting_values.automatic_downloads: 1, profile.password_manager_enabled: false, profile.password_manager_leak_detection: false, safebrowsing.enabled: true}}, pageLoadStrategy: normal, selenoid:options: {enableHar: false, enableVNC: false, enableVideo: false, headless: true}, unhandledPromptBehavior: ignore}
+selenide.baseUrl: https://reference-app.autotests.ai
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:115)
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:76)
+	at org.openqa.selenium.remote.ProtocolHandshake.createSession(ProtocolHandshake.java:62)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:196)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:600)
+	at org.openqa.selenium.remote.RemoteWebDriver.startSession(RemoteWebDriver.java:284)
+	at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:217)
+	at org.openqa.selenium.remote.RemoteWebDriver.<init>(RemoteWebDriver.java:202)
+	at com.codeborne.selenide.webdriver.RemoteDriverFactory.create(RemoteDriverFactory.java:24)
+	at com.codeborne.selenide.webdriver.WebDriverFactory.createWebDriverInstance(WebDriverFactory.java:99)
+	at com.codeborne.selenide.webdriver.WebDriverFactory.createWebDriver(WebDriverFactory.java:56)
+	at com.codeborne.selenide.drivercommands.CreateDriverCommand.lambda$createDriver$0(CreateDriverCommand.java:66)
+	at com.codeborne.selenide.logevents.SelenideLogger.wrap(SelenideLogger.java:128)
+	at com.codeborne.selenide.logevents.SelenideLogger.get(SelenideLogger.java:106)
+	at com.codeborne.selenide.drivercommands.CreateDriverCommand.createDriver(CreateDriverCommand.java:43)
+	at com.codeborne.selenide.WebDriverThreadLocalContainer.createDriver(WebDriverThreadLocalContainer.java:189)
+	at com.codeborne.selenide.WebDriverThreadLocalContainer.createDriver(WebDriverThreadLocalContainer.java:185)
+	at com.codeborne.selenide.WebDriverThreadLocalContainer.createAndRegisterDriver(WebDriverThreadLocalContainer.java:172)
+	at com.codeborne.selenide.WebDriverThreadLocalContainer.getAndCheckWebDriver(WebDriverThreadLocalContainer.java:133)
+	at com.codeborne.selenide.WebDriverRunner.getAndCheckWebDriver(WebDriverRunner.java:102)
+	at com.codeborne.selenide.StaticDriver.getAndCheckWebDriver(StaticDriver.java:44)
+	at com.codeborne.selenide.SelenideDriver.getAndCheckWebDriver(SelenideDriver.java:254)
+	at com.codeborne.selenide.drivercommands.Navigator.lambda$navigateTo$0(Navigator.java:69)
+	at com.codeborne.selenide.logevents.SelenideLogger.lambda$run$0(SelenideLogger.java:99)
+	at com.codeborne.selenide.logevents.SelenideLogger.wrap(SelenideLogger.java:128)
+	at com.codeborne.selenide.logevents.SelenideLogger.run(SelenideLogger.java:98)
+	at com.codeborne.selenide.drivercommands.Navigator.navigateTo(Navigator.java:67)
+	at com.codeborne.selenide.drivercommands.Navigator.open(Navigator.java:31)
+	at com.codeborne.selenide.SelenideDriver.open(SelenideDriver.java:111)
+	at com.codeborne.selenide.Selenide.open(Selenide.java:50)
+	at pages.LoginPage.openPage(LoginPage.java:28)
+	at tests.LoginTests.shouldShowValidationErrorWhenPasswordIsEmpty(LoginTests.java:48)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.tryRemoveAndExec(ForkJoinPool.java:1351)
+	at java.base/java.util.concurrent.ForkJoinTask.awaitDone(ForkJoinTask.java:422)
+	at java.base/java.util.concurrent.ForkJoinTask.join(ForkJoinTask.java:651)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:387)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1312)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1843)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1808)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:188)
+","Open login page broken (15s 808ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowValidationErrorWhenUsernameIsEmpty","Empty username shows validation error","passed","14s 181ms",,,"Open login page passed (8s 543ms)
+ Type password passed (3s 591ms)
+  Submit login form expecting validation error passed (1s 462ms)
+   Verify error message: Login is required (minimum 3 characters) passed (567ms)",,"Login",,"Authentication","Login",
+"tests.api.AuthApiTests.profileWithBearerToken","GET /api/auth/me returns profile for bearer token","passed","1s 304ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.profileWithoutToken","GET /api/auth/me without token returns 401","passed","572ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.ReferenceApiTests.healthEndpointReturnsOk","GET /api/health returns ok","passed","604ms",,,,,"Reference API",,"Home","Health and items",
+"tests.api.ReferenceApiTests.itemsEndpointReturnsSeed","GET /api/items returns seeded PostgreSQL items","passed","3s 892ms",,,,,"Reference API",,"Home","Health and items",
+"tests.RegisterTests.shouldRegisterNewUser","New user can register and land on home","passed","20s 950ms",,,"Open register page passed (15s 295ms)
+ Fill and submit register form passed (4s 660ms)
+   Type username: user_2878e9f2 passed (1s 355ms)
+   Type password passed (1s 151ms)
+   Type confirm password passed (1s 158ms)
+   Submit register form passed (996ms)
+  Verify welcome message: Welcome, user_2878e9f2! passed (962ms)",,"Register",,"Authentication","Register",
+"tests.HomeTests.pageLoadFetchesItems","Page load fetches health and items from API","passed","17s 742ms",,,"Open home page passed (15s 691ms)
+ Verify home layout is mounted passed (911ms)
+  Verify health status contains: service: reference-app passed (564ms)
+   Verify items list contains: Alpha passed (573ms)",,"Home",,"Home","Home load",
+"tests.api.AuthApiTests.loginRejectsEmptyCredentials","POST /api/auth/login rejects empty credentials with 400","passed","562ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.loginWithInvalidPassword","POST /api/auth/login rejects invalid password","passed","615ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.loginWithValidCredentials","POST /api/auth/login returns token for seeded user","passed","652ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.logoutReturnsNoContent","POST /api/auth/logout returns 204","passed","559ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerNewUser","POST /api/auth/register creates user and returns token","passed","3s 173ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerDuplicateUsername","POST /api/auth/register rejects duplicate username","passed","576ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.api.AuthApiTests.registerRejectsShortPassword","POST /api/auth/register rejects short password with 400","passed","560ms",,,,,"Auth API",,"Authentication","Authentication",
+"tests.LogoutTests.shouldLogoutAfterFormLogin","User can logout after form login","passed","20s 322ms",,,"Open login page passed (14s 682ms)
+ Fill and submit form passed (3s 376ms)
+   Type username: user1 passed (1s 296ms)
+   Type password passed (1s 122ms)
+   Submit login form passed (958ms)
+  Verify welcome message: Welcome, user1! passed (917ms)
+   Click logout button passed (792ms)
+    Verify form title message: Login Form passed (551ms)",,"Logout",,"Authentication","Logout",
+"tests.LogoutTests.shouldLogoutAfterLocalStorageAuthentication","User can logout after localStorage authentication","passed","18s 936ms",,,"Open home page with local storage authentication passed (16s 438ms)
+ Verify welcome message: Welcome, user1! passed (1s 42ms)
+  Click logout button passed (785ms)
+   Verify form title message: Login Form passed (663ms)",,"Logout",,"Authentication","Logout",
+"tests.LoginTests.shouldLoginWithValidCredentials","User is logged in with valid credentials","passed","17s 889ms",,,"Open login page passed (13s 532ms)
+ Fill and submit form passed (3s 441ms)
+   Type username: user1 passed (1s 333ms)
+   Type password passed (1s 133ms)
+   Submit login form passed (973ms)
+  Verify welcome message: Welcome, user1! passed (913ms)",,"Login",,"Authentication","Login",
+"tests.LoginTests.shouldShowErrorWhenPasswordIsWrong","Wrong password shows readable error","passed","17s 971ms",,,"Open login page passed (13s 720ms)
+ Type username: user1 passed (1s 322ms)
+  Type password passed (1s 191ms)
+   Submit login form expecting validation error passed (1s 164ms)
+    Verify error message: Wrong login or password passed (572ms)",,"Login",,"Authentication","Login",
