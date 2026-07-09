@@ -1,0 +1,1 @@
+{"id":"0fec1325408dd73cd35707502c1f8812","fullName":"tests.api.AuthApiTests.loginRejectsEmptyCredentials","name":"POST /api/auth/login rejects empty credentials with 400","status":"passed","testResultsByEnv":{"default":"daf52d62172386dd7012d13f6872b7cc"}}

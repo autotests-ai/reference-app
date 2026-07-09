@@ -1,0 +1,1 @@
+{"id":"85b4da584fbd870e36d1319351f5667b","fullName":"tests.api.AuthApiTests.registerRejectsShortPassword","name":"POST /api/auth/register rejects short password with 400","status":"passed","testResultsByEnv":{"default":"b34849d541a8a5b0b5f0ef1e38e5335a"}}

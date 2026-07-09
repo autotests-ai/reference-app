@@ -1,0 +1,1 @@
+{"id":"922b0dae950c8fad2b2a1f35e1736561","fullName":"tests.api.AuthApiTests.registerNewUser","name":"POST /api/auth/register creates user and returns token","status":"passed","testResultsByEnv":{"default":"3d654f7a407618780b5aceb3ec8adf5b"}}
