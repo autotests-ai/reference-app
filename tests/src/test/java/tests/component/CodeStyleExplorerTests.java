@@ -45,7 +45,8 @@ class CodeStyleExplorerTests extends TestBase {
         $("[data-testid='cse-topic-negative-raw']").click();
         $("[data-testid='cse-topic-negative-raw']").shouldHave(attribute("aria-pressed", "true"));
         $("[data-testid='cse-topic-canon-smoke']").shouldHave(attribute("aria-pressed", "false"));
-        $("[data-testid='cse-output']").shouldHave(text("wrongPasswordAuthorizationTest"));
+        $("[data-testid='cse-output']").shouldHave(text("open(\"/login\")"));
+        $("[data-testid='cse-output']").shouldHave(text("login-input"));
         $("[data-testid='cse-output']").shouldNotHave(text("fillAndSubmitForm"));
     }
 }
