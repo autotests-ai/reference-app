@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code style explorer — template-project</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/link.css">
+  <link rel="stylesheet" href="css/page.css">
+  <link rel="stylesheet" href="css/text.css">
+  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="css/configurator.css">
+  <link rel="stylesheet" href="css/code-style-explorer.css">
+</head>
+<body>
+  <main class="configurator code-style-explorer page-shell page-shell--pad-bottom-lg" data-testid="code-style-explorer">
+    <a class="configurator__back" href="../index.html">← template-project</a>
+
+    <header class="configurator__intro">
+      <p class="status">Debug — ADR 002 patterns</p>
+      <h1 class="configurator__title">Code style explorer</h1>
+      <p class="configurator__lead text text--sm">
+        Каталог <strong>паттернов</strong> (не 17 осей). Каждая тема — готовый пример + overlay-вектор для
+        <a href="e2e-builder.html" class="link link--nav">e2e-builder</a>.
+        Канон генератора — <code>js/test-params-map.js</code>; каталог — <code>js/code-style-catalog.js</code>.
+      </p>
+      <nav class="code-style-explorer__nav" aria-label="Навигация">
+        <a href="configurator-option-presets.html#code-style" class="link link--nav">Option presets</a>
+        <a href="e2e-builder.html" class="link link--nav">E2e builder</a>
+        <a href="field-variants.html" class="link link--nav">Field variants</a>
+      </nav>
+    </header>
+
+    <div class="configurator__layout grid grid--2x1 configurator__layout--terminal code-style-explorer__workspace">
+      <div class="configurator__main">
+        <div id="cse-catalog" class="code-style-explorer__catalog panel panel--content" data-testid="cse-catalog"></div>
+      </div>
+
+      <div class="configurator__aside">
+        <div class="configurator__output-panel">
+          <div class="configurator__output-sticky">
+            <div class="panel panel--terminal code-style-explorer__terminal" data-testid="cse-terminal">
+              <div class="panel__bar">
+                <div class="panel__dots" aria-hidden="true">
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                  <span class="panel__dot"></span>
+                </div>
+                <div class="panel__trail">
+                  <span class="panel__title">Пример кода</span>
+                </div>
+              </div>
+              <div class="code-style-explorer__sample-head">
+                <p class="code-style-explorer__sample-title" id="cse-sample-title">—</p>
+                <div class="code-style-explorer__sample-meta" id="cse-sample-meta"></div>
+              </div>
+              <pre class="panel__code" id="cse-output" data-testid="cse-output" aria-label="Code sample"></pre>
+              <div class="code-style-explorer__terminal-foot">
+                <a
+                  id="cse-builder-link"
+                  class="link link--nav"
+                  href="e2e-builder.html"
+                  data-testid="cse-builder-link"
+                  hidden
+                >Открыть в builder →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/code-style-catalog.js"></script>
+  <script src="js/code-style-explorer.js"></script>
+</body>
+</html>
