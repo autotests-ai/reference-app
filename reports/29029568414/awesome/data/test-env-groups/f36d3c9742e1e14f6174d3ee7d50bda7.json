@@ -1,0 +1,1 @@
+{"id":"f36d3c9742e1e14f6174d3ee7d50bda7","fullName":"tests.LogoutTests.shouldLogoutAfterLocalStorageAuthentication","name":"User can logout after localStorage authentication","status":"passed","testResultsByEnv":{"default":"3f9daf5c8fa96ccdbe6e1f4dd69e5451"}}
