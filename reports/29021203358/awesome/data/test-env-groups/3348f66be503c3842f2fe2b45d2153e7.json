@@ -1,1 +1,0 @@
-{"id":"3348f66be503c3842f2fe2b45d2153e7","fullName":"tests.api.AuthApiTests.loginWithValidCredentials","name":"POST /api/auth/login returns token for seeded user","status":"passed","testResultsByEnv":{"default":"87785690a40c1bd9a70e57e300d38f98"}}
