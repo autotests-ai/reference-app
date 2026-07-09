@@ -45,8 +45,9 @@ Contract: `stacks/_contract/openapi.yaml`, `flows/login.md`.
 # PostgreSQL + backend
 docker compose up -d --build
 
-# Unit (backend)
-cd backend && ./gradlew test
+# Unit (backend) + JaCoCo HTML report
+cd backend && ./gradlew test jacocoTestReport
+# open build/reports/jacoco/test/html/index.html
 
 # API
 cd tests && ./gradlew testApi -DpyramidStand=reference_local

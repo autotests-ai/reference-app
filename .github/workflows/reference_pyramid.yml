@@ -93,9 +93,42 @@ jobs:
         working-directory: .
         run: docker compose up -d --build --wait
 
-      - name: Backend unit
+      - name: Backend unit + JaCoCo
         working-directory: backend
-        run: ./gradlew test
+        run: ./gradlew test jacocoTestReport
+
+      - name: Backend coverage summary
+        if: always()
+        working-directory: backend
+        run: |
+          python - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          report = Path("build/reports/jacoco/test/jacocoTestReport.xml")
+          if not report.exists():
+              print("JaCoCo report missing", flush=True)
+              raise SystemExit(0)
+
+          root = ET.parse(report).getroot()
+          counters = {c.attrib["type"]: int(c.attrib["missed"]) + int(c.attrib["covered"])
+                      for c in root.findall("counter")}
+          lines = counters.get("LINE", 0)
+          covered = next(int(c.attrib["covered"]) for c in root.findall("counter") if c.attrib["type"] == "LINE")
+          pct = (covered / lines * 100) if lines else 0.0
+          print(f"backend line coverage: {pct:.1f}% ({covered}/{lines})")
+          with open("${GITHUB_STEP_SUMMARY}", "a", encoding="utf-8") as out:
+              out.write(f"- backend JaCoCo line coverage: **{pct:.1f}%** ({covered}/{lines})\n")
+              out.write("- HTML report: `backend/build/reports/jacoco/test/html/index.html`\n")
+          PY
+
+      - name: Upload backend JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jacoco
+          path: backend/build/reports/jacoco/test/
+          if-no-files-found: ignore
 
       - name: Pyramid unit (tests)
         run: ./gradlew testUnit -DpyramidStand=reference_local -DallureReportMode=none
@@ -131,7 +164,7 @@ jobs:
         run: |
           {
             echo "## reference local pyramid"
-            echo "- backend unit + testUnit + testApi + testIntegration + testComponent + testE2e + testVisual"
+            echo "- backend unit + JaCoCo + testUnit + testApi + testIntegration + testComponent + testE2e + testVisual"
             echo "- baselines SSOT: Linux headless Chrome 148 (\`reference_visual_baselines.yml\`)"
           } >> "$GITHUB_STEP_SUMMARY"
 

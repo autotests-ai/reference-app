@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -35,4 +36,18 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+tasks.named('jacocoTestReport', JacocoReport) {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    classDirectories.setFrom(files(classDirectories.files.collect {
+        fileTree(dir: it, exclude: [
+                '**/ReferenceApplication.class',
+        ])
+    }))
 }
