@@ -1,1 +1,0 @@
-{"id":"16cdf7208539e753a047a971a9c7a532","fullName":"tests.api.ReferenceApiTests.itemsEndpointReturnsSeed","name":"GET /api/items returns seeded PostgreSQL items","status":"passed","testResultsByEnv":{"default":"b9926d57c7b05099216430d3b70a5ca5"}}
