@@ -22,4 +22,6 @@ open build/reports/jacoco/jacocoTestUnitReport/html/index.html
 - `backend-jacoco` — backend HTML/XML
 - `pyramid-unit-jacoco` — unit slice HTML/XML
 
-Stable tag: `v0.2.0-coverage` (full CI pyramid green + gates above).
+Stable tag: `v0.2.1` (CI pyramid + prod pyramid green, 20 component tests, `reference_ci` stands).
+
+Previous: `v0.2.0-coverage` (JaCoCo 100% gates only).
