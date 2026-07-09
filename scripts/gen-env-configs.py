@@ -180,6 +180,8 @@ def build_values(stand: str, layer: str) -> dict[str, str]:
         values.update(COMPONENT_BASE)
     if layer == "unit":
         values["allureReportMode"] = "none"
+    if stand.endswith("_prod") and layer == "e2e":
+        values["closeBrowserAfterEach"] = "true"
     return values
 
 
