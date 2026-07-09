@@ -5,19 +5,31 @@ import org.aeonbits.owner.ConfigFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class ConfigReader {
+public final class ConfigReader {
+
+    private ConfigReader() {
+    }
+
     public static final TestConfig testConfig = ConfigFactory.create(TestConfig.class);
 
     public static String resolveWebBaseUrl() {
-        return resolveBaseUrl().replaceAll("/+$", "");
+        return resolveWebBaseUrl(testConfig);
+    }
+
+    static String resolveWebBaseUrl(TestConfig config) {
+        return resolveBaseUrl(config).replaceAll("/+$", "");
     }
 
     public static String resolveComponentCatalogUrl() {
-        var url = testConfig.componentCatalogUrl().trim();
+        return resolveComponentCatalogUrl(testConfig);
+    }
+
+    static String resolveComponentCatalogUrl(TestConfig config) {
+        var url = config.componentCatalogUrl().trim();
         if (!url.isEmpty()) {
             return url.replaceAll("/+$", "");
         }
-        return resolveWebBaseUrl();
+        return resolveWebBaseUrl(config);
     }
 
     public static String resolveBaseUrl() {

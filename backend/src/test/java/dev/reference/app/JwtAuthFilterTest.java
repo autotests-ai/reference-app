@@ -67,6 +67,19 @@ class JwtAuthFilterTest {
     }
 
     @Test
+    @DisplayName("ignores non-bearer authorization header")
+    void ignoresNonBearerAuthorizationHeader() throws Exception {
+        var request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Basic dXNlcjpwYXNz");
+        var response = new MockHttpServletResponse();
+
+        filter.doFilterInternal(request, response, filterChain);
+
+        verify(filterChain).doFilter(request, response);
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+    }
+
+    @Test
     @DisplayName("sets authentication for valid bearer token")
     void setsAuthenticationForValidBearerToken() throws Exception {
         var request = new MockHttpServletRequest();

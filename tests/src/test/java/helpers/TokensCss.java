@@ -18,13 +18,19 @@ public final class TokensCss {
     }
 
     public static Path defaultTokensPath() {
-        var fromFrontend = Path.of("..", "frontend", "css", "tokens.css").normalize().toAbsolutePath();
-        if (Files.exists(fromFrontend)) {
-            return fromFrontend;
+        return resolveTokensCssPath(
+                Path.of("..", "frontend", "css", "tokens.css").normalize().toAbsolutePath(),
+                Path.of("..", "backend", "src", "main", "resources", "static", "css", "tokens.css")
+                        .normalize()
+                        .toAbsolutePath()
+        );
+    }
+
+    static Path resolveTokensCssPath(Path frontendCandidate, Path backendCandidate) {
+        if (Files.exists(frontendCandidate)) {
+            return frontendCandidate;
         }
-        return Path.of("..", "backend", "src", "main", "resources", "static", "css", "tokens.css")
-                .normalize()
-                .toAbsolutePath();
+        return backendCandidate;
     }
 
     public static Map<String, String> parseRootTokens(Path cssFile) throws Exception {

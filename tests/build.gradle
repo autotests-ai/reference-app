@@ -436,13 +436,13 @@ tasks.register('jacocoTestUnitReport', JacocoReport) {
 
 tasks.register('jacocoTestUnitCoverageVerification', JacocoCoverageVerification) {
     group = 'verification'
-    description = 'Fail when pyramid unit helpers/config drop below 80% line coverage'
+    description = 'Fail when pyramid unit helpers/config drop below 100% line coverage'
     dependsOn tasks.named('jacocoTestUnitReport')
     violationRules {
         rule {
             limit {
                 counter = 'LINE'
-                minimum = 0.80
+                minimum = 1.0
             }
         }
     }

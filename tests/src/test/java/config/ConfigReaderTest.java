@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -89,5 +90,64 @@ class ConfigReaderTest {
         var config = configWith(Map.of("apiBaseUrl", "", "hubUrl", ""));
         var error = assertThrows(IllegalStateException.class, () -> ConfigReader.resolveApiBaseUrl(config));
         assertTrue(error.getMessage().contains("apiBaseUrl or hubUrl"));
+    }
+
+    @Test
+    @DisplayName("resolveWebBaseUrl strips trailing slash from loaded config")
+    void resolveWebBaseUrlStripsTrailingSlashFromLoadedConfig() {
+        assertEquals("http://localhost:8080", ConfigReader.resolveWebBaseUrl());
+    }
+
+    @Test
+    @DisplayName("resolveBaseUrl uses loaded config")
+    void resolveBaseUrlUsesLoadedConfig() {
+        assertEquals("http://localhost:8080/", ConfigReader.resolveBaseUrl());
+    }
+
+    @Test
+    @DisplayName("resolveApiBaseUrl uses loaded config")
+    void resolveApiBaseUrlUsesLoadedConfig() {
+        assertEquals("http://localhost:8080/", ConfigReader.resolveApiBaseUrl());
+    }
+
+    @Test
+    @DisplayName("resolveComponentCatalogUrl uses loaded config")
+    void resolveComponentCatalogUrlUsesLoadedConfig() {
+        assertEquals("http://localhost:3000", ConfigReader.resolveComponentCatalogUrl());
+    }
+
+    @Test
+    @DisplayName("resolveComponentCatalogUrl uses explicit catalog url")
+    void resolveComponentCatalogUrlUsesExplicitCatalogUrl() {
+        var config = configWith(Map.of(
+                "baseUrl", "http://localhost:8080/",
+                "componentCatalogUrl", "http://catalog.test/"));
+        assertEquals("http://catalog.test", ConfigReader.resolveComponentCatalogUrl(config));
+    }
+
+    @Test
+    @DisplayName("resolveComponentCatalogUrl falls back to web base when catalog url is empty")
+    void resolveComponentCatalogUrlFallsBackToWebBaseUrlWhenEmpty() {
+        var config = configWith(Map.of(
+                "baseUrl", "http://localhost:8080/",
+                "componentCatalogUrl", ""));
+        assertEquals("http://localhost:8080", ConfigReader.resolveComponentCatalogUrl(config));
+    }
+
+    @Test
+    @DisplayName("private constructor keeps utility class closed")
+    void privateConstructorIsReachable() throws Exception {
+        var constructor = ConfigReader.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        assertNotNull(constructor.newInstance());
+    }
+
+    @Test
+    @DisplayName("resolveBaseUrl resolves relative basePath against user dir")
+    void resolveBaseUrlResolvesRelativeBasePath() {
+        var config = configWith(Map.of("baseUrl", "", "basePath", "build"));
+        var url = ConfigReader.resolveBaseUrl(config);
+        assertTrue(url.startsWith("file:"));
+        assertTrue(url.endsWith("/"));
     }
 }

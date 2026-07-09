@@ -49,6 +49,9 @@ docker compose up -d --build
 cd backend && ./gradlew test jacocoTestCoverageVerification
 # open build/reports/jacoco/test/html/index.html
 
+# Pyramid unit (config + helpers) — 100% line gate on unit slice
+cd tests && ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_local
+
 # API
 cd tests && ./gradlew testApi -DpyramidStand=reference_local
 
