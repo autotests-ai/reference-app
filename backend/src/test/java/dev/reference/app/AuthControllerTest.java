@@ -111,6 +111,13 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("GET /api/auth/me without token returns 401")
+    void meRequiresAuthentication() throws Exception {
+        mockMvc.perform(get("/api/auth/me"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @DisplayName("POST /api/auth/register rejects short password with 400")
     void registerRejectsShortPassword() throws Exception {
         mockMvc.perform(post("/api/auth/register")

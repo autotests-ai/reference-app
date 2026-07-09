@@ -95,7 +95,7 @@ jobs:
 
       - name: Backend unit + JaCoCo
         working-directory: backend
-        run: ./gradlew test jacocoTestReport
+        run: ./gradlew test jacocoTestReport jacocoTestCoverageVerification
 
       - name: Backend coverage summary
         if: always()

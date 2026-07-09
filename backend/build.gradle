@@ -51,3 +51,20 @@ tasks.named('jacocoTestReport', JacocoReport) {
         ])
     }))
 }
+
+tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 1.0
+            }
+        }
+    }
+    classDirectories.setFrom(tasks.named('jacocoTestReport', JacocoReport).get().classDirectories)
+}
+
+tasks.named('check') {
+    dependsOn jacocoTestCoverageVerification
+}
