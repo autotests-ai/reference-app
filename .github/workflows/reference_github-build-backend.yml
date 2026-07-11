@@ -1,0 +1,113 @@
+# reference-app backend artifact build (archetype: {service}_github-build.yml).
+# SSOT runnable → sync-chain-reference.sh → ethalon _ethalon/
+#
+# Compile + bootJar + docker compose build backend. No deploy (see deploy.yml).
+# Optional registry push: set vars.DOCKER_IMAGE + secrets.DOCKER_REGISTRY_TOKEN.
+#
+# Future microservice split: move to reference-backend-api/.github/workflows/backend-api_github-build.yml
+
+name: reference-app build backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "app-static/**"
+      - "docker-compose.yml"
+      - "scripts/sync-app-static.sh"
+      - "scripts/wire-ui.sh"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "app-static/**"
+      - "docker-compose.yml"
+      - "scripts/sync-app-static.sh"
+      - "scripts/wire-ui.sh"
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: reference-github-build-backend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-backend:
+    name: Build backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+
+      - name: Materialize static into backend
+        continue-on-error: true
+        run: bash scripts/sync-app-static.sh
+
+      - name: Unit gate + bootJar
+        working-directory: backend
+        run: ./gradlew test bootJar --no-daemon
+
+      - name: Build Docker image
+        run: docker compose build backend
+
+      - name: Upload bootJar
+        uses: actions/upload-artifact@v7
+        with:
+          name: reference-backend-bootJar-${{ github.run_id }}
+          path: backend/build/libs/*.jar
+          if-no-files-found: error
+
+      - name: Push Docker image
+        if: >-
+          github.event_name != 'pull_request' &&
+          vars.DOCKER_IMAGE != ''
+        env:
+          DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
+          DOCKER_REGISTRY_TOKEN: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+        run: |
+          if [ -z "${DOCKER_REGISTRY_TOKEN:-}" ]; then
+            echo "::warning::vars.DOCKER_IMAGE set but secrets.DOCKER_REGISTRY_TOKEN missing — skip push"
+            exit 0
+          fi
+          echo "${DOCKER_REGISTRY_TOKEN}" | docker login "$(echo "${DOCKER_IMAGE}" | cut -d/ -f1)" -u "${{ github.actor }}" --password-stdin
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TAG="${DOCKER_IMAGE}:${SHORT_SHA}"
+          IMAGE_ID="$(docker compose images -q backend)"
+          docker tag "${IMAGE_ID}" "${TAG}"
+          docker tag "${IMAGE_ID}" "${DOCKER_IMAGE}:latest"
+          docker push "${TAG}"
+          docker push "${DOCKER_IMAGE}:latest"
+          echo "IMAGE_TAG=${TAG}" >> "$GITHUB_ENV"
+
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## reference-app build backend"
+            echo ""
+            echo "- commit: \`${GITHUB_SHA:0:7}\`"
+            echo "- bootJar artifact: \`reference-backend-bootJar-${GITHUB_RUN_ID}\`"
+            if [ -n "${IMAGE_TAG:-}" ]; then
+              echo "- pushed image: \`${IMAGE_TAG}\`"
+            else
+              echo "- docker: \`docker compose build backend\` (no registry push)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

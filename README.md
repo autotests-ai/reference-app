@@ -4,6 +4,38 @@ Generic Spring Boot + static JS + Gradle test pyramid — reference stack for ge
 
 GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-ai/reference-app)** · monorepo workspace: `projects/reference-home/`
 
+[![Reference App](https://autotests-ai.github.io/reference-app/readme/badge.svg)](https://autotests-ai.github.io/reference-app/reports/latest/dashboard/)
+
+[![Reference App stats](https://autotests-ai.github.io/reference-app/readme/stats.svg)](https://autotests-ai.github.io/reference-app/reports/latest/dashboard/)
+
+[![Reference App metrics](https://autotests-ai.github.io/reference-app/readme/metrics-panel.svg)](https://autotests-ai.github.io/reference-app/reports/latest/dashboard/)
+
+## Automated Tests Dashboard
+
+Live SVG metrics + Allure 3 dashboard (pyramid tile **testingPyramid**), updated after each prod pyramid run on `main`:
+
+<a href="https://autotests-ai.github.io/reference-app/reports/latest/dashboard/">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://autotests-ai.github.io/reference-app/readme/dashboard-preview-dark.png">
+    <img
+      src="https://autotests-ai.github.io/reference-app/readme/dashboard-preview.png"
+      alt="Allure 3 dashboard — pyramid, stability, success distribution"
+      width="800"
+    />
+  </picture>
+</a>
+
+> Dashboard PNG updates after each prod pyramid run on `main` (Playwright screenshot of Allure 3 dashboard).
+
+| Link | Description |
+|------|-------------|
+| [Dashboard](https://autotests-ai.github.io/reference-app/reports/latest/dashboard/) | Full pyramid — unit → api → integration → e2e → component → visual |
+| [Awesome](https://autotests-ai.github.io/reference-app/reports/latest/awesome/) | Drill-down by layer / epic |
+| [TestOps project](https://allure.autotests.cloud/project/5274) | Cloud launches |
+| [CI workflow](https://github.com/autotests-ai/reference-app/actions/workflows/reference_github-pyramid.yml) | `ci-pyramid` (PR) + `prod-pyramid` (post-deploy) |
+
+Production app: [reference-app.autotests.ai](https://reference-app.autotests.ai)
+
 | Path | Role |
 |------|------|
 | `backend/` | Spring Boot — `GET /api/health`, `GET /api/items`, JWT auth API, static UI, Flyway + Postgres |
@@ -14,7 +46,8 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 | `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
-| `.github/workflows/reference_pyramid.yml` | CI orchestrator: `ci-pyramid` (PR/push) + `prod-pyramid` (post-deploy) |
+| `.github/workflows/reference_github-build-backend.yml` | Backend bootJar + Docker image (artifact; optional registry push) |
+| `.github/workflows/reference_github-pyramid.yml` | CI orchestrator: `ci-pyramid` (PR/push) + `prod-pyramid` (post-deploy) |
 | `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
 
 ## Auth
@@ -34,7 +67,7 @@ GitHub: **[github.com/autotests-ai/reference-app](https://github.com/autotests-a
 
 Seed user: `user1` / `password1` (created on startup if missing).
 
-Contract: `stacks/_contract/openapi.yaml`, `flows/login.md`.
+Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 
 ## Quick start
 
@@ -106,11 +139,11 @@ sudo NGINX_CONF_SRC=./deploy/nginx/reference-app.autotests.ai.conf \
   bash deploy/nginx/sync-nginx.sh
 ```
 
-**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), then post-deploy [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) (`prod-pyramid`: api + e2e on Selenoid).
+**Autodeploy (GitHub Actions → production):** push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml), then post-deploy [`.github/workflows/reference_github-pyramid.yml`](.github/workflows/reference_github-pyramid.yml) (`prod-pyramid`: api + e2e on Selenoid).
 
-**CI pyramid (PR / push):** [`.github/workflows/reference_pyramid.yml`](.github/workflows/reference_pyramid.yml) job `ci-pyramid` — full stack on docker compose + headless Chrome (no Selenoid).
+**CI pyramid (PR / push):** [`.github/workflows/reference_github-pyramid.yml`](.github/workflows/reference_github-pyramid.yml) job `ci-pyramid` — full stack on docker compose + headless Chrome (no Selenoid).
 
-**Manual slices:** `workflow_dispatch` → `reference pyramid` → `ci_pyramid` | `prod_api` | `prod_e2e` | `prod_visual`.
+**Manual slices:** `workflow_dispatch` → `reference-app Tests` → `ci_pyramid` | `prod_api` | `prod_e2e` | `prod_visual`.
 
 **Visual baselines (Linux SSOT):** [`.github/workflows/reference_visual_baselines.yml`](.github/workflows/reference_visual_baselines.yml).
 
@@ -140,6 +173,8 @@ ssh selenoid-prod 'sudo /tmp/sync-nginx.sh'
 Or after DNS propagates: `sudo certbot certonly --webroot -w /var/www/certbot -d reference-app.autotests.ai`
 
 **Ports on prod host:** backend `8083` (Selenoid UI `:8080`, autotests.ai `:8081`, Jenkins `:8082`).
+
+**Optional CI registry push** (`reference_github-build-backend.yml`): `vars.DOCKER_IMAGE` + `secrets.DOCKER_REGISTRY_TOKEN` (skipped on PR).
 
 Nginx: `deploy/nginx/reference-app.autotests.ai.conf`
 

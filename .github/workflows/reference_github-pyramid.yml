@@ -1,4 +1,5 @@
-# Unified testing pyramid for reference-app.
+# reference-app monolith pyramid on GitHub Actions (archetype: {env_base}-pyramid.yml).
+# SSOT runnable: reference-app → sync-chain-reference.sh → ethalon _ethalon/
 #
 # | Trigger              | Job           | Slices                                      |
 # |----------------------|---------------|---------------------------------------------|
@@ -8,7 +9,7 @@
 #
 # Visual baseline refresh (Linux PNG SSOT): reference_visual_baselines.yml
 
-name: reference pyramid
+name: reference-app Tests
 
 on:
   push:
@@ -40,7 +41,7 @@ on:
         type: string
 
 concurrency:
-  group: reference-pyramid-${{ github.ref }}-${{ github.event_name }}
+  group: reference-github-pyramid-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: ${{ github.event_name != 'workflow_run' }}
 
 permissions:
@@ -309,16 +310,14 @@ jobs:
               ;;
           esac
 
+          GATE_EXIT=0
+          if [ -d build/allure-results ] && [ -n "$(ls -A build/allure-results 2>/dev/null)" ]; then
+            ./gradlew allureQualityGate || GATE_EXIT=$?
+          fi
+          echo "QUALITY_GATE_EXIT=${GATE_EXIT}" >> "$GITHUB_ENV"
+
           echo "TEST_EXIT=${EXIT}" >> "$GITHUB_ENV"
           exit "${EXIT}"
-
-      - name: Allure 3 quality gate
-        if: always() && hashFiles('tests/build/allure-results/**') != ''
-        run: |
-          set +e
-          ./gradlew allureQualityGate
-          echo "QUALITY_GATE_EXIT=$?" >> "$GITHUB_ENV"
-          set -e
 
       - name: Upload results to Allure TestOps
         if: always() && steps.setup-allurectl.outcome == 'success' && hashFiles('tests/build/allure-results/**') != ''
@@ -390,11 +389,22 @@ jobs:
           EOF
           ./gradlew allureReport
 
+      - name: Generate README dashboard assets
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('build/allure-results/**') != ''
+        run: |
+          mkdir -p pages/readme
+          BUILD="#${{ github.run_number }}"
+          bash ../.github/scripts/generate-readme-badge.sh \
+            build/allure-results pages/readme main "${BUILD}" \
+            "" "Reference App" "Java 21 · Spring Boot · Allure 3" ""
+
       - name: Prepare GitHub Pages
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/build/reports/allure-report/allureReport/awesome/index.html') != ''
         run: |
           mkdir -p pages/reports/${REPORT_ID}
           cp -r build/reports/allure-report/allureReport/. "pages/reports/${REPORT_ID}/"
+          rm -rf pages/reports/latest
+          cp -r "pages/reports/${REPORT_ID}" pages/reports/latest
           if [ -f history.jsonl ]; then
             cp history.jsonl pages/history.jsonl
           elif [ -f build/reports/allure-report/allureReport/history.jsonl ]; then
@@ -402,6 +412,29 @@ jobs:
           fi
           echo "${REPORT_ID}" > pages/latest-run-id.txt
           touch pages/.nojekyll
+
+      - name: Setup Node for dashboard preview capture
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('pages/reports/latest/dashboard/index.html') != ''
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Capture dashboard preview for README
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('pages/reports/latest/dashboard/index.html') != ''
+        continue-on-error: true
+        run: |
+          npm install --no-save playwright@1.50.1
+          npx playwright install chromium --with-deps
+          npx --yes serve pages -l 8765 >/tmp/serve.log 2>&1 &
+          SERVE_PID=$!
+          for _ in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8765/reports/latest/dashboard/ >/dev/null && break
+            sleep 1
+          done
+          PREVIEW_URL="http://127.0.0.1:8765/reports/latest/dashboard/" \
+            PREVIEW_OUTPUT_DIR="pages/readme" \
+            node ../.github/scripts/capture-dashboard-preview.mjs
+          kill "${SERVE_PID}" || true
 
       - name: Deploy Allure report to GitHub Pages
         if: always() && hashFiles('tests/pages/reports/**/awesome/index.html') != ''
@@ -411,6 +444,7 @@ jobs:
           publish_branch: gh-pages
           publish_dir: tests/pages
           enable_jekyll: false
+          keep_files: true
 
       - name: Upload test video
         if: always() && hashFiles('tests/test-video.mp4') != ''

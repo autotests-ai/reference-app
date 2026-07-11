@@ -29,22 +29,22 @@ Selenide `WebDriver` — **thread-local**. JUnit parallel (даже `parallelism
 - JDK 21
 - Chrome (local)
 - **App stack** — `docker compose up -d` (:8080) or `cd backend && ./gradlew bootRun`
-- **Component** — `preview/` on :3000 (`python -m http.server 3000` from `preview/`)
+- **Component catalog** — `reference-app/preview/` on :3000 (`python -m http.server 3000` from `preview/`; `componentCatalogUrl`)
 
 ## CI
 
 | Workflow | Trigger | Slices |
 |----------|---------|--------|
-| `reference_pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → component → visual |
-| `reference_pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, sequential) |
-| `reference_pyramid.yml` | workflow_dispatch | `ci_pyramid` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
+| `reference_github-pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → component → visual |
+| `reference_github-pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, sequential) |
+| `reference_github-pyramid.yml` | workflow_dispatch | `ci_pyramid` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
 | `reference_visual_baselines.yml` | workflow_dispatch | refresh Linux PNG baselines |
 
 ## Quick start
 
 ```bash
-# Terminal 1 — design-system preview (component layer)
-cd projects/design-system-home/design-system/preview && python -m http.server 3000
+# Terminal 1 — reference-app preview snapshot (component catalog)
+cd projects/reference-home/reference-app/preview && python -m http.server 3000
 
 # Terminal 2 — app stack
 ./scripts/sync-app-static.sh
@@ -61,13 +61,14 @@ cd tests
 
 | Layer | Classes | Gradle task |
 |-------|---------|-------------|
-| unit (backend) | `ItemServiceTest`, `AuthServiceTest`, `JwtServiceTest` | `cd backend && ./gradlew test` |
+| unit (backend) | `ItemServiceTest`, `AuthServiceTest`, `JwtServiceTest`, `ApiControllerTest`, `AuthControllerTest`, `JwtAuthFilterTest`, `PageControllerTest`, `ItemEntityTest`, `UserEntityTest`, `UserSeederTest` | `cd backend && ./gradlew test` |
 | unit (tests) | `helpers/*Test`, `config/*Test` | `testUnit` |
 | integration | `LoginFormTests`, `LoginEmbedTests` | `testIntegration` |
-| component | `LangToggleTests`, `PrimitiveSizeTests`, `PlaqueFieldSegTests`, … | `testComponent` |
+| component | `LangToggleTests`, `PrimitiveSizeTests`, `PlaqueFieldSegTests`, `TabTests`, `SegmentedControlTests`, `ConfiguratorOptionPresetsTests`, `CodeStyleExplorerTests` (`@Tag("component")`, 20 tests) | `testComponent` |
 | api | `ReferenceApiTests`, `AuthApiTests` | `testApi` |
 | e2e smoke | `HomeTests`, `LoginTests`, `RegisterTests`, `LogoutTests` | `testE2e` |
-| e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests`, `PlaqueFieldGridMixedBaselineTests` | `testVisual` |
+| e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests` | `testVisual` |
+| component visual | `PlaqueFieldGridMixedBaselineTests` (`@Layer("component")` + `@Tag("visual")` — runs in `testVisual`) | `testVisual` |
 | manual | exploratory stubs (none in `LoginTests`; use `testManual` slice when added) | `testManual` |
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.

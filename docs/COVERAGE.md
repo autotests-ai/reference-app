@@ -1,6 +1,6 @@
 # Test coverage (stable baseline)
 
-JaCoCo gates enforced in CI (`reference_pyramid` → `ci-pyramid` / `ci_pyramid`).
+JaCoCo gates enforced in CI (`reference_github-pyramid` → `ci-pyramid` / `ci_pyramid`).
 
 | Module | Scope | Line gate | Command |
 |--------|-------|-----------|---------|
