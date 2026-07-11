@@ -390,7 +390,7 @@ jobs:
           ./gradlew allureReport
 
       - name: Generate README dashboard assets
-        if: always() && steps.allure-report.outcome == 'success' && hashFiles('build/allure-results/**') != ''
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/build/allure-results/**') != ''
         run: |
           mkdir -p pages/readme
           BUILD="#${{ github.run_number }}"
@@ -414,13 +414,13 @@ jobs:
           touch pages/.nojekyll
 
       - name: Setup Node for dashboard preview capture
-        if: always() && steps.allure-report.outcome == 'success' && hashFiles('pages/reports/latest/dashboard/index.html') != ''
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
         uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Capture dashboard preview for README
-        if: always() && steps.allure-report.outcome == 'success' && hashFiles('pages/reports/latest/dashboard/index.html') != ''
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
         continue-on-error: true
         run: |
           npm install --no-save playwright@1.50.1
