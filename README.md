@@ -19,7 +19,7 @@ Live SVG metrics + Allure 3 dashboard (pyramid tile **testingPyramid**), updated
     <source media="(prefers-color-scheme: dark)" srcset="https://autotests-ai.github.io/reference-app/readme/dashboard-preview-dark.png">
     <img
       src="https://autotests-ai.github.io/reference-app/readme/dashboard-preview.png"
-      alt="Allure 3 dashboard — pyramid, stability, success distribution"
+      alt="Allure 3 dashboard — pyramid, status dynamics, success distribution"
       width="800"
     />
   </picture>
