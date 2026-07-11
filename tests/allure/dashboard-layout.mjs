@@ -45,6 +45,10 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       groupBy: "label-name:component",
     },
     {
+      type: "coverageDiff",
+      title: TITLES.coverageDiff,
+    },
+    {
       type: "statusTransitions",
       title: TITLES.statusTransitions,
       limit: 20,
@@ -58,10 +62,6 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "durationDynamics",
       title: TITLES.durationDynamics,
       limit: 20,
-    },
-    {
-      type: "coverageDiff",
-      title: TITLES.coverageDiff,
     },
     {
       type: "problemsDistribution",
