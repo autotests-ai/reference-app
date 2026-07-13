@@ -82,13 +82,19 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend-react/package-lock.json
 
       - name: Install Chrome for Testing
         run: |
           CFT_PATH="$HOME/.local/share/chrome-for-testing"
           npx --yes @puppeteer/browsers install chrome@148.0.7778.178 --platform linux --path "$CFT_PATH"
           npx --yes @puppeteer/browsers install chromedriver@148.0.7778.178 --platform linux --path "$CFT_PATH"
+
+      - name: Materialize static + build React SPA
+        working-directory: .
+        run: bash scripts/sync-app-static.sh
 
       - name: Start app stack
         working-directory: .
@@ -412,12 +418,13 @@ jobs:
           fi
           echo "${REPORT_ID}" > pages/latest-run-id.txt
           touch pages/.nojekyll
+          bash ../.github/scripts/prepare-allure-pages-colors.sh pages "pages/reports/latest"
 
       - name: Setup Node for dashboard preview capture
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Capture dashboard preview for README
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
