@@ -6,9 +6,7 @@
     "reportLink": "",
     "language": "ru",
     "allureFolder": "tests/build/reports/allure-report/allureReport/awesome/",
-    "allureResultsFolder": "tests/build/allure-results/",
     "enableChart": true,
-    "darkMode": false,
     "enableSuitesPublishing": false
   },
   "telegram": {
