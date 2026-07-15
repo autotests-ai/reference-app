@@ -404,56 +404,40 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ALLURE_REPORT_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/awesome/index.html
           ALLURE_DASHBOARD_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/dashboard/index.html
+          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TESTOPS_LAUNCH_URL: ${{ env.TESTOPS_LAUNCH_URL }}
         run: |
           AWESOME="tests/build/reports/allure-report/allureReport/awesome"
           if [ ! -f "$AWESOME/summary.json" ]; then
             echo "No Allure summary — skip Telegram notification"
             exit 0
           fi
-          # 4.11.0 expects Allure 2 widgets/summary.json (statistic + time).
-          # Allure 3 writes stats at report root — adapt for the jar until 5.0.
+          # 5.0 reads A3 summary.json at report root; widgets copy kept for pie fallback.
           mkdir -p "$AWESOME/widgets"
-          python -c '
-          import json
-          from pathlib import Path
-          awesome = Path("tests/build/reports/allure-report/allureReport/awesome")
-          src = json.loads((awesome / "summary.json").read_text())
-          stats = src.get("statistic") or src.get("stats") or {}
-          duration = (src.get("time") or {}).get("duration")
-          if duration is None:
-              duration = src.get("duration") or 0
-          out = {
-              "statistic": {
-                  "total": int(stats.get("total") or 0),
-                  "passed": int(stats.get("passed") or 0),
-                  "failed": int(stats.get("failed") or 0),
-                  "broken": int(stats.get("broken") or 0),
-                  "skipped": int(stats.get("skipped") or 0),
-                  "unknown": int(stats.get("unknown") or 0),
-              },
-              "time": {"duration": int(duration)},
-          }
-          (awesome / "widgets" / "summary.json").write_text(json.dumps(out))
-          print("Adapted A3 summary → widgets/summary.json", out["statistic"])
-          '
-          # Do NOT pass -Dnotifications.* for nested objects: JavaProps merge in 4.11
-          # replaces the whole nested bean and nulls sibling fields (replyTo, allureFolder, …).
+          if [ ! -f "$AWESOME/widgets/summary.json" ]; then
+            cp "$AWESOME/summary.json" "$AWESOME/widgets/summary.json"
+          fi
           CONFIG=notifications/config.runtime.json
           python -c "
           import json, os
           from pathlib import Path
           cfg = json.loads(Path('notifications/config.json').read_text())
           cfg['base']['project'] = 'Reference App #${{ github.run_number }}'
-          cfg['base']['reportLink'] = os.environ['ALLURE_REPORT_URL']
+          cfg['base']['links'] = {
+              'report': os.environ['ALLURE_REPORT_URL'],
+              'dashboard': os.environ['ALLURE_DASHBOARD_URL'],
+              'testops': os.environ.get('TESTOPS_LAUNCH_URL') or '',
+              'build': os.environ['BUILD_URL'],
+          }
           cfg['telegram']['token'] = os.environ['TELEGRAM_BOT_TOKEN']
           cfg['telegram']['chat'] = os.environ['TELEGRAM_CHAT_ID']
           cfg['telegram']['replyTo'] = ''
           Path('notifications/config.runtime.json').write_text(json.dumps(cfg, indent=2))
           "
-          JAR=allure-notifications-4.11.0.jar
+          JAR=allure-notifications-5.0.0.jar
           if [ ! -f "$JAR" ]; then
             curl -fsSL -o "$JAR" \
-              https://github.com/qa-guru/allure-notifications/releases/download/4.11.0/"$JAR"
+              https://github.com/qa-guru/allure-notifications/releases/download/v5.0.0/"$JAR"
           fi
           java "-DconfigFile=${CONFIG}" -jar "$JAR"
 

@@ -3,14 +3,29 @@
     "project": "Reference App",
     "environment": "prod",
     "comment": "",
-    "reportLink": "",
     "language": "ru",
     "allureFolder": "tests/build/reports/allure-report/allureReport/awesome/",
+    "allureResultsFolder": "tests/build/allure-results/",
     "enableChart": true,
-    "enableSuitesPublishing": false
+    "enableSuitesPublishing": false,
+    "chart": {
+      "mode": "collage",
+      "panels": ["pie", "testingPyramid", "durations"],
+      "pyramidFallback": "suites",
+      "width": 1000,
+      "height": 600
+    },
+    "links": {
+      "report": "",
+      "dashboard": "",
+      "testops": "",
+      "build": ""
+    }
   },
   "telegram": {
     "token": "",
-    "chat": ""
+    "chat": "",
+    "replyTo": "",
+    "templatePath": "/templates/telegram.ftl"
   }
 }
