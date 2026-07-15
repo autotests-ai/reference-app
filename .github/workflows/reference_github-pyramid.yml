@@ -412,11 +412,6 @@ jobs:
             echo "No Allure summary — skip Telegram notification"
             exit 0
           fi
-          # 5.0 reads A3 summary.json at report root; widgets copy kept for pie fallback.
-          mkdir -p "$AWESOME/widgets"
-          if [ ! -f "$AWESOME/widgets/summary.json" ]; then
-            cp "$AWESOME/summary.json" "$AWESOME/widgets/summary.json"
-          fi
           CONFIG=notifications/config.runtime.json
           python -c "
           import json, os
