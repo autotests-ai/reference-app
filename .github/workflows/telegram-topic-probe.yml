@@ -1,0 +1,73 @@
+name: Telegram topic probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic_id:
+        description: "message_thread_id for Reference-app notifications (empty = only dump getUpdates)"
+        required: false
+        type: string
+      text:
+        description: "Probe message text"
+        required: false
+        default: "reference-app topic probe"
+        type: string
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discover / send to Telegram topic
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TOPIC_ID: ${{ inputs.topic_id || vars.TELEGRAM_REFERENCE_APP_TOPIC_ID || secrets.TELEGRAM_REFERENCE_APP_TOPIC_ID }}
+          TEXT: ${{ inputs.text }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          token = os.environ["TELEGRAM_BOT_TOKEN"]
+          chat = os.environ["TELEGRAM_CHAT_ID"]
+          topic = (os.environ.get("TOPIC_ID") or "").strip()
+          text = os.environ.get("TEXT") or "reference-app topic probe"
+          base = f"https://api.telegram.org/bot{token}"
+
+          def call(method, payload=None):
+              url = f"{base}/{method}"
+              data = None
+              headers = {}
+              if payload is not None:
+                  data = json.dumps(payload).encode()
+                  headers["Content-Type"] = "application/json"
+              req = urllib.request.Request(url, data=data, headers=headers)
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  return json.load(resp)
+
+          updates = call("getUpdates", {"limit": 100, "allowed_updates": ["message", "channel_post"]})
+          print("## getUpdates summary", flush=True)
+          for upd in updates.get("result", []):
+              msg = upd.get("message") or upd.get("channel_post") or {}
+              thread = msg.get("message_thread_id")
+              name = None
+              if "forum_topic_created" in msg:
+                  name = msg["forum_topic_created"].get("name")
+              preview = (msg.get("text") or "")[:80]
+              print(f"- update_id={upd.get('update_id')} thread={thread} topic_created={name!r} text={preview!r}", flush=True)
+
+          if not topic:
+              print("TOPIC_ID empty — set workflow input or TELEGRAM_REFERENCE_APP_TOPIC_ID", flush=True)
+              raise SystemExit(0)
+
+          payload = {
+              "chat_id": chat,
+              "message_thread_id": int(topic),
+              "text": text,
+          }
+          result = call("sendMessage", payload)
+          print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
+          if not result.get("ok"):
+              raise SystemExit(1)
+          print(f"Sent to chat={chat} topic={topic}", flush=True)
+          PY
