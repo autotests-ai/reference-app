@@ -283,7 +283,8 @@ jobs:
             shift
             echo "::group::${label}"
             if [ -n "$TEST_CLASS" ]; then
-              ./gradlew test --tests "$TEST_CLASS" "$@"
+              # Narrow smoke: single class via default test task (avoids empty slice + failOnNoMatchingTests)
+              ./gradlew test --tests "$TEST_CLASS" -DbrowserVersion="${BROWSER_VERSION}" -DpyramidStand=reference_prod
             else
               ./gradlew "$@"
             fi
