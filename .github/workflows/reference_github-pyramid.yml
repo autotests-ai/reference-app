@@ -431,10 +431,17 @@ jobs:
           cfg['telegram']['replyTo'] = ''
           Path('notifications/config.runtime.json').write_text(json.dumps(cfg, indent=2))
           "
-          JAR=allure-notifications-5.0.0.jar
+<<<<<<< Updated upstream
+          JAR=allure-notifications-5.0.1.jar
           if [ ! -f "$JAR" ]; then
             curl -fsSL -o "$JAR" \
-              https://github.com/qa-guru/allure-notifications/releases/download/v5.0.0/"$JAR"
+              https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/"$JAR"
+=======
+          JAR=allure-notifications-5.0.1.jar
+          if [ ! -f "$JAR" ]; then
+            curl -fsSL -o "$JAR" \
+              https://github.com/qa-guru/allure-notifications/releases/download/v5.0.1/"$JAR"
+>>>>>>> Stashed changes
           fi
           java "-DconfigFile=${CONFIG}" -jar "$JAR"
 
