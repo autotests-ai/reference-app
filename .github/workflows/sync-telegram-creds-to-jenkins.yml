@@ -20,10 +20,11 @@ jobs:
           test -n "${JENKINS_PASS:-}"
           JURL=https://jenkins.qa.guru
           AUTH="admin:${JENKINS_PASS}"
+          COOKIE=/tmp/jcook.txt
+          rm -f "$COOKIE"
 
           refresh_crumb() {
-            CRUMB_JSON=$(curl -sS -u "$AUTH" "$JURL/crumbIssuer/api/json")
-            export CRUMB FIELD
+            CRUMB_JSON=$(curl -sS -c "$COOKIE" -b "$COOKIE" -u "$AUTH" "$JURL/crumbIssuer/api/json")
             CRUMB=$(C="$CRUMB_JSON" python -c 'import json,os; print(json.loads(os.environ["C"])["crumb"])')
             FIELD=$(C="$CRUMB_JSON" python -c 'import json,os; print(json.loads(os.environ["C"])["crumbRequestField"])')
           }
@@ -31,25 +32,13 @@ jobs:
           create_secret() {
             local id="$1" desc="$2" value="$3"
             refresh_crumb
-            curl -sS -u "$AUTH" -H "$FIELD: $CRUMB" -X POST \
+            curl -sS -b "$COOKIE" -c "$COOKIE" -u "$AUTH" -H "$FIELD: $CRUMB" -X POST \
               "$JURL/credentials/store/system/domain/_/credential/$id/doDelete" >/dev/null || true
             refresh_crumb
-            CID="$id" DESC="$desc" VAL="$value" python -c '
-          import os, xml.sax.saxutils as x
-          print("""<com.cloudbees.plugins.credentials.impl.StringCredentialsImpl>
-            <scope>GLOBAL</scope>
-            <id>%s</id>
-            <description>%s</description>
-            <secret>%s</secret>
-          </com.cloudbees.plugins.credentials.impl.StringCredentialsImpl>""" % (
-            x.escape(os.environ["CID"]),
-            x.escape(os.environ["DESC"]),
-            x.escape(os.environ["VAL"]),
-          ))
-          ' > /tmp/cred.xml
-            HTTP=$(curl -sS -o /tmp/cred-create.out -w "%{http_code}" -u "$AUTH" -H "$FIELD: $CRUMB" \
-              -H "Content-Type: application/xml" \
-              --data-binary @/tmp/cred.xml \
+            JSON=$(CID="$id" DESC="$desc" VAL="$value" python -c 'import json,os; print(json.dumps({"": "0", "credentials": {"scope": "GLOBAL", "id": os.environ["CID"], "secret": os.environ["VAL"], "description": os.environ["DESC"], "$class": "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl"}}))')
+            HTTP=$(curl -sS -o /tmp/cred-create.out -w "%{http_code}" -b "$COOKIE" -c "$COOKIE" -u "$AUTH" \
+              -H "$FIELD: $CRUMB" \
+              --data-urlencode "json=$JSON" \
               "$JURL/credentials/store/system/domain/_/createCredentials")
             echo "created $id http=$HTTP"
             test "$HTTP" = "200" -o "$HTTP" = "302"
