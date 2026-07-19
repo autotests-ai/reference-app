@@ -625,7 +625,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   }
 
   function buildTestOpsShell(gradleBody, testFilter) {
-    var endpoint = values.testopsEndpoint || "https://allure.autotests.cloud";
+    var endpoint = values.testopsEndpoint || "https://allure.qa.guru";
     var projectId = values.testopsProjectId || "5263";
     var tokenDisplay = values.testopsToken ? "***" : "***";
     var lines = [
@@ -787,7 +787,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       lines.push(
         "",
         "## TestOps (CI env)",
-        "- ALLURE_ENDPOINT: `" + (values.testopsEndpoint || "https://allure.autotests.cloud") + "`",
+        "- ALLURE_ENDPOINT: `" + (values.testopsEndpoint || "https://allure.qa.guru") + "`",
         "- ALLURE_PROJECT_ID: `" + (values.testopsProjectId || "—") + "`",
         "- ALLURE_TOKEN: env secret (не в git)",
         "- allurectl watch — см. Terminal-вкладку"
