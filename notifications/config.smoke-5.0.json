@@ -1,12 +1,13 @@
 {
   "base": {
-    "project": "Reference App",
+    "project": "Reference App (local smoke)",
     "environment": "prod",
-    "comment": "",
+    "comment": "Collage preview 5.0.2 free CB-870 @ TG post 1024×1280",
     "language": "ru",
     "allureFolder": "tests/build/reports/allure-report/allureReport/awesome/",
     "allureResultsFolder": "tests/build/allure-results/",
     "enableChart": true,
+    "darkMode": true,
     "enableSuitesPublishing": false,
     "chart": {
       "mode": "collage",
@@ -24,17 +25,14 @@
       "pyramidFallback": "suites"
     },
     "links": {
-      "report": "",
-      "dashboard": "",
-      "testops": "",
-      "build": ""
+      "report": "https://autotests-ai.github.io/reference-app/reports/latest/awesome/index.html",
+      "dashboard": "https://autotests-ai.github.io/reference-app/reports/latest/dashboard/index.html",
+      "build": "https://github.com/autotests-ai/reference-app/actions/runs/29138466145"
     }
   },
   "telegram": {
     "token": "",
     "chat": "",
-    "topic": "",
-    "replyTo": "",
     "templatePath": "/templates/telegram.ftl"
   }
 }
