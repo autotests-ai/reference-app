@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       topic_id:
-        description: "message_thread_id for Reference-app notifications (empty = only dump getUpdates)"
+        description: "message_thread_id (empty = only dump getUpdates / create)"
+        required: false
+        type: string
+      create_topic:
+        description: "If set, createForumTopic with this name and print message_thread_id"
         required: false
         type: string
       text:
@@ -17,20 +21,22 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - name: Discover / send to Telegram topic
+      - name: Discover / create / send Telegram topic
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TOPIC_ID: ${{ inputs.topic_id || vars.TELEGRAM_REFERENCE_APP_TOPIC_ID || secrets.TELEGRAM_REFERENCE_APP_TOPIC_ID }}
+          CREATE_TOPIC: ${{ inputs.create_topic }}
           TEXT: ${{ inputs.text }}
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json, os, urllib.parse, urllib.request
+          import json, os, urllib.error, urllib.request
 
           token = os.environ["TELEGRAM_BOT_TOKEN"]
           chat = os.environ["TELEGRAM_CHAT_ID"]
           topic = (os.environ.get("TOPIC_ID") or "").strip()
+          create_name = (os.environ.get("CREATE_TOPIC") or "").strip()
           text = os.environ.get("TEXT") or "reference-app topic probe"
           base = f"https://api.telegram.org/bot{token}"
 
@@ -42,8 +48,22 @@ jobs:
                   data = json.dumps(payload).encode()
                   headers["Content-Type"] = "application/json"
               req = urllib.request.Request(url, data=data, headers=headers)
-              with urllib.request.urlopen(req, timeout=30) as resp:
-                  return json.load(resp)
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      return json.load(resp)
+              except urllib.error.HTTPError as exc:
+                  detail = exc.read().decode("utf-8", errors="replace")
+                  print(f"HTTP {exc.code}: {detail}", flush=True)
+                  raise
+
+          if create_name:
+              result = call("createForumTopic", {"chat_id": chat, "name": create_name})
+              print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
+              if not result.get("ok"):
+                  raise SystemExit(1)
+              tid = result["result"]["message_thread_id"]
+              print(f"CREATED topic_id={tid} name={create_name!r} chat={chat}", flush=True)
+              raise SystemExit(0)
 
           updates = call("getUpdates", {"limit": 100, "allowed_updates": ["message", "channel_post"]})
           print("## getUpdates summary", flush=True)
