@@ -1,0 +1,20 @@
+name: Sync Telegram token to greedy-token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy TELEGRAM_BOT_TOKEN to svasenkov/greedy-token
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          GH_TOKEN: ${{ secrets.CROSS_REPO_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${TELEGRAM_BOT_TOKEN:-}"
+          test -n "${GH_TOKEN:-}"
+          printf '%s' "$TELEGRAM_BOT_TOKEN" | gh secret set TELEGRAM_BOT_TOKEN -R svasenkov/greedy-token
+          printf '%s' "$TELEGRAM_BOT_TOKEN" | gh secret set TELEGRAM_TOKEN -R svasenkov/greedy-token
+          echo "synced TELEGRAM_BOT_TOKEN (+ TELEGRAM_TOKEN alias) to svasenkov/greedy-token"
