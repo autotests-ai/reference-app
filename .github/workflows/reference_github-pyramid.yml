@@ -218,7 +218,7 @@ jobs:
       run:
         working-directory: tests
     env:
-      ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || 'https://allure.autotests.cloud' }}
+      ALLURE_ENDPOINT: ${{ vars.ALLURE_ENDPOINT || 'https://allure.qa.guru' }}
       ALLURE_RESULTS: build/allure-results
       BROWSER_VERSION: "148"
       REPORT_ID: ${{ github.run_id }}

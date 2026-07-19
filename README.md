@@ -31,7 +31,7 @@ Live SVG metrics + Allure 3 dashboard (pyramid tile **testingPyramid**), updated
 |------|-------------|
 | [Dashboard](https://autotests-ai.github.io/reference-app/reports/latest/dashboard/) | Full pyramid — unit → api → integration → e2e → component → visual |
 | [Awesome](https://autotests-ai.github.io/reference-app/reports/latest/awesome/) | Drill-down by layer / epic |
-| [TestOps project](https://allure.autotests.cloud/project/5274) | Cloud launches |
+| [TestOps project](https://allure.qa.guru/project/5274) | Cloud launches |
 | [CI workflow](https://github.com/autotests-ai/reference-app/actions/workflows/reference_github-pyramid.yml) | `ci-pyramid` (PR) + `prod-pyramid` (post-deploy) |
 
 Production app: [reference-app.autotests.ai](https://reference-app.autotests.ai)
@@ -153,12 +153,12 @@ sudo NGINX_CONF_SRC=./deploy/nginx/reference-app.autotests.ai.conf \
 | `DEPLOY_HOST` | variable (optional) | `136.243.89.21` |
 | `DEPLOY_USER` | variable (optional) | `selenoid` |
 
-**Allure TestOps:** отдельный проект [5274](https://allure.autotests.cloud/project/5274) (не шарить с другими consumers).
+**Allure TestOps:** отдельный проект [5274](https://allure.qa.guru/project/5274) (не шарить с другими consumers).
 
 | Name | Kind | Value |
 |------|------|-------|
 | `ALLURE_PROJECT_ID` | variable | `5274` |
-| `ALLURE_ENDPOINT` | variable | `https://allure.autotests.cloud` |
+| `ALLURE_ENDPOINT` | variable | `https://allure.qa.guru` |
 | `ALLURE_TOKEN` | secret | TestOps upload token (см. ethalon CI: allurectl opt-in по `ALLURE_PROJECT_ID`) |
 
 **DNS:** `reference-app.autotests.ai` → `136.243.89.21` (A record).
