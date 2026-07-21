@@ -8,12 +8,8 @@ demo/
 # Frontend preview symlink (rule frontend-preview — не e2e config)
 app-path-local
 
-# E2e env profiles — локальная матрица stand×layer (regen: scripts/gen-env-layer-configs.py)
-src/test/resources/config/*.properties
-!src/test/resources/config/_ethalon.properties
-!src/test/resources/config/_new.properties
-!src/test/resources/config/_modified.properties
-!src/test/resources/config/default.properties
+# Env profiles are committed (Owner classpath:config/${env}.properties).
+# Regen locally after changing scripts/gen-env-configs.py: python scripts/gen-env-configs.py
 
 allure-results/
 bin/

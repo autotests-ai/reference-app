@@ -64,9 +64,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Generate env configs
-        run: python ../scripts/gen-env-configs.py
-
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
@@ -238,9 +235,6 @@ jobs:
           path: gh-pages
           sparse-checkout: history.jsonl
           sparse-checkout-cone-mode: false
-
-      - name: Generate env configs
-        run: python ../scripts/gen-env-configs.py
 
       - name: Setup Java
         uses: actions/setup-java@v5
