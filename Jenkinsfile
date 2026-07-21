@@ -234,10 +234,10 @@ pipeline {
               fi
               test -f "$AWESOME/summary.json"
 
-              JAR=allure-notifications-5.0.2.jar
+              JAR=allure-notifications-5.0.3.jar
               if [ ! -f "$JAR" ]; then
                 curl -fsSL -o "$JAR" \
-                  "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.2/$JAR"
+                  "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/$JAR"
               fi
               export REPORT_URL="${BUILD_URL}allure/"
               export DASHBOARD_URL="${BUILD_URL}allure/"
