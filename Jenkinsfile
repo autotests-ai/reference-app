@@ -20,7 +20,6 @@ pipeline {
     )
     string(name: 'TEST_CLASS', defaultValue: '', description: 'Optional FQCN / method for --tests')
     string(name: 'TEST_CASE_ID', defaultValue: '', description: 'Allure TestOps case id (launch name)')
-    string(name: 'GIT_REF', defaultValue: 'main', description: 'Git branch / tag / commit')
   }
 
   environment {
@@ -38,14 +37,8 @@ pipeline {
     stage('Checkout') {
       steps {
         deleteDir()
-        checkout([
-          $class: 'GitSCM',
-          branches: [[name: params.GIT_REF]],
-          userRemoteConfigs: [[
-            url: 'https://github.com/autotests-ai/reference-app.git',
-            credentialsId: 'github-qa-guru-https'
-          ]]
-        ])
+        // Repo / branch — Git plugin SCM on the job (Pipeline script from SCM), not build params.
+        checkout scm
       }
     }
 
