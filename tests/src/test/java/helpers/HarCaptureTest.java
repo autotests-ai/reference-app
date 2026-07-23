@@ -22,7 +22,7 @@ class HarCaptureTest {
                 {"message":{"method":"Network.responseReceived","params":{"requestId":"r1","response":{"status":200,"statusText":"OK","mimeType":"text/html","headers":{"content-type":"text/html"},"protocol":"http/1.1","encodedDataLength":42}}}}
                 """.trim();
         String finishedMsg = """
-                {"message":{"method":"Network.loadingFinished","params":{"requestId":"r1","timestamp":1.05}}}
+                {"message":{"method":"Network.loadingFinished","params":{"requestId":"r1","timestamp":1.05,"encodedDataLength":1280}}}
                 """.trim();
 
         LogEntries entries = new LogEntries(List.of(
@@ -35,6 +35,7 @@ class HarCaptureTest {
         assertTrue(har.contains("1.2"), () -> "HAR missing version: " + har);
         assertTrue(har.contains("example.com"), () -> "HAR missing url: " + har);
         assertTrue(har.contains("200"), () -> "HAR missing status: " + har);
+        assertTrue(har.contains("1280"), () -> "HAR missing loadingFinished size: " + har);
         assertTrue(HarCapture.supportsBrowser("chrome"));
         assertTrue(!HarCapture.supportsBrowser("firefox"));
     }

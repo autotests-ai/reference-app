@@ -20,6 +20,7 @@
       --err: #f48771;
       --bar-wait: #7b68ee;
       --bar-receive: #3794ff;
+      --hint-bg: #2a2d2e;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -33,6 +34,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
       padding: 10px 14px;
       border-bottom: 1px solid var(--border);
@@ -40,8 +42,28 @@
     }
     .header h1 { margin: 0; font-size: 14px; font-weight: 600; }
     .summary { color: var(--muted); font-size: 11px; white-space: nowrap; }
-    .toolbar a { color: var(--accent); text-decoration: none; font-size: 11px; }
-    .toolbar a:hover { text-decoration: underline; }
+    .toolbar { display: flex; align-items: center; gap: 12px; font-size: 11px; }
+    .toolbar a, .toolbar button {
+      color: var(--accent);
+      background: none;
+      border: 0;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .toolbar a:hover, .toolbar button:hover { text-decoration: underline; }
+    .toolbar .note { color: var(--muted); }
+    .iframe-hint {
+      display: none;
+      margin: 0;
+      padding: 10px 14px;
+      background: var(--hint-bg);
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .iframe-hint strong { color: var(--text); font-weight: 600; }
     .table-wrap { overflow: auto; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     col.method { width: 56px; }
@@ -90,6 +112,10 @@
     .empty, .error { padding: 24px; text-align: center; }
     .empty { color: var(--muted); }
     .error { color: var(--err); }
+    /* Allure iframe is often tiny; nudge users to the full document */
+    @media (max-height: 280px), (max-width: 480px) {
+      .iframe-hint { display: block; }
+    }
   </style>
 </head>
 <body>
@@ -97,9 +123,35 @@
     <h1>HAR Viewer</h1>
     <div class="summary">__SUMMARY__</div>
     <div class="toolbar">
-      <a href="__DOWNLOAD_HREF__" download="capture.har">Download .har</a>
+      <button type="button" id="open-viewer" hidden>Open viewer</button>
+      <span class="note">Raw HAR: Allure attachment <code>capture.har</code></span>
     </div>
   </div>
+  <p class="iframe-hint"><strong>Cramped preview.</strong> Open this HTML attachment in a new tab for the full waterfall.</p>
   __CONTENT__
+  <!--
+    Late, optional: runs only when the document is a top-level page (Allure "open in new tab").
+    Allure iframe CSP typically blocks scripts — static table above remains the fallback.
+  -->
+  <script>
+  (function () {
+    try {
+      if (window.top !== window.self) {
+        var hint = document.querySelector(".iframe-hint");
+        if (hint) hint.style.display = "block";
+        var btn = document.getElementById("open-viewer");
+        if (btn) {
+          btn.hidden = false;
+          btn.addEventListener("click", function () {
+            window.open(window.location.href, "_blank", "noopener");
+          });
+        }
+      }
+    } catch (e) {
+      var hint2 = document.querySelector(".iframe-hint");
+      if (hint2) hint2.style.display = "block";
+    }
+  })();
+  </script>
 </body>
 </html>

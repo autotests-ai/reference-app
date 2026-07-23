@@ -5,15 +5,17 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.openqa.selenium.json.Json;
 
 /**
- * Server-side HAR viewer HTML for Allure attachments.
- * No client JS — Allure iframe CSP blocks inline scripts.
+ * Server-rendered HAR viewer HTML for Allure attachments.
+ * <p>
+ * Table + waterfall are inlined (no giant {@code data:} URI). Raw HAR is a separate
+ * Allure attachment ({@code capture.har}). Optional late script enhances iframe UX when
+ * CSP allows it; static content remains the fallback.
  */
 public final class HarViewerHtml {
 
@@ -27,29 +29,26 @@ public final class HarViewerHtml {
         if (harJson == null || harJson.length == 0) {
             throw new IllegalArgumentException("harJson is empty");
         }
-        String b64 = Base64.getEncoder().encodeToString(harJson);
-        String downloadHref = "data:application/json;base64," + b64;
 
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> root = JSON.toType(new String(harJson, StandardCharsets.UTF_8), Map.class);
             Object logObj = root.get("log");
             if (!(logObj instanceof Map<?, ?> logRaw)) {
-                return fillTemplate("Invalid HAR", downloadHref, "<div class=\"error\">Missing log section</div>");
+                return fillTemplate("Invalid HAR", "<div class=\"error\">Missing log section</div>");
             }
             @SuppressWarnings("unchecked")
             Map<String, Object> log = (Map<String, Object>) logRaw;
-            return fillTemplate(buildSummary(log), downloadHref, buildContent(log));
+            return fillTemplate(buildSummary(log), buildContent(log));
         } catch (RuntimeException ex) {
-            return fillTemplate("Parse error", downloadHref,
+            return fillTemplate("Parse error",
                     "<div class=\"error\">Failed to render HAR: " + escapeHtml(ex.getMessage()) + "</div>");
         }
     }
 
-    private static String fillTemplate(String summary, String downloadHref, String content) {
+    private static String fillTemplate(String summary, String content) {
         return TEMPLATE
                 .replace("__SUMMARY__", escapeHtml(summary))
-                .replace("__DOWNLOAD_HREF__", downloadHref)
                 .replace("__CONTENT__", content);
     }
 

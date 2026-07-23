@@ -80,6 +80,7 @@ public final class HarCapture {
         Map<String, Map<String, Object>> requests = new LinkedHashMap<>();
         Map<String, Map<String, Object>> responses = new LinkedHashMap<>();
         Map<String, Double> finishedMs = new LinkedHashMap<>();
+        Map<String, Long> encodedBytes = new LinkedHashMap<>();
         List<String> order = new ArrayList<>();
         double wallStart = Double.NaN;
 
@@ -147,6 +148,9 @@ public final class HarCapture {
                 String id = stringVal(params.get("requestId"));
                 if (!id.isEmpty()) {
                     finishedMs.put(id, doubleVal(params.get("timestamp")));
+                    if (params.containsKey("encodedDataLength")) {
+                        encodedBytes.put(id, longVal(params.get("encodedDataLength")));
+                    }
                 }
             }
         }
@@ -176,7 +180,7 @@ public final class HarCapture {
             entry.put("startedDateTime", Instant.ofEpochMilli(startedDateTimeMs).toString());
             entry.put("time", timeMs);
             entry.put("request", harRequest(req));
-            entry.put("response", harResponse(resp));
+            entry.put("response", harResponse(resp, encodedBytes.get(id)));
             entry.put("cache", Map.of());
             entry.put("timings", timings(timeMs));
             harEntries.add(entry);
@@ -219,7 +223,7 @@ public final class HarCapture {
         return out;
     }
 
-    private static Map<String, Object> harResponse(Map<String, Object> resp) {
+    private static Map<String, Object> harResponse(Map<String, Object> resp, Long finishedEncodedBytes) {
         Map<String, Object> out = new LinkedHashMap<>();
         out.put("status", intVal(resp.get("status")));
         out.put("statusText", stringVal(resp.get("statusText")));
@@ -228,7 +232,9 @@ public final class HarCapture {
         out.put("cookies", List.of());
         out.put("headers", headerList(resp.get("headers")));
         Map<String, Object> content = new LinkedHashMap<>();
-        content.put("size", longVal(resp.get("encodedDataLength")));
+        // loadingFinished.encodedDataLength is the reliable wire size; responseReceived often has 0
+        long size = finishedEncodedBytes != null ? finishedEncodedBytes : longVal(resp.get("encodedDataLength"));
+        content.put("size", size);
         content.put("mimeType", stringVal(resp.get("mimeType")));
         out.put("content", content);
         out.put("redirectURL", "");

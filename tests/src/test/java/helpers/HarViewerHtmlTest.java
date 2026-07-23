@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HarViewerHtmlTest {
 
     @Test
-    void renderBuildsStaticWaterfallTableWithoutClientScript() {
+    void renderBuildsStaticWaterfallWithoutEmbeddedHarDataUri() {
         byte[] har = """
                 {"log":{"version":"1.2","entries":[{"startedDateTime":"2026-01-01T00:00:00.000Z","time":50,"request":{"method":"GET","url":"https://example.com/"},"response":{"status":200,"statusText":"OK","content":{"size":42}},"timings":{"wait":40,"receive":10}}]}}
                 """.trim().getBytes();
@@ -21,7 +21,14 @@ class HarViewerHtmlTest {
         assertTrue(html.contains("1 requests"), () -> "missing summary: " + html);
         assertTrue(html.contains("example.com"), () -> "missing url row: " + html);
         assertTrue(html.contains("class=\"bar wait\""), () -> "missing waterfall bar: " + html);
-        assertFalse(html.contains("<script"), () -> "must not rely on inline JS: " + html);
+        assertTrue(html.contains("capture.har"), () -> "missing raw HAR attachment hint: " + html);
+        assertTrue(html.contains("Open this HTML attachment in a new tab"),
+                () -> "missing new-tab hint: " + html);
+        assertFalse(html.contains("data:application/json;base64,"),
+                () -> "must not embed giant data URI: " + html);
         assertFalse(html.contains("__CONTENT__"), () -> "placeholder not replaced: " + html);
+        assertFalse(html.contains("__SUMMARY__"), () -> "summary placeholder not replaced: " + html);
+        // Static table is the iframe-safe path; late <script> is optional enhancement only
+        assertTrue(html.contains("<table>"), () -> "missing static table fallback: " + html);
     }
 }
