@@ -20,7 +20,6 @@
       --err: #f48771;
       --bar-wait: #7b68ee;
       --bar-receive: #3794ff;
-      --bar-blocked: #858585;
     }
     * { box-sizing: border-box; }
     html, body {
@@ -39,30 +38,14 @@
       border-bottom: 1px solid var(--border);
       background: var(--panel);
     }
-    .header h1 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .summary {
-      color: var(--muted);
-      font-size: 11px;
-      white-space: nowrap;
-    }
-    .toolbar a {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 11px;
-    }
+    .header h1 { margin: 0; font-size: 14px; font-weight: 600; }
+    .summary { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .toolbar a { color: var(--accent); text-decoration: none; font-size: 11px; }
     .toolbar a:hover { text-decoration: underline; }
     .table-wrap { overflow: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     col.method { width: 56px; }
-    col.status { width: 72px; }
+    col.status { width: 88px; }
     col.size { width: 72px; }
     col.time { width: 64px; }
     col.waterfall { width: 38%; }
@@ -104,129 +87,19 @@
     }
     .bar.wait { background: var(--bar-wait); }
     .bar.receive { background: var(--bar-receive); top: 5px; height: 6px; }
-    .empty {
-      padding: 24px;
-      color: var(--muted);
-      text-align: center;
-    }
-    .error {
-      padding: 16px;
-      color: var(--err);
-    }
+    .empty, .error { padding: 24px; text-align: center; }
+    .empty { color: var(--muted); }
+    .error { color: var(--err); }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>HAR Viewer</h1>
-    <div class="summary" id="summary"></div>
+    <div class="summary">__SUMMARY__</div>
     <div class="toolbar">
-      <a id="download" download="capture.har">Download .har</a>
+      <a href="__DOWNLOAD_HREF__" download="capture.har">Download .har</a>
     </div>
   </div>
-  <div id="root"></div>
-  <script>
-    (function () {
-      var harJson = atob("__HAR_B64__");
-      document.getElementById("download").href = "data:application/json;base64,__HAR_B64__";
-
-      function parseHar(text) {
-        var data = JSON.parse(text);
-        return data && data.log ? data.log : data;
-      }
-
-      function formatBytes(n) {
-        if (!n || n < 0) return "—";
-        if (n < 1024) return n + " B";
-        if (n < 1024 * 1024) return (n / 1024).toFixed(1) + " KB";
-        return (n / (1024 * 1024)).toFixed(1) + " MB";
-      }
-
-      function statusClass(code) {
-        if (code >= 200 && code < 300) return "ok";
-        if (code >= 300 && code < 400) return "warn";
-        if (code >= 400) return "err";
-        return "";
-      }
-
-      function parseTime(iso) {
-        var t = Date.parse(iso);
-        return isNaN(t) ? NaN : t;
-      }
-
-      function render(log) {
-        var entries = log.entries || [];
-        if (!entries.length) {
-          document.getElementById("root").innerHTML = '<div class="empty">No network entries captured.</div>';
-          document.getElementById("summary").textContent = "0 requests";
-          return;
-        }
-
-        var starts = [];
-        var ends = [];
-        var totalBytes = 0;
-        var totalMs = 0;
-
-        entries.forEach(function (e) {
-          var start = parseTime(e.startedDateTime);
-          var dur = Number(e.time) || 0;
-          if (!isNaN(start)) starts.push(start);
-          if (!isNaN(start)) ends.push(start + dur);
-          totalMs += dur;
-          var size = e.response && e.response.content ? Number(e.response.content.size) || 0 : 0;
-          if (size > 0) totalBytes += size;
-        });
-
-        var t0 = Math.min.apply(null, starts);
-        var t1 = Math.max.apply(null, ends);
-        var span = Math.max(t1 - t0, totalMs, 1);
-
-        document.getElementById("summary").textContent =
-          entries.length + " requests | " + formatBytes(totalBytes) + " | " + (totalMs / 1000).toFixed(1) + "s";
-
-        var rows = entries.map(function (e) {
-          var req = e.request || {};
-          var res = e.response || {};
-          var method = (req.method || "GET").toUpperCase();
-          var url = req.url || "";
-          var status = res.status || 0;
-          var statusText = res.statusText || "";
-          var size = res.content ? res.content.size : -1;
-          var time = Number(e.time) || 0;
-          var start = parseTime(e.startedDateTime);
-          var left = !isNaN(start) ? ((start - t0) / span) * 100 : 0;
-          var width = Math.max((time / span) * 100, 0.4);
-          var timings = e.timings || {};
-          var wait = Math.max(Number(timings.wait) || 0, 0);
-          var receive = Math.max(Number(timings.receive) || 0, 0);
-          var waitPct = time > 0 ? Math.min((wait / time) * 100, 100) : 80;
-          var recvPct = time > 0 ? Math.min((receive / time) * 100, 100 - waitPct) : 20;
-
-          return "<tr>" +
-            "<td class=\"method " + method + "\">" + method + "</td>" +
-            "<td class=\"url\" title=\"" + url.replace(/"/g, "&quot;") + "\">" + url + "</td>" +
-            "<td class=\"status " + statusClass(status) + "\">" + status + " " + statusText + "</td>" +
-            "<td>" + formatBytes(size) + "</td>" +
-            "<td>" + time.toFixed(0) + " ms</td>" +
-            "<td><div class=\"waterfall\">" +
-              "<span class=\"bar wait\" style=\"left:" + left.toFixed(2) + "%;width:" + width.toFixed(2) + "%\"></span>" +
-              "<span class=\"bar receive\" style=\"left:" + left.toFixed(2) + "%;width:" + (width * recvPct / 100).toFixed(2) + "%\"></span>" +
-            "</div></td></tr>";
-        }).join("");
-
-        document.getElementById("root").innerHTML =
-          '<div class="table-wrap"><table>' +
-          '<colgroup><col class="method"><col><col class="status"><col class="size"><col class="time"><col class="waterfall"></colgroup>' +
-          '<thead><tr><th>Method</th><th>URL</th><th>Status</th><th>Size</th><th>Time</th><th>Waterfall</th></tr></thead>' +
-          '<tbody>' + rows + '</tbody></table></div>';
-      }
-
-      try {
-        render(parseHar(harJson));
-      } catch (err) {
-        document.getElementById("root").innerHTML =
-          '<div class="error">Failed to render HAR: ' + String(err.message || err) + '</div>';
-      }
-    })();
-  </script>
+  __CONTENT__
 </body>
 </html>
