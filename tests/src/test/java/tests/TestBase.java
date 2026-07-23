@@ -6,9 +6,12 @@ import com.codeborne.selenide.logevents.SimpleReport;
 
 import allure.AllureSelenideListeners;
 import allure.Attachments;
+import annotations.Framework;
+import annotations.Scope;
 import config.ConfigReader;
 import config.TestConfig;
 import helpers.BrowserSessionHelper;
+import helpers.HarCapture;
 import helpers.LocalChromePin;
 import pages.HomePage;
 import pages.LoginPage;
@@ -20,11 +23,13 @@ import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 
+@Scope("browser")
+@Framework("selenide")
 public class TestBase {
 
     protected HomePage homePage = new HomePage();
@@ -50,16 +55,21 @@ public class TestBase {
         Configuration.browserSize = config.browserSize();
         Configuration.headless = config.headless();
 
+        boolean captureHar = config.enableHar() || config.attachHarLogs();
+
         if (!config.remoteUrl().isBlank()) {
             Configuration.browserVersion = config.browserVersion();
             Configuration.remote = config.remoteUrl();
+            var selenoidOpts = new HashMap<String, Object>();
+            selenoidOpts.put("enableVNC", config.enableVnc());
+            selenoidOpts.put("enableVideo", config.enableVideo());
+            selenoidOpts.put("headless", config.headless());
+            // enableHar is client-side (HarCapture); do not send fake hub capability
             var capabilities = new MutableCapabilities();
-            capabilities.setCapability("selenoid:options", Map.of(
-                    "enableVNC", config.enableVnc(),
-                    "enableVideo", config.enableVideo(),
-                    "enableHar", config.enableHar(),
-                    "headless", config.headless()
-            ));
+            capabilities.setCapability("selenoid:options", selenoidOpts);
+            if (captureHar && HarCapture.supportsBrowser(config.browser())) {
+                HarCapture.enablePerformanceLogging(capabilities);
+            }
             Configuration.browserCapabilities = capabilities;
         } else if ("chrome".equals(config.browser())) {
             LocalChromePin.apply(config.browserVersion());
@@ -67,9 +77,17 @@ public class TestBase {
             Configuration.browserVersion = config.browserVersion();
         }
 
-        if (config.remoteUrl().isBlank() && config.headless()) {
-            Configuration.browserCapabilities = new ChromeOptions()
-                    .addArguments("--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage");
+        if (config.remoteUrl().isBlank()) {
+            ChromeOptions chrome = new ChromeOptions();
+            if (config.headless()) {
+                chrome.addArguments("--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage");
+            }
+            if (captureHar && HarCapture.supportsBrowser(config.browser())) {
+                HarCapture.enablePerformanceLogging(chrome);
+            }
+            if (config.headless() || captureHar) {
+                Configuration.browserCapabilities = chrome;
+            }
         }
 
         if (AllureSelenideListeners.isGloballyEnabled(config)) {

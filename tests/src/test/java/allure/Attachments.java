@@ -2,8 +2,11 @@ package allure;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import helpers.HarCapture;
+import helpers.HarViewerHtml;
 import io.qameta.allure.Attachment;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import org.openqa.selenium.OutputType;
 
 import static com.codeborne.selenide.Selenide.sessionId;
@@ -48,8 +51,20 @@ public class Attachments {
                 + "' type='video/mp4'></video></body></html>";
     }
 
+    /**
+     * Attach client-side HAR (Chrome/Edge Performance logs) as an HTML waterfall viewer.
+     * No-op on unsupported browsers or when capture produced nothing — never throws.
+     */
     public static void harLogs() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'harLogs'");
+        if (!HarCapture.supportsBrowser(config.browser())) {
+            return;
+        }
+        Optional<byte[]> har = HarCapture.collectHarJson();
+        har.ifPresent(bytes ->
+                io.qameta.allure.Allure.addAttachment(
+                        "HAR Viewer",
+                        "text/html",
+                        HarViewerHtml.render(bytes),
+                        ".html"));
     }
 }
