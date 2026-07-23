@@ -21,7 +21,7 @@ GRADLE_HINT = {
 
 LAYER_DESC = {
     "unit": "pure Java — helpers/*Test, config/*Test",
-    "component": "@Tag(component) — design-system preview on :3000",
+    "component": "@Tag(component) — reference-app/preview on :3000 (componentCatalogUrl)",
     "integration": "@Tag(layout,mount) — mount probes",
     "api": "@Layer(api) @Tag(api) — Rest Assured /api/health|items",
     "e2e": "@Layer(e2e) — smoke via testE2e",
@@ -62,8 +62,8 @@ STANDS = {
     "reference_prod": {
         "baseUrl": "https://reference-app.autotests.ai/",
         "apiBaseUrl": "https://reference-app.autotests.ai/",
-        "remoteUrl": "https://user1:1234@selenoid.autotests.cloud/wd/hub",
-        "videoFolder": "https://selenoid.autotests.cloud/video/",
+        "remoteUrl": "https://user1:1234@selenoid.qa.guru/wd/hub",
+        "videoFolder": "https://selenoid.qa.guru/video/",
         "browserSize": "1740x1080",
         "logToConsole": "false",
         "selenideLogToConsole": "false",
@@ -73,6 +73,7 @@ STANDS = {
 
 COMPONENT_BASE = {
     "baseUrl": "http://localhost:3000/",
+    "componentCatalogUrl": "http://localhost:3000/",
     "apiBaseUrl": "http://localhost:8080/",
 }
 
@@ -93,7 +94,7 @@ def layer_overlay(layer: str) -> dict[str, str]:
         }
     if layer == "e2e":
         return {
-            "closeBrowserAfterEach": "false",
+            "closeBrowserAfterEach": "true",
             **ATTACH_OFF,
         }
     if layer == "visual":
@@ -138,7 +139,7 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
                 "enableAllureSelenideListener",
             ],
         ),
-        ("Target app", ["baseUrl", "basePath"]),
+        ("Target app", ["baseUrl", "basePath", "componentCatalogUrl"]),
         ("REST API", ["apiBaseUrl"]),
         ("Selenoid hub", ["hubUrl", "uiUrl", "smokeUrl"]),
         (
@@ -166,7 +167,14 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
             if key == "enableAllureSelenideListener":
                 lines.append("# Allow allure steps listener")
             val = values[key]
-            if val == "" and key in ("remoteUrl", "videoFolder", "baseUrl", "basePath", "apiBaseUrl"):
+            if val == "" and key in (
+                "remoteUrl",
+                "videoFolder",
+                "baseUrl",
+                "basePath",
+                "apiBaseUrl",
+                "componentCatalogUrl",
+            ):
                 lines.append(f"# {key}=")
             else:
                 lines.append(f"{key}={val}")
@@ -176,12 +184,11 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
 
 def build_values(stand: str, layer: str) -> dict[str, str]:
     values = {**COMMON_BROWSER, **ATTACH_OFF, **STANDS[stand], **layer_overlay(layer)}
+    values.setdefault("componentCatalogUrl", "http://localhost:3000/")
     if layer == "component":
         values.update(COMPONENT_BASE)
     if layer == "unit":
         values["allureReportMode"] = "none"
-    if stand.endswith("_prod") and layer == "e2e":
-        values["closeBrowserAfterEach"] = "true"
     return values
 
 

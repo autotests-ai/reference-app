@@ -111,7 +111,7 @@ public interface TestConfig extends Config {
     boolean headless();
 
     @Key("closeBrowserAfterEach")
-    @DefaultValue("false")
+    @DefaultValue("true")
     boolean closeBrowserAfterEach();
 
     @Key("closeBrowserAfterAll")

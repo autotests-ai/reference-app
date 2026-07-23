@@ -14,15 +14,15 @@ Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 
 ## Remote e2e (canon)
 
-Selenide `WebDriver` — **thread-local**. JUnit parallel (даже `parallelism=1`) ротирует worker threads → `SessionNotCreatedException` на Selenoid.
+Selenide `WebDriver` — **thread-local**. Каждый e2e-тест открывает/закрывает браузер (`closeBrowserAfterEach=true`); JUnit parallel безопасен.
 
 | Слой | Правило |
 |------|---------|
-| `junit-platform.properties` | `junit.jupiter.execution.parallel.enabled=false` |
-| `*_prod_e2e` | `closeBrowserAfterEach=true` (`gen-env-configs.py`) |
-| `prod-pyramid` workflow | `testE2e` + `-Djunit.jupiter.execution.parallel.enabled=false` |
+| `junit-platform.properties` | `parallel.enabled=true`, `fixed.parallelism=1` |
+| `*_e2e` | `closeBrowserAfterEach=true` (`gen-env-configs.py`) |
+| `prod-pyramid` / Jenkins freestyle | наследует SSOT (без `-D…parallel.enabled=false`) |
 
-Локальная отладка с parallelism — rule `e2e-debug-run` (`-D` override), не менять SSOT properties.
+Локальная отладка с reuse browser / другим parallelism — rule `e2e-debug-run` (`-D` override), не менять SSOT properties.
 
 ## Prerequisites
 
@@ -36,7 +36,7 @@ Selenide `WebDriver` — **thread-local**. JUnit parallel (даже `parallelism
 | Workflow | Trigger | Slices |
 |----------|---------|--------|
 | `reference_github-pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → component → visual |
-| `reference_github-pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, sequential) |
+| `reference_github-pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, parallel=1) |
 | `reference_github-pyramid.yml` | workflow_dispatch | `ci_pyramid` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
 | `reference_visual_baselines.yml` | workflow_dispatch | refresh Linux PNG baselines |
 
