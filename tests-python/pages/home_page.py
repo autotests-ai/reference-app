@@ -44,6 +44,13 @@ class HomePage(BasePage):
     @allure.step("Click logout button")
     def click_logout_button(self):
         from pages.login_page import LoginPage
+        from urllib.parse import urlparse
 
-        self.find(*self.LOGOUT).click()
+        self.js_click(*self.LOGOUT)
+
+        def _on_login(driver):
+            path = urlparse(driver.current_url).path
+            return path.rstrip("/").endswith("login")
+
+        self.wait().until(_on_login)
         return LoginPage(self.driver, self.config)

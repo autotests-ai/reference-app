@@ -3,7 +3,6 @@ from __future__ import annotations
 from urllib.parse import urlparse
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -44,12 +43,24 @@ class BasePage:
     def fill(self, by: By, value: str, text: str) -> None:
         """Reliable input fill for React controlled fields (≈ Selenide setValue)."""
         el = self.wait_visible(by, value)
-        el.click()
-        platform = (self.driver.capabilities.get("platformName") or "").lower()
-        modifier = Keys.COMMAND if "mac" in platform else Keys.CONTROL
-        el.send_keys(modifier, "a")
-        el.send_keys(Keys.BACKSPACE)
-        el.send_keys(text)
+        self.driver.execute_script(
+            """
+            const el = arguments[0];
+            const value = arguments[1];
+            const setter = Object.getOwnPropertyDescriptor(
+              window.HTMLInputElement.prototype, 'value'
+            ).set;
+            setter.call(el, value);
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+            """,
+            el,
+            text,
+        )
+
+    def js_click(self, by: By, value: str) -> None:
+        el = self.wait_visible(by, value)
+        self.driver.execute_script("arguments[0].click();", el)
 
     def wait_url_is_home(self) -> None:
         expected = urlparse(self.config.base_url)

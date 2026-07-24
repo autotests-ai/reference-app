@@ -19,19 +19,19 @@ def config() -> TestConfig:
 @pytest.fixture
 def driver(config: TestConfig) -> WebDriver:
     options = ChromeOptions()
-    if config.headless:
-        options.add_argument("--headless=new")
     options.add_argument("--window-size=" + config.browser_size.replace("x", ","))
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
     if config.remote_url:
+        # Match Java TestBase: headless via selenoid:options, not Chrome flags
         options.set_capability("browserVersion", config.browser_version)
         options.set_capability(
             "selenoid:options",
             {
                 "enableVNC": config.enable_vnc,
                 "enableVideo": config.enable_video,
+                "headless": config.headless,
                 "name": "reference-app-python",
             },
         )
@@ -40,6 +40,8 @@ def driver(config: TestConfig) -> WebDriver:
             options=options,
         )
     else:
+        if config.headless:
+            options.add_argument("--headless=new")
         drv = webdriver.Chrome(options=options)
 
     drv.implicitly_wait(0)
