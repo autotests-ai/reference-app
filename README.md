@@ -25,7 +25,7 @@ Live SVG metrics + Allure 3 dashboard (pyramid tile **testingPyramid**), updated
   </picture>
 </a>
 
-> Dashboard PNG updates after each prod pyramid run on `main` (Playwright screenshot of Allure 3 dashboard).
+Dashboard PNG updates after each prod pyramid run on `main` (Playwright screenshot of Allure 3 dashboard).
 
 | Link | Description |
 |------|-------------|
@@ -33,21 +33,26 @@ Live SVG metrics + Allure 3 dashboard (pyramid tile **testingPyramid**), updated
 | [Awesome](https://autotests-ai.github.io/reference-app/reports/latest/awesome/) | Drill-down by layer / epic |
 | [TestOps project](https://allure.qa.guru/project/5274) | Cloud launches |
 | [CI workflow](https://github.com/autotests-ai/reference-app/actions/workflows/reference_github-pyramid.yml) | `ci-pyramid` (PR) + `prod-pyramid` (post-deploy) |
+| [Jenkins](https://jenkins.qa.guru/job/reference-app-tests/) | Prod pyramid on `java-jdk21` agents — Allure 3 + TestOps + Jira REF |
 
 Production app: [reference-app.autotests.ai](https://reference-app.autotests.ai)
 
 | Path | Role |
 |------|------|
 | `backend/` | Spring Boot — `GET /api/health`, `GET /api/items`, JWT auth API, static UI, Flyway + Postgres |
-| `frontend/` | design-system symlinks (`scripts/wire-ui.sh`) |
+| `frontend/` | design-system embed symlinks (`scripts/wire-ui.sh`) |
+| `frontend-react/` | React SPA (Vite + React Router + `@zero-design-system/react`); builds `index.html` + `assets/` into `backend/.../static` |
 | `tests/` | Browser + API tests (Selenide, Gradle); `@Tag smoke`, `api`, `component` |
-| `app-static/` | App pages (index, login, register) — overlaid by sync |
+| `tests-js/` | Playwright UI smoke (RealWorld-style App facade); Jenkins `reference-app-tests-freestyle-js-playwright` |
+| `tests-python/` | Selenium UI smoke (Java-style page objects + pytest); Jenkins `reference-app-tests-freestyle-python-selenium` |
+| `app-static/` | App CSS + auxiliary JS overlaid by sync (SPA pages `/`, `/login`, `/register` come from `frontend-react`) |
 | `preview/` | Component catalog snapshot (`components.html`) for `testComponent` |
 | `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
 | `.github/workflows/reference_github-build-backend.yml` | Backend bootJar + Docker image (artifact; optional registry push) |
 | `.github/workflows/reference_github-pyramid.yml` | CI orchestrator: `ci-pyramid` (PR/push) + `prod-pyramid` (post-deploy) |
+| `Jenkinsfile` | Jenkins job `reference-app-tests` on [jenkins.qa.guru](https://jenkins.qa.guru/job/reference-app-tests/) (Allure 3 plugin + TestOps 5274 + Jira/Confluence REF) |
 | `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
 
 ## Auth
@@ -69,10 +74,29 @@ Seed user: `user1` / `password1` (created on startup if missing).
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 
+## Frontend (React SPA)
+
+`frontend-react/` is a Vite + React Router single-page app (routes `/`, `/login`, `/register`) built on the `@zero-design-system/react` library (aliased to the monorepo `packages/react-ui/src`). It replaces the former static multipage `app.js` / `auth.js` / `*.html`.
+
+- The canonical design-system header stays SSOT: `index.html` sets `window.headerConfig` and loads `/js/header.js` (design-system embed) at runtime — the SPA does not reimplement the header.
+- All `data-testid` attributes and the exact validation / welcome / health strings are preserved for the Selenide suite in `tests/`.
+- `vite build` emits `index.html` + `assets/index.{js,css}` into `backend/src/main/resources/static` (`emptyOutDir: false` — the design-system embed and `preview/` catalog are left untouched). `PageController` forwards `/login` and `/register` to `index.html` for client-side routing.
+
+```bash
+cd frontend-react
+npm ci
+npm run dev        # local dev server
+npm run build      # -> backend/src/main/resources/static (index.html + assets/)
+npm run typecheck  # tsc --noEmit
+npm test           # Vitest + React Testing Library
+```
+
+`scripts/sync-app-static.sh` runs the SPA build as its final step, after the design-system CSS/JS/templates are materialized.
+
 ## Quick start
 
 ```bash
-# Materialize design-system into backend static
+# Materialize design-system into backend static (also builds the React SPA)
 ./scripts/sync-app-static.sh
 
 # PostgreSQL + backend

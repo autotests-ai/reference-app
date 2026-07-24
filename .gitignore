@@ -22,10 +22,19 @@ tests/bin/
 *.log
 .env
 
+# Local notification dogfood (jar write-outs)
+notifications/chart.png
+notifications/config.runtime.json
+notifications/message.txt
+
 # Test artifacts
 allure-results/
 allure-report/
 test-results/
+node_modules/
+.venv/
+playwright-report/
+
 
 # OS
 .DS_Store

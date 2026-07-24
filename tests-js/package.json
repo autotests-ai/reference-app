@@ -1,0 +1,21 @@
+{
+  "name": "reference-app-tests-js",
+  "version": "1.0.0",
+  "description": "Playwright UI smoke for reference-app (RealWorld-style App facade)",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "npx playwright test",
+    "t:headed": "npx playwright test --headed",
+    "t:chrome": "npx playwright test --project=chromium",
+    "code": "npx playwright codegen",
+    "allureG": "npx allure generate ./allure-results -o ./allure-report --clean",
+    "allureO": "npx allure open ./allure-report"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@playwright/test": "^1.60.0",
+    "allure-playwright": "^3.10.2",
+    "dotenv": "^17.4.2"
+  }
+}

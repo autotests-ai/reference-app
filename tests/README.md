@@ -2,6 +2,11 @@
 
 Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 
+Sibling stacks (UI smoke only, same prod target):
+
+- [`../tests-js/`](../tests-js/) — Playwright, RealWorld-style App facade
+- [`../tests-python/`](../tests-python/) — Selenium, Java-style fluent page objects
+
 ## Naming
 
 | Kind | ID | Meaning |
