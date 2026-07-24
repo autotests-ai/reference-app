@@ -10,6 +10,7 @@ from pages.login_page import LoginPage
 @allure.title("Logout")
 class TestLogout:
     @allure.title("User can logout after form login")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.smoke
     @pytest.mark.positive
     def test_should_logout_after_form_login(self, login_page: LoginPage):

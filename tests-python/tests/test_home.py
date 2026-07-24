@@ -10,6 +10,7 @@ from pages.home_page import HomePage
 @allure.title("Home")
 class TestHome:
     @allure.title("Page load fetches health and items from API")
+    @allure.severity(allure.severity_level.BLOCKER)
     @pytest.mark.smoke
     def test_page_load_fetches_items(self, home_page: HomePage):
         (

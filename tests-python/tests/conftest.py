@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import allure
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -10,6 +11,12 @@ from pages.header_component import HeaderComponent
 from pages.home_page import HomePage
 from pages.login_page import LoginPage
 from pages.register_page import RegisterPage
+
+
+@pytest.fixture(autouse=True)
+def allure_collage_labels():
+    """layer=e2e so testingPyramid / durations(groupBy:layer) stay live."""
+    allure.dynamic.label("layer", "e2e")
 
 
 @pytest.fixture
