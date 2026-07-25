@@ -6,6 +6,7 @@ Sibling stacks (UI smoke only, same prod target):
 
 - [`../tests-js/`](../tests-js/) — Playwright, RealWorld-style App facade
 - [`../tests-python/`](../tests-python/) — Selenium, Java-style fluent page objects
+- [`../tests-selenium/`](../tests-selenium/) — Java · Selenium 4 · JUnit 5 (Selenide twin smoke)
 
 ## Naming
 

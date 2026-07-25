@@ -12,6 +12,9 @@ backend/bin/
 tests/build/
 tests/.gradle/
 tests/bin/
+tests-selenium/build/
+tests-selenium/.gradle/
+tests-selenium/bin/
 
 # IDE
 .idea/
