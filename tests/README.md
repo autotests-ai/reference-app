@@ -14,6 +14,17 @@ Sibling stacks (same prod target; language-first layout):
 
 Canon stays this directory — siblings do not replace the pyramid.
 
+## Pyramid layers (this repo)
+
+| Layer | Where | Notes |
+|-------|--------|--------|
+| unit | `../backend/src/test`, `testUnit` helpers | required |
+| frontend_rtl | [`../frontend-react/`](../frontend-react/) | Vitest + RTL — **not** this Gradle module |
+| api / integration | `tests/api`, `testApi` | Rest Assured; OpenAPI SSOT in `stacks/_contract/` |
+| component | `@Tag("component")` | Selenide browser mount — **not** RTL |
+| e2e / visual | `testE2e` / `testVisual` | Selenide |
+| contracts | OpenAPI + `openapi-diff` | Pact = planned (see `generators/matrix-capabilities.yaml`) |
+
 ## Naming
 
 | Kind | ID | Meaning |
