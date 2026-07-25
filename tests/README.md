@@ -2,11 +2,17 @@
 
 Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 
-Sibling stacks (UI smoke only, same prod target):
+**Matrix id (qa-guru-refs shape):** `java/gradle-junit5-selenide` — short path `tests/` is the SSOT alias.
 
-- [`../tests-js/`](../tests-js/) — Playwright, RealWorld-style App facade
-- [`../tests-python/`](../tests-python/) — Selenium, Java-style fluent page objects
-- [`../tests-selenium/`](../tests-selenium/) — Java · Selenium 4 · JUnit 5 (Selenide twin smoke)
+Sibling stacks (same prod target; language-first layout):
+
+| Path | Matrix id | Stack |
+|------|-----------|--------|
+| [`../java/gradle-junit5-selenium/`](../java/gradle-junit5-selenium/) | `java/gradle-junit5-selenium` | Java · Selenium 4 · JUnit 5 (smoke) |
+| [`../tests-python/`](../tests-python/) | ≈ `python/pip-pytest-selenium` | Python · Selenium |
+| [`../tests-js/`](../tests-js/) | ≈ `javascript/playwright` | Playwright |
+
+Canon stays this directory — siblings do not replace the pyramid.
 
 ## Naming
 

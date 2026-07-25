@@ -1,7 +1,7 @@
 /*
- * reference-app — tests-selenium (UI smoke sibling)
+ * reference-app — java/gradle-junit5-selenium (UI smoke sibling)
  * Java · Gradle · Selenium 4 · JUnit 5 · Allure
- * Canon remains ../tests (Selenide pyramid).
+ * Canon remains ../../tests (Selenide pyramid ≡ gradle-junit5-selenide).
  */
 
 buildscript {

@@ -30,7 +30,7 @@ public final class DriverFactory {
             selenoidOpts.put("enableVNC", config.enableVnc());
             selenoidOpts.put("enableVideo", config.enableVideo());
             selenoidOpts.put("headless", config.headless());
-            selenoidOpts.put("name", "reference-app-tests-selenium");
+            selenoidOpts.put("name", "reference-app-java-gradle-junit5-selenium");
             options.setCapability("browserVersion", config.browserVersion());
             options.setCapability("selenoid:options", selenoidOpts);
             try {

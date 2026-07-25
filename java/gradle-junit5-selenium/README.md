@@ -1,25 +1,27 @@
-# reference-app — tests-selenium (Selenium)
+# java / gradle-junit5-selenium
 
-UI smoke sibling of the Java Selenide pyramid ([`../tests/`](../tests/)). Same product flows as [`../tests-python/`](../tests-python/) (Selenium + fluent page objects), but Java · Gradle · JUnit 5 · Allure.
+UI smoke sibling of the Java Selenide pyramid ([`../../tests/`](../../tests/)).
 
-**Canon stays Selenide** — this stack is smoke-only (no visual/component pyramid).
+Naming follows [qa-guru-refs](https://github.com/svasenkov) matrix cells:
+
+`{lang}/{build}-{framework}-{driver}` → `java/gradle-junit5-selenium`
+
+Canon SSOT stays short path [`tests/`](../../tests/) ≡ **java · gradle · junit5 · selenide** (full pyramid). This cell is Selenium smoke only — same flows as [`../../tests-python/`](../../tests-python/) (`pip-pytest-selenium` shape).
 
 ## Quick start
 
 ```bash
-cd tests-selenium
+cd java/gradle-junit5-selenium
 ./gradlew test
 ```
 
-Defaults (like Python sibling):
+Defaults:
 
 | Key | Default |
 |-----|---------|
 | `baseUrl` / `BASE_URL` | `https://reference-app.autotests.ai/` |
 | `browserVersion` | `148.0` (Chrome for Testing via `LocalChromePin`) |
 | `headless` | `true` |
-
-Local Chrome 148 must be installed under `~/.local/share/chrome-for-testing` (same as Selenide canon).
 
 Against local compose:
 
@@ -36,13 +38,10 @@ export BROWSER_VERSION=148.0
 ./gradlew test
 ```
 
-Or Gradle props: `-DremoteUrl=… -DbrowserVersion=148.0`.
-
 ## Allure
 
 ```bash
 ./gradlew test -DallureReportMode=allure3
-# results: build/allure-results
 ```
 
 ## Coverage (smoke)
