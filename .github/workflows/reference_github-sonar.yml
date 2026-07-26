@@ -1,0 +1,73 @@
+# reference-app SonarQube (backend) — quality axis, not pyramid.
+# Canon: docs/sonar/SONAR-CANON.md · projectKey reference-app-backend
+# Soft-skip without SONAR_TOKEN / unreachable host (SONAR_REQUIRED=false).
+
+name: reference-app sonar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "scripts/ci-sonar-backend.sh"
+      - ".github/workflows/reference_github-sonar.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "scripts/ci-sonar-backend.sh"
+      - ".github/workflows/reference_github-sonar.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: reference-github-sonar-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  sonar-backend:
+    name: Sonar backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+
+      - name: Sonar scan + gate
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
+          SONAR_PROJECT_KEY: reference-app-backend
+          SONAR_REQUIRED: ${{ vars.SONAR_REQUIRED || 'false' }}
+        run: bash scripts/ci-sonar-backend.sh
+
+      - name: Job summary
+        if: always()
+        env:
+          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL || 'https://sonar.qa.guru' }}
+        run: |
+          {
+            echo "## reference-app sonar"
+            echo ""
+            echo "- projectKey: \`reference-app-backend\`"
+            echo "- host: \`${SONAR_HOST_URL}\`"
+            echo "- dashboard: ${SONAR_HOST_URL%/}/dashboard?id=reference-app-backend"
+            echo "- commit: \`${GITHUB_SHA:0:7}\`"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -22,6 +22,18 @@ open build/reports/jacoco/jacocoTestUnitReport/html/index.html
 - `backend-jacoco` — backend HTML/XML
 - `pyramid-unit-jacoco` — unit slice HTML/XML
 
+## SonarQube
+
+| | |
+|--|--|
+| Host | https://sonar.qa.guru |
+| projectKey | `reference-app-backend` |
+| GH | `.github/workflows/reference_github-sonar.yml` |
+| Jenkins | job `reference-app-tests` · `TARGET=sonar_backend` |
+| Script | `scripts/ci-sonar-backend.sh` (soft-skip without `SONAR_TOKEN`) |
+
+Canon: monorepo `docs/sonar/SONAR-CANON.md`.
+
 Stable tag: `v0.2.1` (CI pyramid + prod pyramid green, 20 component tests, `reference_ci` stands).
 
 Previous: `v0.2.0-coverage` (JaCoCo 100% gates only).

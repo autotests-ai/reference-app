@@ -15,8 +15,8 @@ pipeline {
   parameters {
     choice(
       name: 'TARGET',
-      choices: ['prod_pyramid', 'prod_api', 'prod_e2e', 'prod_visual'],
-      description: 'Pyramid slice (reference_prod + Selenoid)'
+      choices: ['prod_pyramid', 'prod_api', 'prod_e2e', 'prod_visual', 'sonar_backend'],
+      description: 'Pyramid slice (reference_prod + Selenoid) or sonar_backend'
     )
     string(name: 'TEST_CLASS', defaultValue: '', description: 'Optional FQCN / method for --tests')
     string(name: 'TEST_CASE_ID', defaultValue: '', description: 'Allure TestOps case id (launch name)')
@@ -57,7 +57,29 @@ pipeline {
       }
     }
 
+    stage('Sonar backend') {
+      when {
+        expression { return params.TARGET == 'sonar_backend' }
+      }
+      steps {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh '''
+              set -eu
+              export SONAR_HOST_URL="${SONAR_HOST_URL:-https://sonar.qa.guru}"
+              export SONAR_PROJECT_KEY=reference-app-backend
+              export SONAR_REQUIRED="${SONAR_REQUIRED:-false}"
+              bash scripts/ci-sonar-backend.sh
+            '''
+          }
+        }
+      }
+    }
+
     stage('Tests') {
+      when {
+        expression { return params.TARGET != 'sonar_backend' }
+      }
       steps {
         script {
           def launchName = params.TEST_CASE_ID?.trim()
