@@ -22,7 +22,13 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    /**
+     * CSRF is disabled on purpose: auth is Bearer JWT ({@link JwtAuthFilter}) with
+     * {@link SessionCreationPolicy#STATELESS} — no ambient cookie credential for CSRF to exploit.
+     * Enabling CSRF would break JSON API clients that do not echo an XSRF token.
+     */
     @Bean
+    @SuppressWarnings("java:S4502")
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
