@@ -42,8 +42,20 @@ echo "==> sonar scan → ${SONAR_HOST_URL} (${SONAR_PROJECT_KEY})"
   -Dsonar.projectName="${SONAR_PROJECT_KEY}"
 
 echo "==> quality gate poll"
-PY=python3
-command -v python3 >/dev/null 2>&1 || PY=python
+if command -v python3 >/dev/null 2>&1; then
+  PY=python3
+elif command -v python >/dev/null 2>&1; then
+  PY=python
+elif [[ -x /usr/bin/python3 ]]; then
+  PY=/usr/bin/python3
+else
+  echo "WARNING: no python for gate poll — skip (SONAR_REQUIRED=${SONAR_REQUIRED})"
+  echo "dashboard_url=${SONAR_HOST_URL%/}/dashboard?id=${SONAR_PROJECT_KEY}"
+  if [[ "$SONAR_REQUIRED" == "true" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
 "$PY" <<'PY'
 import json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
