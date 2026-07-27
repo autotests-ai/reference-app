@@ -13,6 +13,7 @@ import config.TestConfig;
 import helpers.BrowserSessionHelper;
 import helpers.HarCapture;
 import helpers.LocalChromePin;
+import io.qameta.allure.Issue;
 import pages.HomePage;
 import pages.LoginPage;
 import org.junit.jupiter.api.AfterAll;
@@ -30,6 +31,7 @@ import static com.codeborne.selenide.Selenide.closeWebDriver;
 
 @Scope("browser")
 @Framework("selenide")
+@Issue("REF-3")
 public class TestBase {
 
     protected HomePage homePage = new HomePage();

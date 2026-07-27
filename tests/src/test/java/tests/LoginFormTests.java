@@ -1,6 +1,7 @@
 package tests;
 
 import annotations.Layer;
+import io.qameta.allure.AllureId;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ class LoginFormTests extends TestBase {
 
     @Test
     @Tag("mount")
+    @AllureId("46592")
     @DisplayName("Login form fields and submit are visible")
     void loginFormIsMounted() {
         loginPage.openPage()
