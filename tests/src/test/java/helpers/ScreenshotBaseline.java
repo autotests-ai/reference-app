@@ -148,7 +148,52 @@ public final class ScreenshotBaseline {
         }
     }
 
-    private record ImageComparison(boolean passed, byte[] diffPng, String message) {
+    private static final class ImageComparison {
+        private final boolean passed;
+        private final byte[] diffPng;
+        private final String message;
+
+        private ImageComparison(boolean passed, byte[] diffPng, String message) {
+            this.passed = passed;
+            this.diffPng = diffPng;
+            this.message = message;
+        }
+
+        boolean passed() {
+            return passed;
+        }
+
+        byte[] diffPng() {
+            return diffPng;
+        }
+
+        String message() {
+            return message;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof ImageComparison that)) {
+                return false;
+            }
+            return passed == that.passed
+                    && java.util.Arrays.equals(diffPng, that.diffPng)
+                    && java.util.Objects.equals(message, that.message);
+        }
+
+        @Override
+        public int hashCode() {
+            return java.util.Objects.hash(passed, java.util.Arrays.hashCode(diffPng), message);
+        }
+
+        @Override
+        public String toString() {
+            return "ImageComparison[passed=%s, diffPng=%d bytes, message=%s]"
+                    .formatted(passed, diffPng == null ? 0 : diffPng.length, message);
+        }
     }
 
     private static ImageComparison compareImages(byte[] expectedBytes, byte[] actualBytes, String label)

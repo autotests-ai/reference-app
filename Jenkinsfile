@@ -15,8 +15,8 @@ pipeline {
   parameters {
     choice(
       name: 'TARGET',
-      choices: ['prod_pyramid', 'prod_api', 'prod_e2e', 'prod_visual', 'sonar_backend'],
-      description: 'Pyramid slice (reference_prod + Selenoid) or sonar_backend'
+      choices: ['prod_pyramid', 'prod_api', 'prod_e2e', 'prod_visual', 'sonar_backend', 'sonar_tests'],
+      description: 'Pyramid slice (reference_prod + Selenoid) or sonar_backend / sonar_tests'
     )
     string(name: 'TEST_CLASS', defaultValue: '', description: 'Optional FQCN / method for --tests')
     string(name: 'TEST_CASE_ID', defaultValue: '', description: 'Allure TestOps case id (launch name)')
@@ -68,8 +68,27 @@ pipeline {
               set -eu
               export SONAR_HOST_URL="${SONAR_HOST_URL:-https://sonar.qa.guru}"
               export SONAR_PROJECT_KEY=reference-app-backend
-              export SONAR_REQUIRED="${SONAR_REQUIRED:-false}"
+              export SONAR_REQUIRED="${SONAR_REQUIRED:-true}"
               bash scripts/ci-sonar-backend.sh
+            '''
+          }
+        }
+      }
+    }
+
+    stage('Sonar tests') {
+      when {
+        expression { return params.TARGET == 'sonar_tests' }
+      }
+      steps {
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+          withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+            sh '''
+              set -eu
+              export SONAR_HOST_URL="${SONAR_HOST_URL:-https://sonar.qa.guru}"
+              export SONAR_PROJECT_KEY=reference-app-tests
+              export SONAR_REQUIRED="${SONAR_REQUIRED:-true}"
+              bash scripts/ci-sonar-tests.sh
             '''
           }
         }
@@ -78,7 +97,7 @@ pipeline {
 
     stage('Tests') {
       when {
-        expression { return params.TARGET != 'sonar_backend' }
+        expression { return !(params.TARGET in ['sonar_backend', 'sonar_tests']) }
       }
       steps {
         script {

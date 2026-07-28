@@ -4,10 +4,11 @@ import annotations.Layer;
 import org.aeonbits.owner.ConfigFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,16 +49,11 @@ class ConfigReaderTest {
 
     @Test
     @DisplayName("resolveBaseUrl maps basePath to file URL with trailing slash")
-    void resolveBaseUrlFromBasePath() throws Exception {
-        var dir = Files.createTempDirectory("e2e-config-");
-        try {
-            var config = configWith(Map.of("baseUrl", "", "basePath", dir.toString()));
-            var url = ConfigReader.resolveBaseUrl(config);
-            assertTrue(url.startsWith("file:"));
-            assertTrue(url.endsWith("/"));
-        } finally {
-            Files.delete(dir);
-        }
+    void resolveBaseUrlFromBasePath(@TempDir Path dir) {
+        var config = configWith(Map.of("baseUrl", "", "basePath", dir.toString()));
+        var url = ConfigReader.resolveBaseUrl(config);
+        assertTrue(url.startsWith("file:"));
+        assertTrue(url.endsWith("/"));
     }
 
     @Test

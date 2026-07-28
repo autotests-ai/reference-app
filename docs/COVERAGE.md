@@ -27,12 +27,12 @@ open build/reports/jacoco/jacocoTestUnitReport/html/index.html
 | | |
 |--|--|
 | Host | https://sonar.qa.guru |
-| projectKey | `reference-app-backend` |
-| GH | `.github/workflows/reference_github-sonar.yml` |
-| Jenkins | job `reference-app-tests` · `TARGET=sonar_backend` |
-| Script | `scripts/ci-sonar-backend.sh` (soft-skip without `SONAR_TOKEN`) |
+| projectKey | `reference-app-backend` · `reference-app-tests` |
+| GH | `.github/workflows/reference_github-sonar.yml` (jobs `sonar-backend`, `sonar-tests`) |
+| Jenkins | job `reference-app-tests` · `TARGET=sonar_backend` / `sonar_tests` |
+| Script | `scripts/ci-sonar-backend.sh` · `scripts/ci-sonar-tests.sh` (soft-skip without `SONAR_TOKEN`) |
 
-Canon: monorepo `docs/sonar/SONAR-CANON.md`.
+Canon: monorepo `docs/sonar/SONAR-CANON.md` · QG thresholds: `docs/sonar/QUALITY-GATE-PROFILE.md` (`qa-guru-canon`).
 
 Stable tag: `v0.2.1` (CI pyramid + prod pyramid green, 20 component tests, `reference_ci` stands).
 

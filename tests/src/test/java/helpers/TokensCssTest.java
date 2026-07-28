@@ -34,7 +34,7 @@ class TokensCssTest {
                 Arguments.of("--control-height-md", "36px"),
                 Arguments.of("--icon-size-md", "18px"),
                 Arguments.of("--input-min-width", "200px"),
-                Arguments.of("--header-height", "56px")
+                Arguments.of("--header-height", "40px")
         );
     }
 
@@ -61,8 +61,8 @@ class TokensCssTest {
 
     @Test
     @DisplayName("parseRootTokens rejects css without :root block")
-    void parseRootTokensRejectsMissingRootBlock() throws Exception {
-        var css = Files.createTempFile("tokens-invalid-", ".css");
+    void parseRootTokensRejectsMissingRootBlock(@TempDir Path temp) throws Exception {
+        var css = temp.resolve("tokens-invalid.css");
         Files.writeString(css, "body { color: red; }");
 
         assertThrows(IllegalArgumentException.class, () -> TokensCss.parseRootTokens(css));

@@ -13,9 +13,9 @@ import org.openqa.selenium.json.Json;
 /**
  * Server-rendered HAR viewer HTML for Allure attachments.
  * <p>
- * Table + waterfall are inlined (no giant {@code data:} URI). Raw HAR is a separate
- * Allure attachment ({@code capture.har}). Optional late script enhances iframe UX when
- * CSP allows it; static content remains the fallback.
+ * Expandable rows use {@code <details>} (no JS). Tabs Headers / Timings / Response use
+ * radio + {@code :has()} so they work when Allure CSP blocks scripts. Raw HAR is a
+ * separate Allure attachment ({@code capture.har}).
  */
 public final class HarViewerHtml {
 
@@ -71,7 +71,6 @@ public final class HarViewerHtml {
 
         List<Long> starts = new ArrayList<>();
         List<Long> ends = new ArrayList<>();
-        long totalBytes = 0;
         double totalMs = 0;
 
         for (Map<String, Object> entry : entries) {
@@ -82,32 +81,33 @@ public final class HarViewerHtml {
                 ends.add(start + (long) Math.max(time, 0));
             }
             totalMs += Math.max(time, 0);
-            totalBytes += responseSize(entry);
         }
 
         long t0 = starts.stream().min(Long::compare).orElse(0L);
         long t1 = ends.stream().max(Long::compare).orElse(t0);
-        double span = Math.max(Math.max(t1 - t0, totalMs), 1.0);
+        double span = Math.max(Math.max((double) (t1 - t0), totalMs), 1.0);
 
         StringBuilder rows = new StringBuilder();
-        for (Map<String, Object> entry : entries) {
-            rows.append(buildRow(entry, t0, span));
+        for (int i = 0; i < entries.size(); i++) {
+            rows.append(buildEntry(entries.get(i), i, t0, span));
         }
 
         return """
-                <div class="table-wrap"><table>
-                <colgroup><col class="method"><col><col class="status"><col class="size"><col class="time"><col class="waterfall"></colgroup>
-                <thead><tr><th>Method</th><th>URL</th><th>Status</th><th>Size</th><th>Time</th><th>Waterfall</th></tr></thead>
-                <tbody>%s</tbody>
-                </table></div>
+                <div class="entries">
+                <div class="cols-head" aria-hidden="true">
+                  <span></span><span>Method</span><span>URL</span><span>Status</span><span>Size</span><span>Time</span><span>Waterfall</span>
+                </div>
+                %s
+                </div>
                 """.formatted(rows);
     }
 
     @SuppressWarnings("unchecked")
-    private static String buildRow(Map<String, Object> entry, long t0, double span) {
+    private static String buildEntry(Map<String, Object> entry, int index, long t0, double span) {
         Map<String, Object> req = mapVal(entry.get("request"));
         Map<String, Object> res = mapVal(entry.get("response"));
         Map<String, Object> timings = mapVal(entry.get("timings"));
+        Map<String, Object> content = mapVal(res.get("content"));
 
         String method = stringVal(req.get("method")).toUpperCase(Locale.ROOT);
         if (method.isEmpty()) {
@@ -121,22 +121,52 @@ public final class HarViewerHtml {
         long start = parseInstant(entry.get("startedDateTime"));
         double left = start >= 0 ? ((start - t0) / span) * 100.0 : 0.0;
         double width = Math.max((time / span) * 100.0, 0.4);
-        double wait = Math.max(doubleVal(timings.get("wait")), 0);
         double receive = Math.max(doubleVal(timings.get("receive")), 0);
         double recvPct = time > 0 ? Math.min((receive / time) * 100.0, 100.0) : 20.0;
 
+        String idH = "e" + index + "-h";
+        String idT = "e" + index + "-t";
+        String idR = "e" + index + "-r";
+
         return """
-                <tr>
-                  <td class="method %s">%s</td>
-                  <td class="url" title="%s">%s</td>
-                  <td class="status %s">%d %s</td>
-                  <td>%s</td>
-                  <td>%.0f ms</td>
-                  <td><div class="waterfall">
-                    <span class="bar wait" style="left:%.2f%%;width:%.2f%%"></span>
-                    <span class="bar receive" style="left:%.2f%%;width:%.2f%%"></span>
-                  </div></td>
-                </tr>
+                <details class="entry">
+                  <summary>
+                    <span class="twist" aria-hidden="true"></span>
+                    <span class="cell method %s">%s</span>
+                    <span class="cell url" title="%s">%s</span>
+                    <span class="cell status %s">%d %s</span>
+                    <span class="cell">%s</span>
+                    <span class="cell">%.0f ms</span>
+                    <span class="cell"><div class="waterfall">
+                      <span class="bar wait" style="left:%.2f%%;width:%.2f%%"></span>
+                      <span class="bar receive" style="left:%.2f%%;width:%.2f%%"></span>
+                    </div></span>
+                  </summary>
+                  <div class="detail">
+                    <div class="tabs">
+                      <div class="tab-bar">
+                        <input class="tab-headers" type="radio" name="e%d" id="%s" checked>
+                        <label for="%s">Headers</label>
+                        <input class="tab-timings" type="radio" name="e%d" id="%s">
+                        <label for="%s">Timings</label>
+                        <input class="tab-response" type="radio" name="e%d" id="%s">
+                        <label for="%s">Response</label>
+                      </div>
+                      <div class="tab-panel panel-headers">
+                        <div class="section-title">Response Headers</div>
+                        %s
+                        <div class="section-title">Request Headers</div>
+                        %s
+                      </div>
+                      <div class="tab-panel panel-timings">
+                        %s
+                      </div>
+                      <div class="tab-panel panel-response">
+                        %s
+                      </div>
+                    </div>
+                  </div>
+                </details>
                 """.formatted(
                 escapeHtml(method),
                 escapeHtml(method),
@@ -150,7 +180,90 @@ public final class HarViewerHtml {
                 left,
                 width,
                 left,
-                width * recvPct / 100.0);
+                width * recvPct / 100.0,
+                index, idH, idH,
+                index, idT, idT,
+                index, idR, idR,
+                buildHeaderKv(res.get("headers")),
+                buildHeaderKv(req.get("headers")),
+                buildTimingsPanel(timings, time),
+                buildResponsePanel(content, size, status, statusText));
+    }
+
+    private static String buildHeaderKv(Object headersObj) {
+        List<Map<String, String>> headers = headerMaps(headersObj);
+        if (headers.isEmpty()) {
+            return "<div class=\"muted\">No headers captured.</div>";
+        }
+        StringBuilder sb = new StringBuilder("<div class=\"kv\">");
+        for (Map<String, String> h : headers) {
+            sb.append("<div class=\"k\">").append(escapeHtml(stringVal(h.get("name")))).append("</div>");
+            sb.append("<div class=\"v\">").append(escapeHtml(stringVal(h.get("value")))).append("</div>");
+        }
+        sb.append("</div>");
+        return sb.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<Map<String, String>> headerMaps(Object headersObj) {
+        List<Map<String, String>> out = new ArrayList<>();
+        if (!(headersObj instanceof List<?> list)) {
+            return out;
+        }
+        for (Object item : list) {
+            if (item instanceof Map<?, ?> map) {
+                out.add((Map<String, String>) map);
+            }
+        }
+        return out;
+    }
+
+    private static String buildTimingsPanel(Map<String, Object> timings, double totalMs) {
+        StringBuilder sb = new StringBuilder("<div class=\"kv\">");
+        appendTiming(sb, "blocked", timings.get("blocked"));
+        appendTiming(sb, "dns", timings.get("dns"));
+        appendTiming(sb, "connect", timings.get("connect"));
+        appendTiming(sb, "ssl", timings.get("ssl"));
+        appendTiming(sb, "send", timings.get("send"));
+        appendTiming(sb, "wait", timings.get("wait"));
+        appendTiming(sb, "receive", timings.get("receive"));
+        sb.append("<div class=\"k\">total</div><div class=\"v\">")
+                .append(String.format(Locale.ROOT, "%.0f ms", totalMs))
+                .append("</div></div>");
+        return sb.toString();
+    }
+
+    private static void appendTiming(StringBuilder sb, String name, Object value) {
+        double ms = doubleVal(value);
+        String text = ms < 0 ? "—" : String.format(Locale.ROOT, "%.0f ms", ms);
+        sb.append("<div class=\"k\">").append(name).append("</div>");
+        sb.append("<div class=\"v\">").append(text).append("</div>");
+    }
+
+    private static String buildResponsePanel(Map<String, Object> content, long size, int status, String statusText) {
+        String mime = stringVal(content.get("mimeType"));
+        if (mime.isEmpty()) {
+            mime = "—";
+        }
+        String bodyNote = "Body not captured (headers + size only).";
+        Object text = content.get("text");
+        if (text instanceof String body && !body.isEmpty()) {
+            bodyNote = body;
+        }
+        return """
+                <div class="kv">
+                  <div class="k">status</div><div class="v">%d %s</div>
+                  <div class="k">mimeType</div><div class="v">%s</div>
+                  <div class="k">size</div><div class="v">%s</div>
+                </div>
+                <div class="section-title">Body</div>
+                <div class="muted" style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere">%s</div>
+                """.formatted(
+                status,
+                escapeHtml(statusText),
+                escapeHtml(mime),
+                escapeHtml(formatBytes(size)),
+                escapeHtml(bodyNote));
     }
 
     @SuppressWarnings("unchecked")

@@ -39,6 +39,24 @@ plugins {
     id 'java-library'
     id 'jacoco'
     id 'io.qameta.allure' version "${allurePluginVersion}"
+    id 'org.sonarqube' version '6.2.0.5505'
+}
+
+sonar {
+    properties {
+        property 'sonar.projectKey', System.getenv('SONAR_PROJECT_KEY') ?: 'reference-app-tests'
+        property 'sonar.projectName', System.getenv('SONAR_PROJECT_KEY') ?: 'reference-app-tests'
+        property 'sonar.host.url', System.getenv('SONAR_HOST_URL') ?: 'https://sonar.qa.guru'
+        // Test sources as main — Selenide/helpers living under src/test/java.
+        property 'sonar.sources', 'src/test/java'
+        property 'sonar.tests', ''
+        property 'sonar.java.binaries', 'build/classes/java/test'
+        property 'sonar.coverage.jacoco.xmlReportPaths',
+                "${layout.buildDirectory.get()}/reports/jacoco/jacocoTestUnitReport/jacocoTestUnitReport.xml"
+        // Coverage axis = pyramid unit helpers (100% local); UI/page/test classes excluded.
+        property 'sonar.coverage.exclusions',
+                '**/*Test.java,**/*Tests.java,**/pages/**,**/api/**,**/annotations/**,**/allure/**,**/extensions/**,**/tests/**,**/helpers/BrowserSessionHelper.java,**/helpers/HarCapture.java,**/helpers/HarViewerHtml.java,**/helpers/LocalChromePin.java,**/helpers/ScreenshotBaseline.java,**/helpers/ViewportHelper.java,**/config/TestConfig.java'
+    }
 }
 
 def allureReportMode = System.getProperty('allureReportMode', 'allure3')
@@ -359,7 +377,7 @@ layerTestSlices.each { slice ->
     def envName = pyramidLayerEnv(slice.layer)
     tasks.register(slice.name, Test) {
         group = 'verification'
-        description = "${slice.description} (env=${envName}; override stand: -DpyramidStand=one-page-form_prod)"
+        description = "${slice.description} (env=${envName}; override stand: -DpyramidStand=reference_ci)"
         testClassesDirs = sourceSets.test.output.classesDirs
         classpath = sourceSets.test.runtimeClasspath
         useJUnitPlatform {
