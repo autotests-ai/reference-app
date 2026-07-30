@@ -12,6 +12,9 @@ backend/bin/
 tests/build/
 tests/.gradle/
 tests/bin/
+java/gradle-junit5-selenium/build/
+java/gradle-junit5-selenium/.gradle/
+java/gradle-junit5-selenium/bin/
 
 # IDE
 .idea/

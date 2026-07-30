@@ -1,0 +1,84 @@
+/*
+ * reference-app — java/gradle-junit5-selenium (UI smoke sibling)
+ * Java · Gradle · Selenium 4 · JUnit 5 · Allure
+ * Canon remains ../../tests (Selenide pyramid ≡ gradle-junit5-selenide).
+ */
+
+buildscript {
+    ext {
+        allurePluginVersion = '4.1.0'
+        allureVersion = '3.13.0'
+        allureBomVersion = '2.35.2'
+        seleniumVersion = '4.45.0'
+        junitVersion = '5.11.4'
+        slf4jVersion = '2.0.17'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version "${allurePluginVersion}"
+}
+
+def allureReportMode = System.getProperty('allureReportMode', 'none')
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    version = allureVersion
+    adapter {
+        allureJavaVersion = allureBomVersion
+        resultsDir.set(layout.buildDirectory.dir('allure-results'))
+        autoconfigure.set(allureReportMode != 'none')
+        aspectjWeaver.set(allureReportMode != 'none')
+        frameworks {
+            junit5 {
+                enabled.set(allureReportMode != 'none')
+                autoconfigureListeners.set(allureReportMode != 'none')
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation platform("io.qameta.allure:allure-bom:${allureBomVersion}")
+    testImplementation(
+            "org.seleniumhq.selenium:selenium-java:${seleniumVersion}",
+            'io.qameta.allure:allure-jupiter',
+            "org.junit.jupiter:junit-jupiter:${junitVersion}",
+    )
+    testRuntimeOnly(
+            'org.junit.platform:junit-platform-launcher',
+            "org.slf4j:slf4j-simple:${slf4jVersion}",
+    )
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'baseUrl', System.getProperty('baseUrl', System.getenv('BASE_URL') ?: '')
+    systemProperty 'apiBaseUrl', System.getProperty('apiBaseUrl', System.getenv('API_BASE_URL') ?: '')
+    systemProperty 'remoteUrl', System.getProperty('remoteUrl', System.getenv('REMOTE_URL') ?: '')
+    systemProperty 'browserVersion', System.getProperty('browserVersion', System.getenv('BROWSER_VERSION') ?: '148.0')
+    systemProperty 'browserSize', System.getProperty('browserSize', System.getenv('BROWSER_SIZE') ?: '1740x1080')
+    systemProperty 'headless', System.getProperty('headless', System.getenv('HEADLESS') ?: 'true')
+    systemProperty 'enableVnc', System.getProperty('enableVnc', System.getenv('ENABLE_VNC') ?: 'false')
+    systemProperty 'enableVideo', System.getProperty('enableVideo', System.getenv('ENABLE_VIDEO') ?: 'false')
+    systemProperty 'allureReportMode', allureReportMode
+    maxParallelForks = 1
+    testLogging {
+        events 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
+}

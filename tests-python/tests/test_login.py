@@ -14,6 +14,7 @@ WRONG_CREDENTIALS = "Wrong login or password"
 @allure.title("Login")
 class TestLogin:
     @allure.title("User is logged in with valid credentials")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.positive
     def test_should_login_with_valid_credentials(self, login_page: LoginPage):
@@ -24,6 +25,7 @@ class TestLogin:
         )
 
     @allure.title("Empty username shows validation error")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.smoke
     @pytest.mark.negative
     def test_should_show_validation_error_when_username_is_empty(self, login_page: LoginPage):
@@ -35,6 +37,7 @@ class TestLogin:
         )
 
     @allure.title("Empty password shows validation error")
+    @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.smoke
     @pytest.mark.negative
     def test_should_show_validation_error_when_password_is_empty(self, login_page: LoginPage):
@@ -46,6 +49,7 @@ class TestLogin:
         )
 
     @allure.title("Wrong password shows readable error")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.negative
     def test_should_show_error_when_password_is_wrong(self, login_page: LoginPage):

@@ -12,6 +12,7 @@ from pages.register_page import RegisterPage
 @allure.title("Register")
 class TestRegister:
     @allure.title("New user can register and land on home")
+    @allure.severity(allure.severity_level.CRITICAL)
     @pytest.mark.smoke
     @pytest.mark.positive
     def test_should_register_new_user(self, register_page: RegisterPage):

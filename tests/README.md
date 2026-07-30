@@ -2,10 +2,28 @@
 
 Selenide + JUnit 5 + Allure. Full testing pyramid for generic reference stack.
 
-Sibling stacks (UI smoke only, same prod target):
+**Matrix id (qa-guru-refs shape):** `java/gradle-junit5-selenide` — short path `tests/` is the SSOT alias.
 
-- [`../tests-js/`](../tests-js/) — Playwright, RealWorld-style App facade
-- [`../tests-python/`](../tests-python/) — Selenium, Java-style fluent page objects
+Sibling stacks (same prod target; language-first layout):
+
+| Path | Matrix id | Stack |
+|------|-----------|--------|
+| [`../java/gradle-junit5-selenium/`](../java/gradle-junit5-selenium/) | `java/gradle-junit5-selenium` | Java · Selenium 4 · JUnit 5 (smoke) |
+| [`../tests-python/`](../tests-python/) | ≈ `python/pip-pytest-selenium` | Python · Selenium |
+| [`../tests-js/`](../tests-js/) | ≈ `javascript/playwright` | Playwright |
+
+Canon stays this directory — siblings do not replace the pyramid.
+
+## Pyramid layers (this repo)
+
+| Layer | Where | Notes |
+|-------|--------|--------|
+| unit | `../backend/src/test`, `testUnit` helpers | required |
+| frontend_rtl | [`../frontend-react/`](../frontend-react/) | Vitest + RTL — **not** this Gradle module |
+| api / integration | `tests/api`, `testApi` | Rest Assured; OpenAPI SSOT in `stacks/_contract/` |
+| component | `@Tag("component")` | Selenide browser mount — **not** RTL |
+| e2e / visual | `testE2e` / `testVisual` | Selenide |
+| contracts | OpenAPI + `openapi-diff` | Pact = planned (see `generators/matrix-capabilities.yaml`) |
 
 ## Naming
 
