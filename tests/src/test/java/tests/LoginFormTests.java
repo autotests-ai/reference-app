@@ -19,7 +19,6 @@ class LoginFormTests extends TestBase {
     @AllureId("46592")
     @Issue("REF-2")
     @Tag("mount")
-    @AllureId("46592")
     @DisplayName("Login form fields and submit are visible")
     void loginFormIsMounted() {
         loginPage.openPage()
