@@ -21,12 +21,12 @@
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      height: 100%;
-      min-height: 100%;
+      height: auto;
+      min-height: 0;
       background: var(--bg);
       color: var(--text);
       font: 12px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      overflow: auto;
+      overflow: visible;
     }
     .header {
       display: flex;
@@ -114,7 +114,7 @@
     .error { color: var(--err); }
   </style>
 </head>
-<body style="margin:0;height:100%;min-height:100%;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:auto">
+<body style="margin:0;height:auto;min-height:0;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:visible">
   <div class="header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;border-bottom:1px solid #3d444c;background:#1a1917">
     <h1 style="margin:0;font-size:13px;font-weight:600">HAR Viewer</h1>
     <div class="summary" style="color:#999;font-size:11px;white-space:nowrap">__SUMMARY__</div>
