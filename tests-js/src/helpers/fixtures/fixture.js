@@ -6,12 +6,28 @@ const {
   attachLastScreenshot,
   attachPageSource,
   attachVideo,
+  attachFull,
 } = require('../env');
 const Attachments = require('../attachments');
 
 const BASE_URL = process.env.UI_URL || 'https://reference-app.autotests.ai';
 
-exports.test = base.extend({
+function wantAnyAttachments() {
+  return (
+    attachFull() ||
+    attachBrowserConsoleLogs() ||
+    attachHarLogs() ||
+    attachLastScreenshot() ||
+    attachPageSource() ||
+    attachVideo()
+  );
+}
+
+/**
+ * Full-attachments: all artifacts land in Playwright afterEach (flat under
+ * After Hooks → afterEach), same shape as Java TestBase.afterEach.
+ */
+const test = base.extend({
   context: async ({ browser }, use, testInfo) => {
     const har = attachHarLogs();
     const harPath = har ? testInfo.outputPath('capture.har') : null;
@@ -19,14 +35,10 @@ exports.test = base.extend({
       baseURL: BASE_URL,
       ...(har ? { recordHar: { path: harPath, mode: 'minimal' } } : {}),
     });
+    testInfo._zdsHarPath = harPath;
     await use(context);
-    await context.close();
-    if (har && harPath) {
-      try {
-        await Attachments.harLogs(harPath);
-      } catch (err) {
-        console.warn('HAR attach:', err.message || err);
-      }
+    if (!context._zdsClosedByAfterEach) {
+      await context.close();
     }
   },
 
@@ -35,18 +47,12 @@ exports.test = base.extend({
     await use(app);
   },
 
-  _fullAttachments: [
-    async ({ page }, use) => {
-      const wantConsole = attachBrowserConsoleLogs();
-      const wantSource = attachPageSource();
-      const wantShot = attachLastScreenshot();
-      const wantVid = attachVideo();
-      if (!wantConsole && !wantSource && !wantShot && !wantVid) {
-        await use();
-        return;
-      }
+  // Capture console / failed requests during the test (no attachments here).
+  _consoleCapture: [
+    async ({ page }, use, testInfo) => {
       const logs = [];
-      if (wantConsole) {
+      testInfo._zdsConsoleLogs = logs;
+      if (attachBrowserConsoleLogs()) {
         page.on('console', (msg) => {
           logs.push(`${msg.type()}: ${msg.text()}`);
         });
@@ -59,25 +65,47 @@ exports.test = base.extend({
             `requestfailed: ${req.url()} — ${failure ? failure.errorText : 'failed'}`,
           );
         });
+        page.on('response', (resp) => {
+          const status = resp.status();
+          if (status >= 400) {
+            logs.push(`response: ${status} ${resp.url()}`);
+          }
+        });
       }
       await use();
-      try {
-        if (wantConsole) {
-          await Attachments.browserConsoleLogs(logs);
-        }
-        if (wantSource) {
-          await Attachments.pageSource(await page.content());
-        }
-        if (wantShot) {
-          await Attachments.lastScreenshot(await page.screenshot({ fullPage: false }));
-        }
-        if (wantVid) {
-          await Attachments.video();
-        }
-      } catch (err) {
-        console.warn('full-attachments teardown:', err.message || err);
-      }
     },
     { auto: true },
   ],
 });
+
+test.afterEach(async ({ page, context }, testInfo) => {
+  if (!wantAnyAttachments()) {
+    return;
+  }
+
+  const logs = testInfo._zdsConsoleLogs || [];
+  try {
+    if (attachBrowserConsoleLogs()) {
+      await Attachments.browserConsoleLogs(logs);
+    }
+    if (attachPageSource()) {
+      await Attachments.pageSource(await page.content());
+    }
+    if (attachLastScreenshot()) {
+      await Attachments.lastScreenshot(await page.screenshot({ fullPage: false }));
+    }
+    if (attachVideo()) {
+      await Attachments.video();
+    }
+    if (attachHarLogs() && testInfo._zdsHarPath) {
+      // Flush recordHar, then attach capture.har + HAR Viewer next to the rest.
+      context._zdsClosedByAfterEach = true;
+      await context.close();
+      await Attachments.harLogs(testInfo._zdsHarPath);
+    }
+  } catch (err) {
+    console.warn('full-attachments afterEach:', err.message || err);
+  }
+});
+
+exports.test = test;
