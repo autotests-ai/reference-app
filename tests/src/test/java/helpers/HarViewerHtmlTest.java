@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class HarViewerHtmlTest {
 
     @Test
-    void renderBuildsStaticWaterfallWithoutEmbeddedHarDataUri() {
+    void renderBuildsSelenoidLikeTableWithDetailsWithoutEmbeddedHarDataUri() {
         byte[] har = """
-                {"log":{"version":"1.2","entries":[{"startedDateTime":"2026-01-01T00:00:00.000Z","time":50,"request":{"method":"GET","url":"https://example.com/"},"response":{"status":200,"statusText":"OK","content":{"size":42}},"timings":{"wait":40,"receive":10}}]}}
+                {"log":{"version":"1.2","entries":[{"startedDateTime":"2026-01-01T00:00:00.000Z","time":50,"request":{"method":"GET","url":"https://example.com/","headers":[{"name":"Accept","value":"*/*"}]},"response":{"status":200,"statusText":"OK","headers":[{"name":"Content-Type","value":"text/html"}],"content":{"size":42,"mimeType":"text/html"}},"timings":{"wait":40,"receive":10}}]}}
                 """.trim().getBytes();
 
         String html = HarViewerHtml.render(har);
@@ -20,15 +20,24 @@ class HarViewerHtmlTest {
         assertTrue(html.contains("HAR Viewer"), () -> "missing title: " + html);
         assertTrue(html.contains("1 requests"), () -> "missing summary: " + html);
         assertTrue(html.contains("example.com"), () -> "missing url row: " + html);
-        assertTrue(html.contains("class=\"bar wait\""), () -> "missing waterfall bar: " + html);
+        assertTrue(html.contains("<table class=\"har-table\""), () -> "missing har-table: " + html);
+        assertTrue(html.contains(">Method</th>"), () -> "missing Method column: " + html);
+        assertTrue(html.contains(">Status</th>"), () -> "missing Status column: " + html);
+        assertTrue(html.contains(">Type</th>"), () -> "missing Type column: " + html);
+        assertFalse(html.contains("cols-head"), () -> "must not use CSS-grid cols-head: " + html);
+        assertFalse(html.contains("Waterfall"), () -> "must not use Waterfall column: " + html);
+        assertTrue(html.contains("<details"), () -> "missing expandable details: " + html);
+        assertTrue(html.contains("Response Headers"), () -> "missing response headers section: " + html);
+        assertTrue(html.contains("Request Headers"), () -> "missing request headers section: " + html);
+        assertTrue(html.contains("Content-Type"), () -> "missing response header value: " + html);
+        assertTrue(html.contains("Accept"), () -> "missing request header value: " + html);
+        assertTrue(html.contains(">Timings</summary>"), () -> "missing Timings details: " + html);
+        assertTrue(html.contains(">Response</summary>"), () -> "missing Response details: " + html);
         assertTrue(html.contains("capture.har"), () -> "missing raw HAR attachment hint: " + html);
-        assertTrue(html.contains("Open this HTML attachment in a new tab"),
-                () -> "missing new-tab hint: " + html);
+        assertTrue(html.contains("border-collapse:collapse"), () -> "missing inline table styles for DOMPurify: " + html);
         assertFalse(html.contains("data:application/json;base64,"),
                 () -> "must not embed giant data URI: " + html);
         assertFalse(html.contains("__CONTENT__"), () -> "placeholder not replaced: " + html);
         assertFalse(html.contains("__SUMMARY__"), () -> "summary placeholder not replaced: " + html);
-        // Static table is the iframe-safe path; late <script> is optional enhancement only
-        assertTrue(html.contains("<table>"), () -> "missing static table fallback: " + html);
     }
 }

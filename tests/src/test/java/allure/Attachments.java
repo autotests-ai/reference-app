@@ -54,8 +54,8 @@ public class Attachments {
 
     /**
      * Attach client-side HAR (Chrome/Edge Performance logs): raw {@code capture.har}
-     * plus a self-contained HTML waterfall viewer. Open the HTML in a new tab for the
-     * full table — Allure iframe preview is intentionally minimal-safe.
+     * plus a self-contained HTML table viewer (same columns as Selenoid HarViewer).
+     * Inline styles keep the Allure 3 iframe readable when DOMPurify strips {@code <style>}.
      * No-op on unsupported browsers or when capture produced nothing — never throws.
      */
     public static void harLogs() {

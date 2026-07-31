@@ -3,7 +3,6 @@ package helpers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -13,9 +12,12 @@ import org.openqa.selenium.json.Json;
 /**
  * Server-rendered HAR viewer HTML for Allure attachments.
  * <p>
- * Expandable rows use {@code <details>} (no JS). Tabs Headers / Timings / Response use
- * radio + {@code :has()} so they work when Allure CSP blocks scripts. Raw HAR is a
- * separate Allure attachment ({@code capture.har}).
+ * Markup matches design-system / Selenoid {@code HarViewer}: table columns
+ * Method · Status · URL · Type · Size · Time. Expandable detail uses
+ * {@code <details>} (no JS) so Allure CSP and DOMPurify still show content.
+ * Critical layout uses {@code <table>} + inline styles so Allure 3 sanitizer
+ * (strips {@code <style>}) does not collapse columns. Raw HAR is a separate
+ * Allure attachment ({@code capture.har}).
  */
 public final class HarViewerHtml {
 
@@ -69,41 +71,32 @@ public final class HarViewerHtml {
             return "<div class=\"empty\">No network entries captured.</div>";
         }
 
-        List<Long> starts = new ArrayList<>();
-        List<Long> ends = new ArrayList<>();
-        double totalMs = 0;
-
-        for (Map<String, Object> entry : entries) {
-            long start = parseInstant(entry.get("startedDateTime"));
-            double time = doubleVal(entry.get("time"));
-            if (start >= 0) {
-                starts.add(start);
-                ends.add(start + (long) Math.max(time, 0));
-            }
-            totalMs += Math.max(time, 0);
-        }
-
-        long t0 = starts.stream().min(Long::compare).orElse(0L);
-        long t1 = ends.stream().max(Long::compare).orElse(t0);
-        double span = Math.max(Math.max((double) (t1 - t0), totalMs), 1.0);
-
         StringBuilder rows = new StringBuilder();
-        for (int i = 0; i < entries.size(); i++) {
-            rows.append(buildEntry(entries.get(i), i, t0, span));
+        for (Map<String, Object> entry : entries) {
+            rows.append(buildEntry(entry));
         }
 
         return """
-                <div class="entries">
-                <div class="cols-head" aria-hidden="true">
-                  <span></span><span>Method</span><span>URL</span><span>Status</span><span>Size</span><span>Time</span><span>Waterfall</span>
+                <div class="har-viewer">
+                <div class="har-table-wrap" style="overflow:auto">
+                <table class="har-table" style="width:100%%;border-collapse:collapse;font-size:12px;line-height:1.35;color:#ccc">
+                <thead><tr>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Method</th>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Status</th>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">URL</th>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Type</th>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Size</th>
+                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Time</th>
+                </tr></thead>
+                <tbody>%s</tbody>
+                </table>
                 </div>
-                %s
                 </div>
                 """.formatted(rows);
     }
 
     @SuppressWarnings("unchecked")
-    private static String buildEntry(Map<String, Object> entry, int index, long t0, double span) {
+    private static String buildEntry(Map<String, Object> entry) {
         Map<String, Object> req = mapVal(entry.get("request"));
         Map<String, Object> res = mapVal(entry.get("response"));
         Map<String, Object> timings = mapVal(entry.get("timings"));
@@ -118,87 +111,92 @@ public final class HarViewerHtml {
         String statusText = stringVal(res.get("statusText"));
         long size = responseSize(entry);
         double time = Math.max(doubleVal(entry.get("time")), 0);
-        long start = parseInstant(entry.get("startedDateTime"));
-        double left = start >= 0 ? ((start - t0) / span) * 100.0 : 0.0;
-        double width = Math.max((time / span) * 100.0, 0.4);
-        double receive = Math.max(doubleVal(timings.get("receive")), 0);
-        double recvPct = time > 0 ? Math.min((receive / time) * 100.0, 100.0) : 20.0;
+        String mime = stringVal(content.get("mimeType"));
+        if (mime.isEmpty()) {
+            mime = "—";
+        }
 
-        String idH = "e" + index + "-h";
-        String idT = "e" + index + "-t";
-        String idR = "e" + index + "-r";
-
+        String cell = "padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;vertical-align:top;white-space:nowrap";
         return """
-                <details class="entry">
-                  <summary>
-                    <span class="twist" aria-hidden="true"></span>
-                    <span class="cell method %s">%s</span>
-                    <span class="cell url" title="%s">%s</span>
-                    <span class="cell status %s">%d %s</span>
-                    <span class="cell">%s</span>
-                    <span class="cell">%.0f ms</span>
-                    <span class="cell"><div class="waterfall">
-                      <span class="bar wait" style="left:%.2f%%;width:%.2f%%"></span>
-                      <span class="bar receive" style="left:%.2f%%;width:%.2f%%"></span>
-                    </div></span>
-                  </summary>
-                  <div class="detail">
-                    <div class="tabs">
-                      <div class="tab-bar">
-                        <input class="tab-headers" type="radio" name="e%d" id="%s" checked>
-                        <label for="%s">Headers</label>
-                        <input class="tab-timings" type="radio" name="e%d" id="%s">
-                        <label for="%s">Timings</label>
-                        <input class="tab-response" type="radio" name="e%d" id="%s">
-                        <label for="%s">Response</label>
-                      </div>
-                      <div class="tab-panel panel-headers">
-                        <div class="section-title">Response Headers</div>
+                <tr class="har-row">
+                  <td class="har-method" style="%s;font-weight:600;color:#89d185">%s</td>
+                  <td class="%s" style="%s;%s">%s</td>
+                  <td class="har-url" title="%s" style="%s;overflow:hidden;text-overflow:ellipsis;max-width:280px">%s</td>
+                  <td class="har-mime" style="%s;color:#999;max-width:140px;overflow:hidden;text-overflow:ellipsis">%s</td>
+                  <td style="%s">%s</td>
+                  <td style="%s">%.0f ms</td>
+                </tr>
+                <tr class="har-detail-row">
+                  <td colspan="6" style="padding:0;white-space:normal;border-bottom:1px solid #3d444c;background:rgba(0,0,0,0.18)">
+                    <div class="har-detail" style="padding:8px 12px 12px">
+                      <details open>
+                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Headers</summary>
+                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response Headers</div>
                         %s
-                        <div class="section-title">Request Headers</div>
+                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Request Headers</div>
                         %s
-                      </div>
-                      <div class="tab-panel panel-timings">
+                      </details>
+                      <details>
+                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Timings</summary>
                         %s
-                      </div>
-                      <div class="tab-panel panel-response">
+                      </details>
+                      <details>
+                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Response</summary>
                         %s
-                      </div>
+                      </details>
                     </div>
-                  </div>
-                </details>
+                  </td>
+                </tr>
                 """.formatted(
+                cell,
                 escapeHtml(method),
-                escapeHtml(method),
-                escapeHtml(url),
-                escapeHtml(url),
                 statusClass(status),
-                status,
-                escapeHtml(statusText),
+                cell,
+                statusColor(status),
+                status == 0 ? "—" : String.valueOf(status),
+                escapeHtml(url),
+                cell,
+                escapeHtml(url),
+                cell,
+                escapeHtml(mime),
+                cell,
                 escapeHtml(formatBytes(size)),
+                cell,
                 time,
-                left,
-                width,
-                left,
-                width * recvPct / 100.0,
-                index, idH, idH,
-                index, idT, idT,
-                index, idR, idR,
                 buildHeaderKv(res.get("headers")),
                 buildHeaderKv(req.get("headers")),
                 buildTimingsPanel(timings, time),
                 buildResponsePanel(content, size, status, statusText));
     }
 
+    private static String statusColor(int status) {
+        if (status >= 500) {
+            return "color:#f48771";
+        }
+        if (status >= 400) {
+            return "color:#cca700";
+        }
+        if (status >= 300) {
+            return "color:#6cb6ff";
+        }
+        if (status > 0) {
+            return "color:#89d185";
+        }
+        return "color:#999";
+    }
+
     private static String buildHeaderKv(Object headersObj) {
         List<Map<String, String>> headers = headerMaps(headersObj);
         if (headers.isEmpty()) {
-            return "<div class=\"muted\">No headers captured.</div>";
+            return "<div class=\"har-muted\" style=\"color:#999\">No headers captured.</div>";
         }
-        StringBuilder sb = new StringBuilder("<div class=\"kv\">");
+        StringBuilder sb = new StringBuilder(
+                "<div class=\"har-kv\" style=\"display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:2px 12px;font-size:12px;line-height:1.4\">");
         for (Map<String, String> h : headers) {
-            sb.append("<div class=\"k\">").append(escapeHtml(stringVal(h.get("name")))).append("</div>");
-            sb.append("<div class=\"v\">").append(escapeHtml(stringVal(h.get("value")))).append("</div>");
+            sb.append("<div class=\"har-kv__k\" style=\"color:#999;word-break:break-all;white-space:normal\">")
+                    .append(escapeHtml(stringVal(h.get("name")))).append("</div>");
+            sb.append("<div class=\"har-kv__v\" style=\"color:#ccc;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap\">")
+                    .append(escapeHtml(stringVal(h.get("value")))).append("</div>");
         }
         sb.append("</div>");
         return sb.toString();
@@ -219,7 +217,8 @@ public final class HarViewerHtml {
     }
 
     private static String buildTimingsPanel(Map<String, Object> timings, double totalMs) {
-        StringBuilder sb = new StringBuilder("<div class=\"kv\">");
+        StringBuilder sb = new StringBuilder(
+                "<div class=\"har-kv\" style=\"display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:2px 12px;font-size:12px;line-height:1.4\">");
         appendTiming(sb, "blocked", timings.get("blocked"));
         appendTiming(sb, "dns", timings.get("dns"));
         appendTiming(sb, "connect", timings.get("connect"));
@@ -227,7 +226,7 @@ public final class HarViewerHtml {
         appendTiming(sb, "send", timings.get("send"));
         appendTiming(sb, "wait", timings.get("wait"));
         appendTiming(sb, "receive", timings.get("receive"));
-        sb.append("<div class=\"k\">total</div><div class=\"v\">")
+        sb.append("<div class=\"har-kv__k\" style=\"color:#999\">total</div><div class=\"har-kv__v\" style=\"color:#ccc\">")
                 .append(String.format(Locale.ROOT, "%.0f ms", totalMs))
                 .append("</div></div>");
         return sb.toString();
@@ -236,8 +235,8 @@ public final class HarViewerHtml {
     private static void appendTiming(StringBuilder sb, String name, Object value) {
         double ms = doubleVal(value);
         String text = ms < 0 ? "—" : String.format(Locale.ROOT, "%.0f ms", ms);
-        sb.append("<div class=\"k\">").append(name).append("</div>");
-        sb.append("<div class=\"v\">").append(text).append("</div>");
+        sb.append("<div class=\"har-kv__k\" style=\"color:#999\">").append(name).append("</div>");
+        sb.append("<div class=\"har-kv__v\" style=\"color:#ccc\">").append(text).append("</div>");
     }
 
     private static String buildResponsePanel(Map<String, Object> content, long size, int status, String statusText) {
@@ -245,22 +244,22 @@ public final class HarViewerHtml {
         if (mime.isEmpty()) {
             mime = "—";
         }
-        String bodyNote = "Body not captured (headers + size only).";
+        String bodyNote = "Body not captured (meta / headers + size only).";
         Object text = content.get("text");
         if (text instanceof String body && !body.isEmpty()) {
             bodyNote = body;
         }
+        String statusLabel = status == 0 ? "—" : status + (statusText.isEmpty() ? "" : " " + statusText);
         return """
-                <div class="kv">
-                  <div class="k">status</div><div class="v">%d %s</div>
-                  <div class="k">mimeType</div><div class="v">%s</div>
-                  <div class="k">size</div><div class="v">%s</div>
+                <div class="har-kv" style="display:grid;grid-template-columns:minmax(96px,140px) 1fr;gap:2px 12px;font-size:12px;line-height:1.4">
+                  <div class="har-kv__k" style="color:#999">status</div><div class="har-kv__v" style="color:#ccc">%s</div>
+                  <div class="har-kv__k" style="color:#999">mimeType</div><div class="har-kv__v" style="color:#ccc">%s</div>
+                  <div class="har-kv__k" style="color:#999">size</div><div class="har-kv__v" style="color:#ccc">%s</div>
                 </div>
-                <div class="section-title">Body</div>
-                <div class="muted" style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere">%s</div>
+                <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Body</div>
+                <div class="har-muted har-body" style="color:#999;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere">%s</div>
                 """.formatted(
-                status,
-                escapeHtml(statusText),
+                escapeHtml(statusLabel),
                 escapeHtml(mime),
                 escapeHtml(formatBytes(size)),
                 escapeHtml(bodyNote));
@@ -303,16 +302,19 @@ public final class HarViewerHtml {
     }
 
     private static String statusClass(int status) {
-        if (status >= 200 && status < 300) {
-            return "ok";
-        }
-        if (status >= 300 && status < 400) {
-            return "warn";
+        if (status >= 500) {
+            return "har-status--err";
         }
         if (status >= 400) {
-            return "err";
+            return "har-status--warn";
         }
-        return "";
+        if (status >= 300) {
+            return "har-status--redir";
+        }
+        if (status > 0) {
+            return "har-status--ok";
+        }
+        return "har-status--muted";
     }
 
     private static String formatBytes(long bytes) {
@@ -326,18 +328,6 @@ public final class HarViewerHtml {
             return String.format(Locale.ROOT, "%.1f KB", bytes / 1024.0);
         }
         return String.format(Locale.ROOT, "%.1f MB", bytes / (1024.0 * 1024.0));
-    }
-
-    private static long parseInstant(Object value) {
-        String text = stringVal(value);
-        if (text.isEmpty()) {
-            return -1;
-        }
-        try {
-            return Instant.parse(text).toEpochMilli();
-        } catch (RuntimeException ex) {
-            return -1;
-        }
     }
 
     private static String escapeHtml(String text) {
