@@ -1,5 +1,6 @@
 const fs = require('fs');
-const { attachment } = require('allure-js-commons');
+const path = require('path');
+const { attachment, attachmentPath } = require('allure-js-commons');
 const { render: renderHarViewer } = require('./har-viewer');
 
 function videoFolder() {
@@ -43,7 +44,10 @@ async function harLogs(harPath) {
   if (!bytes.length) {
     return;
   }
-  await attachment('capture.har', bytes, {
+  // attachmentPath keeps the .har suffix (inline attachment() was coerced to .json).
+  const dest = path.join(path.dirname(harPath), 'capture.har');
+  fs.writeFileSync(dest, bytes);
+  await attachmentPath('capture.har', dest, {
     contentType: 'application/json',
     fileExtension: '.har',
   });

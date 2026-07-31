@@ -56,12 +56,24 @@ def driver(config: TestConfig) -> WebDriver:
 
     drv.implicitly_wait(0)
     yield drv
+    drv.quit()
 
+
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item, call):
+    """Attach on the test result (not fixture container) — parity with Java afterEach."""
+    outcome = yield
+    report = outcome.get_result()
+    if report.when != "call":
+        return
+    drv = item.funcargs.get("driver")
+    cfg = item.funcargs.get("config")
+    if drv is None or cfg is None:
+        return
     try:
-        _attach_after(drv, config)
+        _attach_after(drv, cfg)
     except Exception:
         pass
-    drv.quit()
 
 
 def _attach_after(drv: WebDriver, config: TestConfig) -> None:

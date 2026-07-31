@@ -22,7 +22,11 @@ exports.test = base.extend({
     await use(context);
     await context.close();
     if (har && harPath) {
-      await Attachments.harLogs(harPath);
+      try {
+        await Attachments.harLogs(harPath);
+      } catch (err) {
+        console.warn('HAR attach:', err.message || err);
+      }
     }
   },
 
@@ -46,6 +50,15 @@ exports.test = base.extend({
         page.on('console', (msg) => {
           logs.push(`${msg.type()}: ${msg.text()}`);
         });
+        page.on('pageerror', (err) => {
+          logs.push(`pageerror: ${err.message}`);
+        });
+        page.on('requestfailed', (req) => {
+          const failure = req.failure();
+          logs.push(
+            `requestfailed: ${req.url()} — ${failure ? failure.errorText : 'failed'}`,
+          );
+        });
       }
       await use();
       try {
@@ -62,7 +75,6 @@ exports.test = base.extend({
           await Attachments.video();
         }
       } catch (err) {
-        // Never fail the test on attachment errors
         console.warn('full-attachments teardown:', err.message || err);
       }
     },
