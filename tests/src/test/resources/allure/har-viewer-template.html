@@ -21,10 +21,12 @@
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
+      height: 100%;
       min-height: 100%;
       background: var(--bg);
       color: var(--text);
       font: 12px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: auto;
     }
     .header {
       display: flex;
@@ -40,16 +42,6 @@
     .summary { color: var(--muted); font-size: 11px; white-space: nowrap; }
     .toolbar { display: flex; align-items: center; gap: 12px; font-size: 11px; }
     .toolbar .note { color: var(--muted); }
-    .iframe-hint {
-      display: block;
-      margin: 0;
-      padding: 8px 14px;
-      background: #2a2d2e;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 11px;
-    }
-    .iframe-hint strong { color: var(--text); font-weight: 600; }
     .har-viewer { width: 100%; }
     .har-table-wrap { overflow: auto; }
     .har-table {
@@ -122,7 +114,7 @@
     .error { color: var(--err); }
   </style>
 </head>
-<body style="margin:0;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+<body style="margin:0;height:100%;min-height:100%;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;overflow:auto">
   <div class="header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;border-bottom:1px solid #3d444c;background:#1a1917">
     <h1 style="margin:0;font-size:13px;font-weight:600">HAR Viewer</h1>
     <div class="summary" style="color:#999;font-size:11px;white-space:nowrap">__SUMMARY__</div>
@@ -130,7 +122,6 @@
       <span class="note" style="color:#999">Raw: <code>capture.har</code></span>
     </div>
   </div>
-  <p class="iframe-hint" style="display:block;margin:0;padding:6px 12px;background:#2a2d2e;border-bottom:1px solid #3d444c;color:#999;font-size:11px"><strong style="color:#ccc">Preview clipped by Allure (no scroll).</strong> Expand / open attachment in a new tab for the full table.</p>
   __CONTENT__
 </body>
 </html>
