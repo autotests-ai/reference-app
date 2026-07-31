@@ -22,7 +22,7 @@ npm test
 
 ## Full attachments (video, HAR, screenshot, …)
 
-With `ATTACH_FULL=true` (or `PW_ENABLE_VIDEO=true`), video is recorded via Playwright `recordVideo` and attached to Allure as embedded `video/webm`. Selenoid hub URL (`PW_VIDEO_NAME`) is only a fallback when the file is missing or stub-sized.
+With `ATTACH_FULL=true` (or `PW_ENABLE_VIDEO=true`), video is recorded via Playwright `recordVideo` and attached to Allure as embedded `video/webm`. Selenoid hub URL (`PW_VIDEO_NAME`) is only a fallback when the file is missing or stub-sized. All runtime attachments appear in one list under the context fixture teardown.
 
 ## Allure
 
