@@ -2,6 +2,7 @@
 const { defineConfig, devices } = require('@playwright/test');
 const dotenv = require('dotenv');
 const path = require('path');
+const { envBool, attachFull, attachVideo } = require('./src/helpers/env');
 
 if (!process.env.CI) {
   dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -10,6 +11,10 @@ if (!process.env.CI) {
 /**
  * When PW_WS_ENDPOINT is set, connect to Selenoid Playwright proxy.
  * Otherwise launch local Chromium (RealWorldTests-style local runs).
+ *
+ * Video: pass PW_VIDEO_NAME (e.g. js-full-12.mp4) so Allure can link
+ * https://selenoid.qa.guru/video/<name> after the session ends — Selenoid
+ * keeps that filename when videoName is set on the WS query.
  */
 function remoteConnectOptions() {
   const ws =
@@ -19,14 +24,25 @@ function remoteConnectOptions() {
   if (!ws) {
     return undefined;
   }
+  const enableVideo =
+    attachVideo() || envBool('PW_ENABLE_VIDEO') || attachFull() ? 'true' : 'false';
+  const enableVnc =
+    envBool('PW_ENABLE_VNC') || attachFull() ? 'true' : 'false';
   const options = {
     name: process.env.PW_SESSION_NAME || 'reference-app-js',
     sessionTimeout: process.env.PW_SESSION_TIMEOUT || '5m',
-    enableVNC: process.env.PW_ENABLE_VNC || 'false',
-    enableVideo: process.env.PW_ENABLE_VIDEO || 'false',
+    enableVNC: enableVnc,
+    enableVideo,
   };
+  if (enableVideo === 'true') {
+    const videoName =
+      process.env.PW_VIDEO_NAME ||
+      `reference-app-js-${Date.now()}.mp4`;
+    process.env.PW_VIDEO_NAME = videoName;
+    options.videoName = videoName;
+  }
   const endpoint = ws.includes('?')
-    ? ws
+    ? `${ws}&${new URLSearchParams(options)}`
     : `${ws}?${new URLSearchParams(options)}`;
   return { wsEndpoint: endpoint };
 }
