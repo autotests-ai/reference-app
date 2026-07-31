@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { test: base } = require('@playwright/test');
 const { App } = require('../../pages/app');
 const {
@@ -26,10 +27,19 @@ function wantAnyAttachments() {
 }
 
 /**
- * Full-attachments: artifacts in afterEach only (no Playwright step noise).
- * HAR via CDP collector — not recordHar — so we never "Close context" here.
+ * Full-attachments: one teardown block on context fixture (Allure single list).
+ * Page close is deferred so screenshot/page source run before context.close();
+ * video is attached after close via recordVideo + saveAs.
  */
 const test = base.extend({
+  page: async ({ context }, use) => {
+    const page = await context.newPage();
+    await use(page);
+    if (!wantAnyAttachments()) {
+      await page.close();
+    }
+  },
+
   context: async ({ browser }, use, testInfo) => {
     const contextOptions = { baseURL: BASE_URL };
     if (attachVideo()) {
@@ -37,9 +47,39 @@ const test = base.extend({
     }
     const context = await browser.newContext(contextOptions);
     await use(context);
+
+    if (!wantAnyAttachments()) {
+      await context.close();
+      return;
+    }
+
     const page = context.pages()[0];
+    const logs = testInfo._zdsConsoleLogs || [];
+    try {
+      if (page) {
+        if (attachBrowserConsoleLogs()) {
+          await Attachments.browserConsoleLogs(logs);
+        }
+        if (attachPageSource()) {
+          await Attachments.pageSource(await pageSourceQuiet(page));
+        }
+        if (attachLastScreenshot()) {
+          await Attachments.lastScreenshot(await screenshotQuiet(page));
+        }
+        if (attachHarLogs() && testInfo._zdsHar) {
+          const bytes = testInfo._zdsHar.toHarBytes();
+          const harPath = testInfo.outputPath('capture.har');
+          fs.writeFileSync(harPath, bytes);
+          await Attachments.harLogs(harPath);
+        }
+      }
+    } catch (err) {
+      console.warn('full-attachments:', err.message || err);
+    }
+
     const video = page?.video();
     await context.close();
+
     if (attachVideo() && video) {
       try {
         const savedPath = testInfo.outputPath('video.webm');
@@ -96,33 +136,6 @@ const test = base.extend({
     },
     { auto: true },
   ],
-});
-
-test.afterEach(async ({ page }, testInfo) => {
-  if (!wantAnyAttachments()) {
-    return;
-  }
-
-  const logs = testInfo._zdsConsoleLogs || [];
-  try {
-    if (attachBrowserConsoleLogs()) {
-      await Attachments.browserConsoleLogs(logs);
-    }
-    if (attachPageSource()) {
-      await Attachments.pageSource(await pageSourceQuiet(page));
-    }
-    if (attachLastScreenshot()) {
-      await Attachments.lastScreenshot(await screenshotQuiet(page));
-    }
-    if (attachHarLogs() && testInfo._zdsHar) {
-      const bytes = testInfo._zdsHar.toHarBytes();
-      const harPath = testInfo.outputPath('capture.har');
-      require('fs').writeFileSync(harPath, bytes);
-      await Attachments.harLogs(harPath);
-    }
-  } catch (err) {
-    console.warn('full-attachments afterEach:', err.message || err);
-  }
 });
 
 exports.test = test;
