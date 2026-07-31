@@ -128,20 +128,19 @@ public final class HarViewerHtml {
                 </tr>
                 <tr class="har-detail-row">
                   <td colspan="6" style="padding:0;white-space:normal;border-bottom:1px solid #3d444c;background:rgba(0,0,0,0.18)">
-                    <div class="har-detail" style="padding:8px 12px 12px">
-                      <details open>
-                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Headers</summary>
+                    <div class="har-detail" style="padding:2px 12px 4px">
+                      <!-- Allure 3 HTML preview iframe is ~150px with overflow:clip (no scroll).
+                           Keep details collapsed so the request table stays visible in-preview;
+                           expand in new-tab / fullscreen for Headers · Timings · Response. -->
+                      <details>
+                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Details — Headers · Timings · Response</summary>
                         <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response Headers</div>
                         %s
                         <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Request Headers</div>
                         %s
-                      </details>
-                      <details>
-                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Timings</summary>
+                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Timings</div>
                         %s
-                      </details>
-                      <details>
-                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Response</summary>
+                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response</div>
                         %s
                       </details>
                     </div>

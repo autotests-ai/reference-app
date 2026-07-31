@@ -41,9 +41,9 @@
     .toolbar { display: flex; align-items: center; gap: 12px; font-size: 11px; }
     .toolbar .note { color: var(--muted); }
     .iframe-hint {
-      display: none;
+      display: block;
       margin: 0;
-      padding: 10px 14px;
+      padding: 8px 14px;
       background: #2a2d2e;
       border-bottom: 1px solid var(--border);
       color: var(--muted);
@@ -133,20 +133,17 @@
     .empty, .error { padding: 24px; text-align: center; }
     .empty { color: var(--muted); }
     .error { color: var(--err); }
-    @media (max-height: 280px), (max-width: 480px) {
-      .iframe-hint { display: block; }
-    }
   </style>
 </head>
-<body style="margin:0;min-height:100%;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-  <div class="header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:10px 14px;border-bottom:1px solid #3d444c;background:#1a1917">
-    <h1 style="margin:0;font-size:14px;font-weight:600">HAR Viewer</h1>
+<body style="margin:0;background:#1e1e1e;color:#ccc;font:12px/1.35 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <div class="header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:8px 12px;border-bottom:1px solid #3d444c;background:#1a1917">
+    <h1 style="margin:0;font-size:13px;font-weight:600">HAR Viewer</h1>
     <div class="summary" style="color:#999;font-size:11px;white-space:nowrap">__SUMMARY__</div>
     <div class="toolbar" style="display:flex;align-items:center;gap:12px;font-size:11px">
-      <span class="note" style="color:#999">Raw HAR: Allure attachment <code>capture.har</code></span>
+      <span class="note" style="color:#999">Raw: <code>capture.har</code></span>
     </div>
   </div>
-  <p class="iframe-hint"><strong>Cramped preview.</strong> Open this HTML attachment in a new tab for the full table.</p>
+  <p class="iframe-hint" style="display:block;margin:0;padding:6px 12px;background:#2a2d2e;border-bottom:1px solid #3d444c;color:#999;font-size:11px"><strong style="color:#ccc">Preview clipped by Allure (no scroll).</strong> Expand / open attachment in a new tab for the full table.</p>
   __CONTENT__
 </body>
 </html>

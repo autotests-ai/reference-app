@@ -27,12 +27,14 @@ class HarViewerHtmlTest {
         assertFalse(html.contains("cols-head"), () -> "must not use CSS-grid cols-head: " + html);
         assertFalse(html.contains("Waterfall"), () -> "must not use Waterfall column: " + html);
         assertTrue(html.contains("<details"), () -> "missing expandable details: " + html);
+        assertFalse(html.contains("<details open"), () -> "details must stay collapsed for Allure iframe clip: " + html);
         assertTrue(html.contains("Response Headers"), () -> "missing response headers section: " + html);
         assertTrue(html.contains("Request Headers"), () -> "missing request headers section: " + html);
         assertTrue(html.contains("Content-Type"), () -> "missing response header value: " + html);
         assertTrue(html.contains("Accept"), () -> "missing request header value: " + html);
-        assertTrue(html.contains(">Timings</summary>"), () -> "missing Timings details: " + html);
-        assertTrue(html.contains(">Response</summary>"), () -> "missing Response details: " + html);
+        assertTrue(html.contains("Details — Headers"), () -> "missing collapsed details summary: " + html);
+        assertTrue(html.contains(">Timings</div>") || html.contains("Timings</div>"),
+                () -> "missing Timings section: " + html);
         assertTrue(html.contains("capture.har"), () -> "missing raw HAR attachment hint: " + html);
         assertTrue(html.contains("border-collapse:collapse"), () -> "missing inline table styles for DOMPurify: " + html);
         assertFalse(html.contains("data:application/json;base64,"),
