@@ -3,6 +3,7 @@ package helpers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,20 +22,21 @@ class HarViewerHtmlTest {
         assertTrue(html.contains("1 requests"), () -> "missing summary: " + html);
         assertTrue(html.contains("example.com"), () -> "missing url row: " + html);
         assertTrue(html.contains("<table class=\"har-table\""), () -> "missing har-table: " + html);
-        assertTrue(html.contains(">Method</th>"), () -> "missing Method column: " + html);
-        assertTrue(html.contains(">Status</th>"), () -> "missing Status column: " + html);
-        assertTrue(html.contains(">Type</th>"), () -> "missing Type column: " + html);
+        assertTrue(html.contains(">Method</span>"), () -> "missing Method column: " + html);
+        assertTrue(html.contains(">Status</span>"), () -> "missing Status column: " + html);
+        assertTrue(html.contains(">Type</span>"), () -> "missing Type column: " + html);
         assertFalse(html.contains("cols-head"), () -> "must not use CSS-grid cols-head: " + html);
         assertFalse(html.contains("Waterfall"), () -> "must not use Waterfall column: " + html);
+        assertFalse(html.contains("har-detail-row"), () -> "must not emit sibling detail rows: " + html);
+        assertFalse(html.contains("Details — Headers"), () -> "must not show Details — junk rows: " + html);
         assertTrue(html.contains("<details"), () -> "missing expandable details: " + html);
         assertFalse(html.contains("<details open"), () -> "details must stay collapsed for Allure iframe clip: " + html);
+        assertEquals(1, html.split("<tr class=\"har-row\"", -1).length - 1,
+                () -> "exactly one data row per entry: " + html);
         assertTrue(html.contains("Response Headers"), () -> "missing response headers section: " + html);
         assertTrue(html.contains("Request Headers"), () -> "missing request headers section: " + html);
         assertTrue(html.contains("Content-Type"), () -> "missing response header value: " + html);
         assertTrue(html.contains("Accept"), () -> "missing request header value: " + html);
-        assertTrue(html.contains("Details — Headers"), () -> "missing collapsed details summary: " + html);
-        assertTrue(html.contains(">Timings</div>") || html.contains("Timings</div>"),
-                () -> "missing Timings section: " + html);
         assertTrue(html.contains("capture.har"), () -> "missing raw HAR attachment hint: " + html);
         assertTrue(html.contains("border-collapse:collapse"), () -> "missing inline table styles for DOMPurify: " + html);
         assertFalse(html.contains("data:application/json;base64,"),

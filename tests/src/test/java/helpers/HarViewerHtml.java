@@ -76,23 +76,25 @@ public final class HarViewerHtml {
             rows.append(buildEntry(entry));
         }
 
+        // One <tr> per entry (Selenoid-like). Expand via <details> whose summary IS the row.
+        String colGrid = "display:grid;grid-template-columns:56px 48px minmax(0,1fr) 120px 72px 64px;"
+                + "gap:0 8px;align-items:center;padding:4px 8px";
         return """
                 <div class="har-viewer">
                 <div class="har-table-wrap" style="overflow:auto">
                 <table class="har-table" style="width:100%%;border-collapse:collapse;font-size:12px;line-height:1.35;color:#ccc">
                 <thead><tr>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Method</th>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Status</th>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">URL</th>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Type</th>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Size</th>
-                  <th style="padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;background:#1a1917;color:#999;font-weight:600">Time</th>
+                  <th style="padding:0;border-bottom:1px solid #3d444c;background:#1a1917;color:#999;font-weight:600;text-align:left">
+                    <div style="%s">
+                      <span>Method</span><span>Status</span><span>URL</span><span>Type</span><span>Size</span><span>Time</span>
+                    </div>
+                  </th>
                 </tr></thead>
                 <tbody>%s</tbody>
                 </table>
                 </div>
                 </div>
-                """.formatted(rows);
+                """.formatted(colGrid, rows);
     }
 
     @SuppressWarnings("unchecked")
@@ -116,51 +118,46 @@ public final class HarViewerHtml {
             mime = "—";
         }
 
-        String cell = "padding:4px 8px;border-bottom:1px solid #3d444c;text-align:left;vertical-align:top;white-space:nowrap";
+        String colGrid = "display:grid;grid-template-columns:56px 48px minmax(0,1fr) 120px 72px 64px;"
+                + "gap:0 8px;align-items:center;padding:4px 8px";
+        String statusLabel = status == 0 ? "—" : String.valueOf(status);
         return """
                 <tr class="har-row">
-                  <td class="har-method" style="%s;font-weight:600;color:#89d185">%s</td>
-                  <td class="%s" style="%s;%s">%s</td>
-                  <td class="har-url" title="%s" style="%s;overflow:hidden;text-overflow:ellipsis;max-width:280px">%s</td>
-                  <td class="har-mime" style="%s;color:#999;max-width:140px;overflow:hidden;text-overflow:ellipsis">%s</td>
-                  <td style="%s">%s</td>
-                  <td style="%s">%.0f ms</td>
-                </tr>
-                <tr class="har-detail-row">
-                  <td colspan="6" style="padding:0;white-space:normal;border-bottom:1px solid #3d444c;background:rgba(0,0,0,0.18)">
-                    <div class="har-detail" style="padding:2px 12px 4px">
-                      <!-- Allure 3 HTML preview iframe is ~150px with overflow:clip (no scroll).
-                           Keep details collapsed so the request table stays visible in-preview;
-                           expand in new-tab / fullscreen for Headers · Timings · Response. -->
-                      <details>
-                        <summary style="cursor:pointer;color:#999;font-size:11px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;padding:4px 0">Details — Headers · Timings · Response</summary>
-                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response Headers</div>
+                  <td style="padding:0;border-bottom:1px solid #3d444c;vertical-align:top">
+                    <details>
+                      <summary style="display:block;cursor:pointer;list-style:none;padding:0">
+                        <span style="%s;white-space:nowrap">
+                          <span class="har-method" style="font-weight:600;color:#89d185">%s</span>
+                          <span class="%s" style="%s">%s</span>
+                          <span class="har-url" title="%s" style="overflow:hidden;text-overflow:ellipsis">%s</span>
+                          <span class="har-mime" style="color:#999;overflow:hidden;text-overflow:ellipsis">%s</span>
+                          <span>%s</span>
+                          <span>%.0f ms</span>
+                        </span>
+                      </summary>
+                      <div class="har-detail" style="padding:8px 12px 12px;background:rgba(0,0,0,0.18);white-space:normal">
+                        <div class="har-section__title" style="margin:0 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response Headers</div>
                         %s
-                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Request Headers</div>
+                        <div class="har-section__title" style="margin:10px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Request Headers</div>
                         %s
-                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Timings</div>
+                        <div class="har-section__title" style="margin:10px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Timings</div>
                         %s
-                        <div class="har-section__title" style="margin:8px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response</div>
+                        <div class="har-section__title" style="margin:10px 0 6px;color:#999;font-size:11px;font-weight:600;text-transform:uppercase">Response</div>
                         %s
-                      </details>
-                    </div>
+                      </div>
+                    </details>
                   </td>
                 </tr>
                 """.formatted(
-                cell,
+                colGrid,
                 escapeHtml(method),
                 statusClass(status),
-                cell,
                 statusColor(status),
-                status == 0 ? "—" : String.valueOf(status),
+                statusLabel,
                 escapeHtml(url),
-                cell,
                 escapeHtml(url),
-                cell,
                 escapeHtml(mime),
-                cell,
                 escapeHtml(formatBytes(size)),
-                cell,
                 time,
                 buildHeaderKv(res.get("headers")),
                 buildHeaderKv(req.get("headers")),

@@ -87,22 +87,9 @@
     .har-status--warn { color: var(--warn); }
     .har-status--err { color: var(--err); }
     .har-status--muted { color: var(--muted); }
-    .har-detail-row > td {
-      padding: 0;
-      white-space: normal;
-      background: rgba(0, 0, 0, 0.18);
-    }
     .har-detail { padding: 8px 12px 12px; }
-    .har-detail details + details { margin-top: 8px; }
-    .har-detail summary {
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      padding: 4px 0;
-    }
+    .har-row details > summary { list-style: none; }
+    .har-row details > summary::-webkit-details-marker { display: none; }
     .har-section__title {
       margin: 8px 0 6px;
       color: var(--muted);
