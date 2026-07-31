@@ -30,10 +30,28 @@ function wantAnyAttachments() {
  * HAR via CDP collector — not recordHar — so we never "Close context" here.
  */
 const test = base.extend({
-  context: async ({ browser }, use) => {
-    const context = await browser.newContext({ baseURL: BASE_URL });
+  context: async ({ browser }, use, testInfo) => {
+    const contextOptions = { baseURL: BASE_URL };
+    if (attachVideo()) {
+      contextOptions.recordVideo = { dir: testInfo.outputPath('videos') };
+    }
+    const context = await browser.newContext(contextOptions);
     await use(context);
+    const page = context.pages()[0];
+    const video = page?.video();
     await context.close();
+    if (attachVideo() && video) {
+      try {
+        const savedPath = testInfo.outputPath('video.webm');
+        await video.saveAs(savedPath);
+        if (!(await Attachments.videoFile(savedPath))) {
+          await Attachments.videoLink();
+        }
+      } catch (err) {
+        console.warn('video attach:', err.message || err);
+        await Attachments.videoLink();
+      }
+    }
   },
 
   webApp: async ({ page }, use) => {
@@ -95,9 +113,6 @@ test.afterEach(async ({ page }, testInfo) => {
     }
     if (attachLastScreenshot()) {
       await Attachments.lastScreenshot(await screenshotQuiet(page));
-    }
-    if (attachVideo()) {
-      await Attachments.video();
     }
     if (attachHarLogs() && testInfo._zdsHar) {
       const bytes = testInfo._zdsHar.toHarBytes();

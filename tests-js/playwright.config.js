@@ -12,9 +12,8 @@ if (!process.env.CI) {
  * When PW_WS_ENDPOINT is set, connect to Selenoid Playwright proxy.
  * Otherwise launch local Chromium (RealWorldTests-style local runs).
  *
- * Video: pass PW_VIDEO_NAME (e.g. js-full-12.mp4) so Allure can link
- * https://selenoid.qa.guru/video/<name> after the session ends — Selenoid
- * keeps that filename when videoName is set on the WS query.
+ * Video: Playwright recordVideo → Allure mp4 attachment (primary).
+ * Fallback: PW_VIDEO_NAME on WS query → Selenoid hub URL in HTML player.
  */
 function remoteConnectOptions() {
   const ws =
@@ -35,6 +34,8 @@ function remoteConnectOptions() {
     enableVideo,
   };
   if (enableVideo === 'true') {
+    options.screenResolution =
+      process.env.PW_SCREEN_RESOLUTION || '1920x1080x24';
     const videoName =
       process.env.PW_VIDEO_NAME ||
       `reference-app-js-${Date.now()}.mp4`;
