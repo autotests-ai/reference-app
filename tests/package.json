@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "name": "reference-app-tests-allure",
+  "description": "Allure 3 CLI + notifications plugin for reference-app tests",
+  "dependencies": {
+    "@allure-notifications/plugin": "6.0.12",
+    "allure": "3.13.0"
+  }
+}

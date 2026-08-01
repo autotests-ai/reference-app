@@ -79,7 +79,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
           cache: npm
           cache-dependency-path: frontend-react/package-lock.json
 
@@ -277,8 +277,7 @@ jobs:
             shift
             echo "::group::${label}"
             if [ -n "$TEST_CLASS" ]; then
-              # Narrow smoke: single class via default test task (avoids empty slice + failOnNoMatchingTests)
-              ./gradlew testIntegration --tests "$TEST_CLASS" -DbrowserVersion="${BROWSER_VERSION}" -DpyramidStand=reference_prod
+              ./gradlew test --tests "$TEST_CLASS" "$@"
             else
               ./gradlew "$@"
             fi
@@ -388,48 +387,34 @@ jobs:
           EOF
           ./gradlew allureReport
 
-      - name: Send Telegram notification
+      - name: Install Allure publish deps
+        if: always() && steps.allure-report.outcome == 'success'
+        uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Publish Allure (theme + Telegram plugin)
         if: always() && steps.allure-report.outcome == 'success'
         continue-on-error: true
-        working-directory: .
+        working-directory: tests
         env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_REFERENCE_APP_TOPIC_ID || vars.TELEGRAM_REFERENCE_APP_TOPIC_ID }}
+          NOTIFICATION_MODE: ${{ github.event_name == 'pull_request' && 'dry-run' || 'live' }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '-1004381150566' }}
+          TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_REFERENCE_APP_TOPIC_ID || vars.TELEGRAM_REFERENCE_APP_TOPIC_ID || secrets.TELEGRAM_TOPIC_ID || vars.TELEGRAM_TOPIC_ID }}
           ALLURE_REPORT_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/awesome/index.html
           ALLURE_DASHBOARD_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/dashboard/index.html
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           TESTOPS_LAUNCH_URL: ${{ env.TESTOPS_LAUNCH_URL }}
+          NOTIFICATION_PROJECT: Reference App #${{ github.run_number }}
         run: |
-          AWESOME="tests/build/reports/allure-report/allureReport/awesome"
+          AWESOME="build/reports/allure-report/allureReport/awesome"
           if [ ! -f "$AWESOME/summary.json" ]; then
-            echo "No Allure summary — skip Telegram notification"
+            echo "No Allure summary — skip publish"
             exit 0
           fi
-          CONFIG=notifications/config.runtime.json
-          python -c "
-          import json, os
-          from pathlib import Path
-          cfg = json.loads(Path('notifications/config.json').read_text())
-          cfg['base']['project'] = 'Reference App #${{ github.run_number }}'
-          cfg['base']['links'] = {
-              'report': os.environ['ALLURE_REPORT_URL'],
-              'dashboard': os.environ['ALLURE_DASHBOARD_URL'],
-              'testops': os.environ.get('TESTOPS_LAUNCH_URL') or '',
-              'build': os.environ['BUILD_URL'],
-          }
-          cfg['telegram']['token'] = os.environ['TELEGRAM_BOT_TOKEN']
-          cfg['telegram']['chat'] = os.environ['TELEGRAM_CHAT_ID']
-          cfg['telegram']['topic'] = os.environ.get('TELEGRAM_TOPIC_ID') or ''
-          cfg['telegram']['replyTo'] = ''
-          Path('notifications/config.runtime.json').write_text(json.dumps(cfg, indent=2))
-          "
-          JAR=allure-notifications-5.0.3.jar
-          if [ ! -f "$JAR" ]; then
-            curl -fsSL -o "$JAR" \
-              https://github.com/qa-guru/allure-notifications/releases/download/v5.0.3/"$JAR"
-          fi
-          java "-DconfigFile=${CONFIG}" -jar "$JAR"
+          npm install --no-save
+          node scripts/allure-publish.mjs
 
       - name: Generate README dashboard assets
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/build/allure-results/**') != ''
@@ -454,13 +439,12 @@ jobs:
           fi
           echo "${REPORT_ID}" > pages/latest-run-id.txt
           touch pages/.nojekyll
-          bash ../.github/scripts/prepare-allure-pages-colors.sh pages "pages/reports/latest"
 
       - name: Setup Node for dashboard preview capture
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 26
 
       - name: Capture dashboard preview for README
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
