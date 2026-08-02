@@ -38,6 +38,16 @@
    * (painting flag / takeRecords) can swallow a genuine Allure re-render, which
    * is exactly how the old funnel leaked back on resolution change.
    */
+  // nivo animates the funnel bands in on first render (and on resize), rewriting
+  // their `d`/`points` every frame. Reshaping on each frame makes a band visibly
+  // jump around (e.g. flash to the top) until the animation lands. Instead we
+  // wait for the geometry to stay quiet for SETTLE_MS, then reshape once; while
+  // a foreign (Allure/nivo) mutation is still in flight we only recolor.
+  // 280ms covers typical nivo enter; false "quiet gaps" mid-tween are handled by
+  // re-checking lastForeignAt when the timer fires (see queueScratchPaint).
+  const SETTLE_MS = 280;
+  let lastForeignAt = 0;
+
   const ownWrites = new WeakMap();
   function writeOwn(node, attr, value) {
     node.setAttribute(attr, value);
@@ -384,7 +394,7 @@
     });
   }
 
-  function paintPyramid(root = document) {
+  function paintPyramid(root = document, { allowMeasure = false } = {}) {
     const widget = findPyramidWidget(root);
     if (!widget) return false;
 
@@ -414,15 +424,27 @@
     const visibleEntries = visible.map((v) => v.entry);
     const visibleLayers = visible.map((v) => v.layer);
 
-    const axisX = SHAPE_MODE === "steps" ? pyramidAxisX(visibleEntries) : null;
+    // Reshape only when settled AND we either (a) may measure a fresh Allure
+    // funnel (scratch path) or (b) already cached data-orig-box (idempotent
+    // re-apply). Regular paints must NOT call originalBox on uncached mid-
+    // animation geometry — that is what made bands/labels jump on Pages.
+    const settled = performance.now() - lastForeignAt >= SETTLE_MS;
+    const hasCachedOrig = visibleEntries.some((entry) =>
+      entry.shape.getAttribute("data-orig-box"),
+    );
+    const canReshape =
+      SHAPE_MODE === "steps" && settled && (allowMeasure || hasCachedOrig);
+    const axisX = canReshape ? pyramidAxisX(visibleEntries) : null;
     const bounds = axisX != null ? pyramidBoundsY(visibleEntries) : null;
     const slotHeight = bounds ? (bounds.maxY - bounds.minY) / visibleEntries.length : 0;
     const maxWidth = bounds ? pyramidMaxWidth(visibleEntries) : 0;
 
-    const origCenters = visibleEntries.map((entry) => {
-      const box = originalBox(entry.shape);
-      return box ? box.y + box.height / 2 : null;
-    });
+    const origCenters = bounds
+      ? visibleEntries.map((entry) => {
+          const box = originalBox(entry.shape);
+          return box ? box.y + box.height / 2 : null;
+        })
+      : [];
 
     visibleEntries.forEach((entry, index) => {
       const layer = visibleLayers[index];
@@ -619,14 +641,22 @@
   }
 
   function paint(fromScratch) {
-    if (fromScratch) {
+    // Never wipe data-orig-box unless Allure's funnel is actually on screen.
+    // False-positive foreign mutations (viewBox / stray transform) used to clear
+    // caches while our rounded tiers were painted — next originalBox then
+    // measured the rounded geometry and the pyramid jumped/shrunk.
+    const measureFresh = Boolean(fromScratch && pyramidHoldsForeignGeometry());
+    if (measureFresh) {
       const widget = findPyramidWidget(document);
       if (widget) clearShapeCaches(widget);
     }
-    paintPyramid();
+    // Attach the geometry observer before the first reshape so nivo's enter
+    // animation is caught from frame one and the reshape stays deferred until it
+    // settles (see ensureGeomObserver / SETTLE_MS).
+    ensureGeomObserver();
+    paintPyramid(document, { allowMeasure: measureFresh });
     paintCoverageDiff();
     paintWidgetIndicators();
-    ensureGeomObserver();
   }
 
   /**
@@ -647,13 +677,31 @@
     if (geomObserver) geomObserver.disconnect();
     observedSvg = svg;
     geomObserver = new MutationObserver((records) => {
-      if (records.some(isForeignMutation)) queueScratchPaint();
+      const foreign = records.filter(isForeignMutation);
+      if (!foreign.length) return;
+      lastForeignAt = performance.now();
+      // Only band path geometry warrants a scratch remeasure. viewBox / width /
+      // height / label transforms still debounce via lastForeignAt (block
+      // reshape) but must not clear data-orig-box.
+      const bandGeom = foreign.some((record) => {
+        const attr = record.attributeName;
+        if (attr !== "d" && attr !== "points") return false;
+        const tag = (record.target.tagName || "").toLowerCase();
+        return tag === "path" || tag === "polygon";
+      });
+      if (bandGeom) queueScratchPaint();
+      else queuePaint();
     });
     geomObserver.observe(svg, {
       attributes: true,
       attributeFilter: ["d", "points", "transform", "width", "height", "viewBox"],
       subtree: true,
     });
+    // Fresh SVG: treat it as mid-render so the first paint only recolors, then
+    // reshape once the funnel settles (also covers static funnels that never
+    // fire another mutation — the debounce reshapes them after SETTLE_MS).
+    lastForeignAt = performance.now();
+    queueScratchPaint();
   }
 
   /**
@@ -679,14 +727,21 @@
     });
   }
 
-  let scratchQueued = false;
+  // Debounce: every foreign band-geometry mutation reschedules the reshape, so a
+  // burst of nivo animation frames collapses into a single scratch paint once
+  // the funnel has been quiet for SETTLE_MS.
+  let scratchTimer = null;
   function queueScratchPaint() {
-    if (scratchQueued) return;
-    scratchQueued = true;
-    requestAnimationFrame(() => {
-      scratchQueued = false;
+    if (scratchTimer) clearTimeout(scratchTimer);
+    scratchTimer = window.setTimeout(() => {
+      scratchTimer = null;
+      // Quiet gap mid-tween: keep waiting until SETTLE_MS of real silence.
+      if (performance.now() - lastForeignAt < SETTLE_MS) {
+        queueScratchPaint();
+        return;
+      }
       paint(true);
-    });
+    }, SETTLE_MS);
   }
 
   function schedulePaint() {
@@ -732,6 +787,78 @@
   });
 
   window.addEventListener("storage", queuePaint);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", schedulePaint);
+  } else {
+    schedulePaint();
+  }
+})();
+
+/**
+ * Durations chart X-axis labels overlap at nivo tickRotation 0
+ * (upstream: allure-framework/allure3#805). Rotate bottom ticks only —
+ * do not touch pyramid paint/geometry above.
+ */
+(function () {
+  const TITLE_RE = /длительности|durations/i;
+  const TICK_RE = /\d.*[-–—].*\d/;
+  const ROTATION = 45;
+
+  function findDurationWidgets(root) {
+    return [...root.querySelectorAll('[class*="styles_widget"]')].filter((el) => {
+      const header = el.querySelector('[class*="styles_header"], [class*="styles_title"]');
+      return TITLE_RE.test((header || el).textContent || "");
+    });
+  }
+
+  function rotateBottomTicks(widget) {
+    widget.setAttribute("data-zds-durations-axis", "1");
+    const texts = widget.querySelectorAll("svg text");
+    for (const text of texts) {
+      const label = (text.textContent || "").trim();
+      if (!TICK_RE.test(label)) continue;
+      if (text.getAttribute("data-zds-tick-rotated") === "1") continue;
+      text.setAttribute("transform", `translate(0, 8) rotate(${ROTATION})`);
+      text.setAttribute("text-anchor", "start");
+      text.setAttribute("data-zds-tick-rotated", "1");
+    }
+  }
+
+  function paint() {
+    for (const widget of findDurationWidgets(document)) {
+      rotateBottomTicks(widget);
+    }
+  }
+
+  function schedulePaint() {
+    paint();
+    window.setTimeout(paint, 200);
+    window.setTimeout(paint, 800);
+    window.setTimeout(paint, 2000);
+  }
+
+  let queued = false;
+  function queuePaint() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      paint();
+    });
+  }
+
+  new MutationObserver(queuePaint).observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+  });
+  window.addEventListener("resize", () => {
+    // Allure rebuilds ticks on resize — clear our marker so we re-apply.
+    document.querySelectorAll("[data-zds-tick-rotated]").forEach((el) => {
+      el.removeAttribute("data-zds-tick-rotated");
+    });
+    queuePaint();
+  });
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", schedulePaint);
