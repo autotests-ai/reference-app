@@ -79,9 +79,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
+          # No npm cache: frontend-react has no package-lock in repo; setup-node
+          # fails hard when cache-dependency-path is unresolved.
           node-version: 26
-          cache: npm
-          cache-dependency-path: frontend-react/package-lock.json
 
       - name: Install Chrome for Testing
         run: |
