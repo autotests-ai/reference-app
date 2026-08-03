@@ -1,5 +1,6 @@
-package tests;
+package tests.integration;
 
+import tests.TestBase;
 import annotations.Layer;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
