@@ -1,21 +1,6 @@
 (function () {
   const RESIZE_MESSAGE = "allure-shell:resize";
   const RESPONSIVE_BREAKPOINT_PX = 768;
-  const LAYOUT_SYNC_STYLE_ID = "shell-layout-sync";
-  const NARROW_DASHBOARD_LAYOUT_CSS = `
-[class*="styles_grid__"] {
-  grid-template-columns: 1fr !important;
-  width: 100% !important;
-}
-[class*="styles_grid-item__"] {
-  grid-template-columns: 1fr !important;
-  width: 100% !important;
-}
-[class*="styles_widget__"] {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-`;
   const BASE_SCRIPT_RE =
     /<script>\s*const \{ origin, pathname \} = window\.location;[\s\S]*?appendChild\(baseEl\);\s*<\/script>\s*/m;
 
@@ -153,16 +138,7 @@
     const doc = getDashboardDocument(frame);
     if (!doc) return;
 
-    const narrow = isNarrowShellLayout();
-    doc.documentElement.dataset.shellLayout = narrow ? "narrow" : "wide";
-
-    let style = doc.getElementById(LAYOUT_SYNC_STYLE_ID);
-    if (!style) {
-      style = doc.createElement("style");
-      style.id = LAYOUT_SYNC_STYLE_ID;
-      doc.head.appendChild(style);
-    }
-    style.textContent = narrow ? NARROW_DASHBOARD_LAYOUT_CSS : "";
+    doc.documentElement.dataset.shellLayout = isNarrowShellLayout() ? "narrow" : "wide";
     resizeFrame(frame);
   }
 
@@ -170,22 +146,11 @@
     document.querySelectorAll("iframe.dashboard-frame").forEach(applyDashboardLayout);
   }
 
-  function getOverridesUrl() {
-    const shellScript = document.querySelector('script[src*="allure-shell.js"]');
-    if (shellScript?.src) {
-      return new URL("dashboard-overrides.css", shellScript.src).href;
-    }
-    return new URL("dashboard-overrides.css", document.baseURI).href;
-  }
-
-  function prepareDashboardHtml(html, dashboardUrl, overridesUrl) {
+  // Theme (an-dashboard-theme.*) is applied by zds dashboardTheme on the report itself.
+  // Shell only sets <base> for srcdoc; do not inject legacy dashboard-overrides.
+  function prepareDashboardHtml(html, dashboardUrl) {
     const dashboardBase = new URL("./", dashboardUrl).href;
     let patched = html.replace(BASE_SCRIPT_RE, "");
-
-    if (!patched.includes("dashboard-overrides")) {
-      const overrideTag = `<link rel="stylesheet" type="text/css" href="${overridesUrl}" data-dashboard-overrides>`;
-      patched = patched.replace("</head>", `    ${overrideTag}\n</head>`);
-    }
 
     if (!/<base\s/i.test(patched)) {
       patched = patched.replace("<head>", `<head>\n    <base href="${dashboardBase}">`);
@@ -196,7 +161,6 @@
 
   async function loadDashboardFrame(frame, dashboardUrl) {
     const absoluteDashboardUrl = new URL(dashboardUrl, document.baseURI).href;
-    const overridesUrl = getOverridesUrl();
 
     frame.dataset.dashboardUrl = absoluteDashboardUrl;
 
@@ -208,7 +172,7 @@
 
       const html = await response.text();
       frame.removeAttribute("src");
-      frame.srcdoc = prepareDashboardHtml(html, absoluteDashboardUrl, overridesUrl);
+      frame.srcdoc = prepareDashboardHtml(html, absoluteDashboardUrl);
     } catch {
       frame.removeAttribute("srcdoc");
       frame.src = absoluteDashboardUrl;
