@@ -238,9 +238,17 @@
     } catch {
       return null;
     }
-    if (!box || !box.width || !box.height) return null;
+    // Width may be 0 — Allure collapses empty (and sometimes active) funnel tips.
+    // Still cache y/height so reshape can rebuild the band from svg/max width.
+    if (!box || !box.height) return null;
     shape.setAttribute("data-orig-box", [box.x, box.y, box.width, box.height].join(","));
-    return box;
+    return { x: box.x, y: box.y, width: box.width, height: box.height };
+  }
+
+  function svgFallbackWidth(svg) {
+    if (!svg) return 0;
+    const vb = svg.viewBox && svg.viewBox.baseVal;
+    return (vb && vb.width) || svg.clientWidth || Number(svg.getAttribute("width")) || 0;
   }
 
   /** Rounded-rect path (arced corners) — used for path bands. */
@@ -289,13 +297,14 @@
    */
   function reshapeStepped(shape, axisX, slotTop, slotBottom, width) {
     const box = originalBox(shape);
-    if (!box) return;
+    const bandWidth = width ?? box?.width ?? 0;
+    if (!box || !(bandWidth > 0) || axisX == null) return;
     const slotHeight = slotBottom - slotTop;
     // Thin inter-tier gap, matching the status donut's inter-segment gap.
     const gap = Math.max(1.5, slotHeight * 0.07);
     const top = slotTop + gap / 2;
     const bottom = slotBottom - gap / 2;
-    const halfW = (width ?? box.width) / 2;
+    const halfW = bandWidth / 2;
     const left = axisX - halfW;
     const right = axisX + halfW;
     const radius = Math.max(0, Math.min(halfW, (bottom - top) / 2, (bottom - top) * CORNER_RATIO));
@@ -316,9 +325,19 @@
       const box = originalBox(entry.shape);
       if (!box) return;
       minX = Math.min(minX, box.x);
-      maxX = Math.max(maxX, box.x + box.width);
+      maxX = Math.max(maxX, box.x + Math.max(box.width, 0));
     });
-    if (minX === Infinity) return null;
+    if (minX === Infinity) {
+      const svg = shapeEntries[0] && shapeEntries[0].shape.ownerSVGElement;
+      const w = svgFallbackWidth(svg);
+      return w > 0 ? w / 2 : null;
+    }
+    if (maxX <= minX) {
+      // All bands collapsed to a vertical line — center on that line / svg mid.
+      const svg = shapeEntries[0] && shapeEntries[0].shape.ownerSVGElement;
+      const w = svgFallbackWidth(svg);
+      return w > 0 ? w / 2 : minX;
+    }
     return (minX + maxX) / 2;
   }
 
@@ -342,7 +361,9 @@
       const box = originalBox(entry.shape);
       if (box) maxWidth = Math.max(maxWidth, box.width);
     });
-    return maxWidth;
+    if (maxWidth > 0) return maxWidth;
+    const svg = shapeEntries[0] && shapeEntries[0].shape.ownerSVGElement;
+    return svgFallbackWidth(svg);
   }
 
   /** Union vertical extent of the original band boxes (for equal-height slots). */
@@ -406,11 +427,28 @@
     const labels = layerLabelsFromWidget(widget);
     const layers = pairShapesToLayers(shapeEntries, labels);
     const emptyLayers = emptyLayersFromWidget(widget);
+
+    // Reshape only when settled AND we either (a) may measure a fresh Allure
+    // funnel (scratch path) or (b) already cached data-orig-box (idempotent
+    // re-apply). Regular paints must NOT call originalBox on uncached mid-
+    // animation geometry — that is what made bands/labels jump on Pages.
+    const settled = performance.now() - lastForeignAt >= SETTLE_MS;
+    const hasCachedOrig = shapeEntries.some((entry) =>
+      entry.shape.getAttribute("data-orig-box"),
+    );
+    const canReshape =
+      SHAPE_MODE === "steps" && settled && (allowMeasure || hasCachedOrig);
+
+    // Measure the FULL funnel before hiding empties — Allure often gives the
+    // only non-zero widths to empty bands while the active tip is width 0.
+    const axisX = canReshape ? pyramidAxisX(shapeEntries) : null;
+    const bounds = axisX != null ? pyramidBoundsY(shapeEntries) : null;
+    const maxWidth = bounds ? pyramidMaxWidth(shapeEntries) : 0;
+
     setEmptyLabelVisibility(widget, emptyLayers);
 
-    // Drop empty ("No tests") layers: hide their band and exclude them from the
-    // slot / width / label math so the tested layers redistribute into clean,
-    // evenly-sized tiers instead of leaving degenerate slivers at the tip.
+    // Drop empty ("No tests") layers: hide their band; redistribute tested
+    // layers into equal-height slots across the full funnel bounds.
     const visible = [];
     shapeEntries.forEach((entry, index) => {
       const layer = layers[index];
@@ -422,21 +460,7 @@
 
     const visibleEntries = visible.map((v) => v.entry);
     const visibleLayers = visible.map((v) => v.layer);
-
-    // Reshape only when settled AND we either (a) may measure a fresh Allure
-    // funnel (scratch path) or (b) already cached data-orig-box (idempotent
-    // re-apply). Regular paints must NOT call originalBox on uncached mid-
-    // animation geometry — that is what made bands/labels jump on Pages.
-    const settled = performance.now() - lastForeignAt >= SETTLE_MS;
-    const hasCachedOrig = visibleEntries.some((entry) =>
-      entry.shape.getAttribute("data-orig-box"),
-    );
-    const canReshape =
-      SHAPE_MODE === "steps" && settled && (allowMeasure || hasCachedOrig);
-    const axisX = canReshape ? pyramidAxisX(visibleEntries) : null;
-    const bounds = axisX != null ? pyramidBoundsY(visibleEntries) : null;
     const slotHeight = bounds ? (bounds.maxY - bounds.minY) / visibleEntries.length : 0;
-    const maxWidth = bounds ? pyramidMaxWidth(visibleEntries) : 0;
 
     const origCenters = bounds
       ? visibleEntries.map((entry) => {
