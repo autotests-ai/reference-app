@@ -6,7 +6,7 @@ import { applyDashboardTheme } from "../apply-dashboard-theme.mjs";
 /**
  * Intermediate Allure 3 plugin — Palette A on HTML dashboard/awesome.
  * Runs after generate (done hook), before notifications publish pass.
- * Colors from @allure-notifications/pyramid — no dashboard-overrides.js / reshape.
+ * Palette + rounded-tiers reshape (empty Allure funnel bands are zero-width).
  */
 export default class DashboardThemePlugin {
   /** @param {{ waitMs?: number }} options */
