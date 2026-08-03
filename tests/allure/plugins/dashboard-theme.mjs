@@ -1,38 +1,25 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-import { injectDashboardOverrides } from "../../../.github/scripts/lib/inject-dashboard-overrides.mjs";
-
-const DEFAULT_ASSETS = fileURLToPath(
-  new URL("../../../.github/assets", import.meta.url),
-);
+import { applyDashboardTheme } from "../apply-dashboard-theme.mjs";
 
 /**
- * Allure 3 plugin — Palette A dashboard/awesome chart overrides (pyramid, durations).
- * Etalon: @allurereport/plugin-slack `done` hook.
+ * Intermediate Allure 3 plugin — Palette A on HTML dashboard/awesome.
+ * Runs after generate (done hook), before notifications publish pass.
+ * Colors from @allure-notifications/pyramid — no dashboard-overrides.js / reshape.
  */
 export default class DashboardThemePlugin {
-  /** @param {{ assetsDir?: string, waitMs?: number }} options */
+  /** @param {{ waitMs?: number }} options */
   constructor(options = {}) {
     this.options = options;
   }
 
   done = async (context) => {
     const reportRoot = context.output;
-    const assetsDir = path.resolve(
-      process.cwd(),
-      this.options.assetsDir ?? DEFAULT_ASSETS,
-    );
     const waitMs = this.options.waitMs ?? 8000;
 
     await waitForReportHtml(reportRoot, waitMs);
-
-    injectDashboardOverrides({
-      reportRoot,
-      assetsRoot: assetsDir,
-      copyAssets: true,
-    });
+    applyDashboardTheme({ reportRoot });
   };
 }
 

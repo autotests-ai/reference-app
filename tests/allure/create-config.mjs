@@ -68,11 +68,9 @@ export function createAllureConfig({
           fileName: `${slug}.csv`,
         },
       },
+      // Intermediate: after generate, before notifications (publish pass).
       dashboardTheme: {
         import: DASHBOARD_THEME_PLUGIN,
-        options: {
-          assetsDir: "../.github/assets",
-        },
       },
       ...(publish?.notifications
         ? {

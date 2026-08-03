@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Second Allure 3 generate pass — notifications plugin + dashboard theme.
- * Pass 1: `./gradlew allureReport` (report on disk, summary.json flushed).
+ * Second Allure 3 generate pass — dashboardTheme then notifications.
+ * Theme is intermediate (colors-only); not dashboard-overrides.js.
  */
 import { spawnSync } from "node:child_process";
 import path from "node:path";
