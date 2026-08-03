@@ -35,7 +35,7 @@ void emptyPasswordAuthorizationTest() {
   },
   "testStyle:page_object": {
     title: "page_object — канон smoke",
-    source: "stacks/java-spring/tests/src/test/java/tests/LoginTests.java",
+    source: "stacks/java-spring/tests/src/test/java/tests/e2e/LoginTests.java",
     rag: "po-fluent",
     language: "java",
     code: `@Test

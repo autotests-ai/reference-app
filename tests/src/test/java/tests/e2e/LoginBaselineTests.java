@@ -1,5 +1,6 @@
-package tests;
+package tests.e2e;
 
+import tests.TestBase;
 import annotations.Layer;
 import annotations.SubSuite;
 import annotations.Suite;

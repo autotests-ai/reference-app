@@ -37,7 +37,7 @@ window.codeStyleCatalog = {
       section: "canon",
       title: "Канон LoginTests — Page Object",
       summary: "shouldLoginWithValidCredentials · fluent chain · assert в PO",
-      source: "stacks/java-spring/tests/src/test/java/tests/LoginTests.java",
+      source: "stacks/java-spring/tests/src/test/java/tests/e2e/LoginTests.java",
       rag: ["test-pyramid", "po-fluent", "po-step"],
       builderPreset: "smoke-local",
       vector: {
