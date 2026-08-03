@@ -84,7 +84,7 @@ cd tests
 
 | Layer | Classes | Gradle task |
 |-------|---------|-------------|
-| unit (backend) | `ItemServiceTest`, `AuthServiceTest`, `JwtServiceTest`, `ApiControllerTest`, `AuthControllerTest`, `JwtAuthFilterTest`, `ItemEntityTest`, `UserEntityTest`, `UserSeederTest` | `cd backend && ./gradlew test` |
+| unit (backend) | `ItemServiceTest`, `AuthServiceTest`, `JwtServiceTest`, `ApiControllerTest`, `AuthControllerTest`, `JwtAuthFilterTest`, `PageControllerTest`, `ItemEntityTest`, `UserEntityTest`, `UserSeederTest` | `cd backend && ./gradlew test` |
 | unit (tests) | `helpers/*Test`, `config/*Test` | `testUnit` |
 | integration | `LoginFormTests`, `LoginEmbedTests` | `testIntegration` |
 | component | `LangToggleTests`, `PrimitiveSizeTests`, `PlaqueFieldSegTests`, `TabTests`, `SegmentedControlTests`, `ConfiguratorOptionPresetsTests`, `CodeStyleExplorerTests` (`@Tag("component")`, 20 tests) | `testComponent` |

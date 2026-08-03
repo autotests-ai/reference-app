@@ -80,7 +80,7 @@ Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 
 - The canonical design-system header stays SSOT: `index.html` sets `window.headerConfig` and loads `/js/header.js` (design-system embed) at runtime — the SPA does not reimplement the header.
 - All `data-testid` attributes and the exact validation / welcome / health strings are preserved for the Selenide suite in `tests/`.
-- `vite build` emits `index.html` + `assets/index.{js,css}` into `backend/src/main/resources/static` (`emptyOutDir: false` — the design-system embed and `preview/` catalog are left untouched). Soft routes `/login` / `/register` are client-side only (no server forwarder).
+- `vite build` emits `index.html` + `assets/index.{js,css}` into `backend/src/main/resources/static` (`emptyOutDir: false` — the design-system embed and `preview/` catalog are left untouched). `PageController` forwards `/login` and `/register` to `index.html` for client-side routing.
 
 ```bash
 cd frontend-react
