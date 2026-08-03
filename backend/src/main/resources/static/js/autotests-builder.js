@@ -812,7 +812,7 @@ import { highlightJson, highlightShell } from './code-highlight.js';
         "## Header coverage (ADR 003)",
         "- Preview `frontend/header.html` — не target PO",
         "- Component: `LangToggleTests` на `components.html` — hit area 36px, icon 18px",
-        "- Integration: `LoginEmbedTests` на `login.html` — visible `#app-header` после mount",
+        "- Integration: `LoginEmbedTests` на `/login` — visible `#app-header` после mount",
         "- Slices: `./gradlew testComponent` / `./gradlew testIntegration`",
         "",
         "## Header RAG",

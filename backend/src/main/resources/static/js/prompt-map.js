@@ -93,7 +93,7 @@ window.promptMap = {
       id: "embed-header",
       group: "active",
       phase: "6",
-      when: "Встроить header в сторонний HTML (#app-header + header.js); пилот ✓ login.html",
+      when: "Встроить header в сторонний HTML (#app-header + header.js); пилот ✓ /login",
       path: ".cursor/skills/embed-header/",
       rules: ["layout-standard"],
     },
