@@ -35,7 +35,7 @@ DS catalog Selenide checks live in `design-system-home` — not duplicated here.
 | **Stand** | `reference_prod` | `https://reference-app.autotests.ai/` + Selenoid remote |
 | **Env profile** | `{stand}_{layer}` | e.g. `reference_ci_e2e`, `reference_prod_api` |
 | **CI job** | `ci-pyramid` | full pyramid on `reference_ci` (push/PR or `workflow_dispatch` → `ci_pyramid`) |
-| **CI job** | `prod-pyramid` | post-deploy smoke on `reference_prod` (or manual `prod_*` slices) |
+| **CI job** | `prod-pyramid` | post-deploy smoke on `reference_prod` (or manual `prod_*` profiles) |
 
 ## Remote e2e (canon)
 
@@ -87,7 +87,7 @@ cd tests
 | api | `ReferenceApiTests`, `AuthApiTests` | `testApi` |
 | e2e smoke | `HomeTests`, `LoginTests`, `RegisterTests`, `LogoutTests` | `testE2e` |
 | e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests` | `testVisual` |
-| manual | exploratory stubs (none in `LoginTests`; use `testManual` slice when added) | `testManual` |
+| manual | exploratory stubs (none in `LoginTests`; use `testManual` profile when added) | `testManual` |
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 

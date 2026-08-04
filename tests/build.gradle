@@ -348,8 +348,8 @@ def layerEnvName = { String layer ->
     return "${env}_${layer}"
 }
 
-// Pyramid CI slices — ADR 005; `./gradlew test` = full suite, not these
-def layerTestSlices = [
+// Pyramid CI profiles — ADR 005; `./gradlew test` = full suite, not these
+def layerTestProfiles = [
         [name: 'testUnit',        layer: 'unit',
          description: 'Pyramid unit — helpers.*Test + config.*Test',
          testPatterns: ['helpers.*Test', 'config.*Test']],
@@ -374,31 +374,31 @@ def layerTestSlices = [
 ]
 
 gradle.taskGraph.whenReady { graph ->
-    layerTestSlices.find { slice ->
-        graph.hasTask(tasks.named(slice.name).get())
-    }?.with { slice ->
-        healthCheckEnvRef.env = layerEnvName(slice.layer)
+    layerTestProfiles.find { profile ->
+        graph.hasTask(tasks.named(profile.name).get())
+    }?.with { profile ->
+        healthCheckEnvRef.env = layerEnvName(profile.layer)
     }
 }
 
-layerTestSlices.each { slice ->
-    def envName = layerEnvName(slice.layer)
-    tasks.register(slice.name, Test) {
+layerTestProfiles.each { profile ->
+    def envName = layerEnvName(profile.layer)
+    tasks.register(profile.name, Test) {
         group = 'verification'
-        description = "${slice.description} (env=${envName}; override: -Denv=<stand> or -Denv=<stand>_${slice.layer})"
+        description = "${profile.description} (env=${envName}; override: -Denv=<stand> or -Denv=<stand>_${profile.layer})"
         testClassesDirs = sourceSets.test.output.classesDirs
         classpath = sourceSets.test.runtimeClasspath
         useJUnitPlatform {
-            if (slice.includeTags) {
-                includeTags(*(slice.includeTags.split(',')*.trim()))
+            if (profile.includeTags) {
+                includeTags(*(profile.includeTags.split(',')*.trim()))
             }
-            if (slice.excludeTags) {
-                excludeTags(*(slice.excludeTags.split(',')*.trim()))
+            if (profile.excludeTags) {
+                excludeTags(*(profile.excludeTags.split(',')*.trim()))
             }
         }
-        if (slice.testPatterns) {
+        if (profile.testPatterns) {
             filter {
-                slice.testPatterns.each { pattern -> includeTestsMatching pattern }
+                profile.testPatterns.each { pattern -> includeTestsMatching pattern }
             }
         }
         systemProperty 'env', envName
@@ -422,16 +422,16 @@ if (allureQualityGateHook && allureReportMode != 'none') {
     tasks.named('test', Test).configure {
         finalizedBy 'allureQualityGate'
     }
-    layerTestSlices.each { slice ->
-        tasks.named(slice.name, Test).configure {
+    layerTestProfiles.each { profile ->
+        tasks.named(profile.name, Test).configure {
             finalizedBy 'allureQualityGate'
         }
     }
 }
 
 if (allureAgentMode == 'inspect' && allureReportMode != 'none') {
-    layerTestSlices.each { slice ->
-        tasks.named(slice.name, Test).configure {
+    layerTestProfiles.each { profile ->
+        tasks.named(profile.name, Test).configure {
             finalizedBy 'allureAgentInspect'
         }
     }
@@ -449,7 +449,7 @@ def pyramidUnitClassDirectories = {
 
 tasks.register('jacocoTestUnitReport', JacocoReport) {
     group = 'verification'
-    description = 'JaCoCo report for pyramid unit slice (config + helpers infrastructure)'
+    description = 'JaCoCo report for pyramid unit profile (config + helpers infrastructure)'
     dependsOn tasks.named('testUnit')
     reports {
         xml.required = true
