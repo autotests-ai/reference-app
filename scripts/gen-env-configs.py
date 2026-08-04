@@ -51,8 +51,8 @@ ATTACH_OFF = {
 
 STANDS = {
     "reference_ci": {
-        "baseUrl": "http://localhost:8080/",
-        "apiBaseUrl": "http://localhost:8080/",
+        "baseUrl": "http://localhost:8820/",
+        "apiBaseUrl": "http://localhost:8820/",
         "remoteUrl": "",
         "videoFolder": "",
         "logToConsole": "true",
@@ -74,7 +74,7 @@ STANDS = {
 COMPONENT_BASE = {
     "baseUrl": "http://localhost:3000/",
     "componentCatalogUrl": "http://localhost:3000/",
-    "apiBaseUrl": "http://localhost:8080/",
+    "apiBaseUrl": "http://localhost:8820/",
 }
 
 

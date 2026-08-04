@@ -8,6 +8,6 @@ RUN chmod +x gradlew && ./gradlew bootJar --no-daemon
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /workspace/build/libs/*.jar app.jar
-ENV SERVER_PORT=8080
-EXPOSE 8080
+ENV SERVER_PORT=8820
+EXPOSE 8820
 ENTRYPOINT ["java", "-jar", "app.jar"]

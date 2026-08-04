@@ -51,7 +51,7 @@ Selenide `WebDriver` — **thread-local**. Каждый e2e-тест откры�
 
 - JDK 21
 - Chrome (local)
-- **App stack** — `docker compose up -d` (:8080) or `cd backend && ./gradlew bootRun`
+- **App stack** — `docker compose up -d` (:8820) or `cd backend && ./gradlew bootRun`
 - **Component catalog** — `reference-app/preview/` on :3000 (`python -m http.server 3000` from `preview/`; `componentCatalogUrl`)
 
 ## CI

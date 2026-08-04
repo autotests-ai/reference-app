@@ -53,7 +53,7 @@ Production app: [reference-app.autotests.ai](https://reference-app.autotests.ai)
 | `.github/workflows/reference_github-build-backend.yml` | Backend bootJar + Docker image (artifact; optional registry push) |
 | `.github/workflows/reference_github-pyramid.yml` | CI orchestrator: `ci-pyramid` (PR/push) + `prod-pyramid` (post-deploy) |
 | `Jenkinsfile` | Jenkins job `reference-app-tests` on [jenkins.qa.guru](https://jenkins.qa.guru/job/reference-app-tests/) (Allure 3 plugin + TestOps 5274 + Jira/Confluence REF) |
-| `docker-compose.yml` | `postgres` + `backend` on `:8080` (local) / `:8083` (prod) |
+| `docker-compose.yml` | `postgres` + `backend` on `:8820` (local) / `:8083` (prod) |
 
 ## Auth
 
@@ -122,7 +122,7 @@ Regenerate `reference_ci_*` env profiles: `python scripts/gen-env-configs.py`
 
 | Stand | Example | baseUrl |
 |-------|---------|---------|
-| `reference_ci` | `reference_ci_e2e` | `http://localhost:8080/` |
+| `reference_ci` | `reference_ci_e2e` | `http://localhost:8820/` |
 | `reference_ci` | `reference_ci_component` | `http://localhost:3000/` (design-system preview) |
 | `reference_prod` | `reference_prod_e2e` | `https://reference-app.autotests.ai/` + remote Selenoid cloud |
 
