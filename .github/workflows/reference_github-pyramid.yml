@@ -135,7 +135,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Pyramid unit (tests)
-        run: ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_ci -DallureReportMode=none
+        run: ./gradlew testUnit jacocoTestUnitCoverageVerification -Denv=reference_ci -DallureReportMode=none
 
       - name: Pyramid unit coverage summary
         if: always()
@@ -169,10 +169,10 @@ jobs:
           if-no-files-found: ignore
 
       - name: Pyramid api
-        run: ./gradlew testApi -DpyramidStand=reference_ci -DallureReportMode=none
+        run: ./gradlew testApi -Denv=reference_ci -DallureReportMode=none
 
       - name: Pyramid integration
-        run: ./gradlew testIntegration -DpyramidStand=reference_ci -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid e2e smoke
         run: ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none -Dheadless=true
@@ -189,7 +189,7 @@ jobs:
           exit 1
 
       - name: Pyramid component
-        run: ./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none -Dheadless=true
+        run: ./gradlew testComponent -Denv=reference_ci -DallureReportMode=none -Dheadless=true
 
       - name: Pyramid visual
         run: ./gradlew testVisual -Denv=reference_ci_visual -DallureReportMode=none -Dheadless=true
@@ -290,17 +290,17 @@ jobs:
 
           case "${PROD_TARGET}" in
             prod_pyramid)
-              run_slice "prod api" testApi "${COMMON[@]}" -DpyramidStand=reference_prod
-              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -DpyramidStand=reference_prod
+              run_slice "prod api" testApi "${COMMON[@]}" -Denv=reference_prod
+              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -Denv=reference_prod
               ;;
             prod_api)
-              run_slice "prod api" testApi "${COMMON[@]}" -DpyramidStand=reference_prod
+              run_slice "prod api" testApi "${COMMON[@]}" -Denv=reference_prod
               ;;
             prod_e2e)
-              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -DpyramidStand=reference_prod
+              run_slice "prod e2e smoke" testE2e "${COMMON[@]}" -Denv=reference_prod
               ;;
             prod_visual)
-              run_slice "prod visual" testVisual "${COMMON[@]}" -DpyramidStand=reference_prod
+              run_slice "prod visual" testVisual "${COMMON[@]}" -Denv=reference_prod
               ;;
             *)
               echo "Unknown PROD_TARGET=${PROD_TARGET}" >&2

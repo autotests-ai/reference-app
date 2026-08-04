@@ -74,10 +74,10 @@ cd projects/reference-home/reference-app/preview && python -m http.server 3000
 docker compose up -d --build
 
 cd tests
-./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none
+./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
 ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
-./gradlew testApi -DpyramidStand=reference_ci -DallureReportMode=none
-./gradlew testIntegration -DpyramidStand=reference_ci -DallureReportMode=none
+./gradlew testApi -Denv=reference_ci -DallureReportMode=none
+./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none
 ```
 
 ## Pyramid (`reference_ci` stand)
@@ -100,13 +100,13 @@ Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 cd backend && ./gradlew test
 
 cd tests
-./gradlew testUnit -DpyramidStand=reference_ci -DallureReportMode=none
-./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none
-./gradlew testIntegration -DpyramidStand=reference_ci -DallureReportMode=none
-./gradlew testApi -DpyramidStand=reference_ci -DallureReportMode=none
+./gradlew testUnit -Denv=reference_ci -DallureReportMode=none
+./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
+./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none
+./gradlew testApi -Denv=reference_ci -DallureReportMode=none
 ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
 ./gradlew testVisual -Denv=reference_ci_visual -DallureReportMode=none
-./gradlew testManual -DpyramidStand=reference_ci -DallureReportMode=none
+./gradlew testManual -Denv=reference_ci -DallureReportMode=none
 ```
 
 Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout,plaque-field-grid-mixed}/`.

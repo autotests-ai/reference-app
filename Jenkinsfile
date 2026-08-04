@@ -137,19 +137,19 @@ pipeline {
 
                 case "${TARGET}" in
                   prod_pyramid)
-                    run_one "prod api" testApi -DpyramidStand=reference_prod
-                    run_one "prod e2e smoke" testE2e -DpyramidStand=reference_prod \
+                    run_one "prod api" testApi -Denv=reference_prod
+                    run_one "prod e2e smoke" testE2e -Denv=reference_prod \
                       -Djunit.jupiter.execution.parallel.enabled=false
                     ;;
                   prod_api)
-                    run_one "prod api" testApi -DpyramidStand=reference_prod
+                    run_one "prod api" testApi -Denv=reference_prod
                     ;;
                   prod_e2e)
-                    run_one "prod e2e smoke" testE2e -DpyramidStand=reference_prod \
+                    run_one "prod e2e smoke" testE2e -Denv=reference_prod \
                       -Djunit.jupiter.execution.parallel.enabled=false
                     ;;
                   prod_visual)
-                    run_one "prod visual" testVisual -DpyramidStand=reference_prod
+                    run_one "prod visual" testVisual -Denv=reference_prod
                     ;;
                   *)
                     echo "Unknown TARGET=${TARGET}" >&2

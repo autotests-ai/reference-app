@@ -107,10 +107,10 @@ cd backend && ./gradlew test jacocoTestCoverageVerification
 # open build/reports/jacoco/test/html/index.html
 
 # Pyramid unit (config + helpers) — 100% line gate on unit slice
-cd tests && ./gradlew testUnit jacocoTestUnitCoverageVerification -DpyramidStand=reference_ci
+cd tests && ./gradlew testUnit jacocoTestUnitCoverageVerification -Denv=reference_ci
 
 # API
-cd tests && ./gradlew testApi -DpyramidStand=reference_ci
+cd tests && ./gradlew testApi -Denv=reference_ci
 
 # E2E smoke (login + home)
 cd tests && ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
@@ -133,7 +133,7 @@ Committed snapshot in `preview/` (regenerate after design-system changes):
 ```bash
 ./scripts/sync-component-preview.sh
 cd preview && python -m http.server 3000
-cd ../tests && ./gradlew testComponent -DpyramidStand=reference_ci -DallureReportMode=none
+cd ../tests && ./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
 ```
 
 Monorepo dev may also use `projects/design-system-home/design-system/preview/` on `:3000` — see `../dev/README.md`.
