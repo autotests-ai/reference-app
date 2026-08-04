@@ -6,12 +6,11 @@ from __future__ import annotations
 from pathlib import Path
 
 CONFIG_DIR = Path(__file__).resolve().parents[1] / "tests/src/test/resources/config"
-LAYERS = ("unit", "component", "integration", "api", "e2e", "visual", "manual")
+LAYERS = ("unit", "integration", "api", "e2e", "visual", "manual")
 KEEP = frozenset({"default.properties"})
 
 GRADLE_HINT = {
     "unit": "./gradlew testUnit -Denv={env}",
-    "component": "./gradlew testComponent -Denv={env}",
     "integration": "./gradlew testIntegration -Denv={env}",
     "api": "./gradlew testApi -Denv={env}",
     "e2e": "./gradlew testE2e -Denv={env}",
@@ -21,8 +20,7 @@ GRADLE_HINT = {
 
 LAYER_DESC = {
     "unit": "pure Java — helpers/*Test, config/*Test",
-    "component": "@Tag(component) — reference-app/preview on :3000 (componentCatalogUrl)",
-    "integration": "@Tag(layout,mount) — mount probes",
+    "integration": "@Tag(layout,mount) — mount probes on SPA",
     "api": "@Layer(api) @Tag(api) — Rest Assured /api/health|items",
     "e2e": "@Layer(e2e) — smoke via testE2e",
     "visual": "CI slice: @Layer(e2e) + @Tag(visual)",
@@ -71,12 +69,6 @@ STANDS = {
     },
 }
 
-COMPONENT_BASE = {
-    "baseUrl": "http://localhost:3000/",
-    "componentCatalogUrl": "http://localhost:3000/",
-    "apiBaseUrl": "http://localhost:8820/",
-}
-
 
 def layer_overlay(layer: str) -> dict[str, str]:
     if layer == "unit":
@@ -84,7 +76,7 @@ def layer_overlay(layer: str) -> dict[str, str]:
             "allureReportMode": "none",
             "allureAgentMode": "none",
         }
-    if layer in ("component", "integration"):
+    if layer == "integration":
         return {"closeBrowserAfterEach": "true", **ATTACH_OFF}
     if layer == "api":
         return {
@@ -139,7 +131,7 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
                 "enableAllureSelenideListener",
             ],
         ),
-        ("Target app", ["baseUrl", "basePath", "componentCatalogUrl"]),
+        ("Target app", ["baseUrl", "basePath"]),
         ("REST API", ["apiBaseUrl"]),
         ("Selenoid hub", ["hubUrl", "uiUrl", "smokeUrl"]),
         (
@@ -173,7 +165,6 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
                 "baseUrl",
                 "basePath",
                 "apiBaseUrl",
-                "componentCatalogUrl",
             ):
                 lines.append(f"# {key}=")
             else:
@@ -184,9 +175,6 @@ def format_file(stand: str, layer: str, values: dict[str, str]) -> str:
 
 def build_values(stand: str, layer: str) -> dict[str, str]:
     values = {**COMMON_BROWSER, **ATTACH_OFF, **STANDS[stand], **layer_overlay(layer)}
-    values.setdefault("componentCatalogUrl", "http://localhost:3000/")
-    if layer == "component":
-        values.update(COMPONENT_BASE)
     if layer == "unit":
         values["allureReportMode"] = "none"
     return values

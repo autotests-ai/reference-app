@@ -42,12 +42,11 @@ Production app: [reference-app.autotests.ai](https://reference-app.autotests.ai)
 | `backend/` | Spring Boot — `GET /api/health`, `GET /api/items`, JWT auth API, static UI, Flyway + Postgres |
 | `frontend/` | design-system embed symlinks (`scripts/wire-ui.sh`) |
 | `frontend-react/` | React SPA (Vite + React Router + `@zero-design-system/react`); builds `index.html` + `assets/` into `backend/.../static` |
-| `tests/` | Browser + API tests (Selenide, Gradle); `@Tag smoke`, `api`, `component` |
+| `tests/` | Browser + API tests (Selenide, Gradle); `@Tag smoke`, `api`, `mount` / `layout` |
 | `tests-js/` | Playwright UI smoke (RealWorld-style App facade); Jenkins `reference-app-tests-freestyle-js-playwright` |
 | `tests-python/` | Selenium UI smoke (Java-style page objects + pytest); Jenkins `reference-app-tests-freestyle-python-selenium` |
 | `app-static/` | App CSS + auxiliary JS overlaid by sync (SPA pages `/`, `/login`, `/register` come from `frontend-react`) |
-| `preview/` | Component catalog snapshot (`components.html`) for `testComponent` |
-| `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `sync-component-preview.sh`, `gen-env-configs.py` |
+| `scripts/` | `wire-ui.sh`, `sync-app-static.sh`, `gen-env-configs.py` |
 | `deploy/` | nginx vhost, server deploy, smoke |
 | `.github/workflows/deploy.yml` | Autodeploy to production on push `main` |
 | `.github/workflows/reference_github-build-backend.yml` | Backend bootJar + Docker image (artifact; optional registry push) |
@@ -80,7 +79,7 @@ Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
 
 - The canonical design-system header stays SSOT: `index.html` sets `window.headerConfig` and loads `/js/header.js` (design-system embed) at runtime — the SPA does not reimplement the header.
 - All `data-testid` attributes and the exact validation / welcome / health strings are preserved for the Selenide suite in `tests/`.
-- `vite build` emits `index.html` + `assets/index.{js,css}` into `backend/src/main/resources/static` (`emptyOutDir: false` — the design-system embed and `preview/` catalog are left untouched). `PageController` forwards `/login` and `/register` to `index.html` for client-side routing.
+- `vite build` emits `index.html` + `assets/index.{js,css}` into `backend/src/main/resources/static` (`emptyOutDir: false` — the design-system embed is left untouched). `PageController` forwards `/login` and `/register` to `index.html` for client-side routing.
 
 ```bash
 cd frontend-react
@@ -123,20 +122,9 @@ Regenerate `reference_ci_*` env profiles: `python scripts/gen-env-configs.py`
 | Stand | Example | baseUrl |
 |-------|---------|---------|
 | `reference_ci` | `reference_ci_e2e` | `http://localhost:8820/` |
-| `reference_ci` | `reference_ci_component` | `http://localhost:3000/` (design-system preview) |
 | `reference_prod` | `reference_prod_e2e` | `https://reference-app.autotests.ai/` + remote Selenoid cloud |
 
-## Component tests
-
-Committed snapshot in `preview/` (regenerate after design-system changes):
-
-```bash
-./scripts/sync-component-preview.sh
-cd preview && python -m http.server 3000
-cd ../tests && ./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
-```
-
-Monorepo dev may also use `projects/design-system-home/design-system/preview/` on `:3000` — see `../dev/README.md`.
+SPA mount checks (header, login form) live in `testIntegration`. Design-system catalog Selenide checks stay in `design-system-home`.
 
 ## Deploy
 

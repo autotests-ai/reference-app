@@ -11,6 +11,4 @@ Post-auth state (welcome message, logout) lives on `HomePage` at `/`.
 
 ## Profiles
 
-`reference_ci_e2e.properties`: `baseUrl=http://localhost:8820/`
-
-`reference_ci_component.properties`: `baseUrl=http://localhost:3000/` (design-system preview)
+`reference_ci_e2e.properties` / `reference_ci_integration.properties`: `baseUrl=http://localhost:8820/`

@@ -3,7 +3,7 @@
 #
 # | Trigger              | Job           | Slices                                      |
 # |----------------------|---------------|---------------------------------------------|
-# | push / pull_request  | ci-pyramid    | unit + api + integration + component + e2e + visual |
+# | push / pull_request  | ci-pyramid    | unit + api + integration + e2e + visual |
 # | workflow_run deploy  | prod-pyramid  | api + e2e smoke (Selenoid, parallel=1)   |
 # | workflow_dispatch    | pick target   | ci_pyramid | prod_api | prod_e2e | prod_visual |
 #
@@ -177,20 +177,6 @@ jobs:
       - name: Pyramid e2e smoke
         run: ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none -Dheadless=true
 
-      - name: Start component preview
-        working-directory: preview
-        run: |
-          python -m http.server 3000 &
-          for i in $(seq 1 30); do
-            curl -sf http://localhost:3000/components.html >/dev/null && exit 0
-            sleep 1
-          done
-          echo "component preview failed to start on :3000" >&2
-          exit 1
-
-      - name: Pyramid component
-        run: ./gradlew testComponent -Denv=reference_ci -DallureReportMode=none -Dheadless=true
-
       - name: Pyramid visual
         run: ./gradlew testVisual -Denv=reference_ci_visual -DallureReportMode=none -Dheadless=true
 
@@ -199,7 +185,7 @@ jobs:
         run: |
           {
             echo "## reference CI pyramid"
-            echo "- backend unit + JaCoCo + pyramid unit JaCoCo + testApi + testIntegration + testComponent + testE2e + testVisual"
+            echo "- backend unit + JaCoCo + pyramid unit JaCoCo + testApi + testIntegration + testE2e + testVisual"
             echo "- baselines SSOT: Linux headless Chrome 148 (\`reference_visual_baselines.yml\`)"
           } >> "$GITHUB_STEP_SUMMARY"
 

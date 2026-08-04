@@ -20,10 +20,12 @@ Canon stays this directory — siblings do not replace the pyramid.
 |-------|--------|--------|
 | unit | `../backend/src/test`, `testUnit` helpers | required |
 | frontend_rtl | [`../frontend-react/`](../frontend-react/) | Vitest + RTL — **not** this Gradle module |
-| api / integration | `tests/api`, `testApi` | Rest Assured; OpenAPI SSOT in `stacks/_contract/` |
-| component | `@Tag("component")` | Selenide browser mount — **not** RTL |
+| api | `tests/api`, `testApi` | Rest Assured; OpenAPI SSOT in `stacks/_contract/` |
+| integration | `tests/integration`, `testIntegration` | SPA mount (header, login form) |
 | e2e / visual | `testE2e` / `testVisual` | Selenide |
 | contracts | OpenAPI + `openapi-diff` | Pact = planned (see `generators/matrix-capabilities.yaml`) |
+
+DS catalog Selenide checks live in `design-system-home` — not duplicated here.
 
 ## Naming
 
@@ -52,13 +54,12 @@ Selenide `WebDriver` — **thread-local**. Каждый e2e-тест откры�
 - JDK 21
 - Chrome (local)
 - **App stack** — `docker compose up -d` (:8820) or `cd backend && ./gradlew bootRun`
-- **Component catalog** — `reference-app/preview/` on :3000 (`python -m http.server 3000` from `preview/`; `componentCatalogUrl`)
 
 ## CI
 
 | Workflow | Trigger | Slices |
 |----------|---------|--------|
-| `reference_github-pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → component → visual |
+| `reference_github-pyramid.yml` | push/PR `main` | `ci-pyramid`: unit → api → integration → e2e → visual |
 | `reference_github-pyramid.yml` | after `Deploy production` | `prod-pyramid`: `testApi` + `testE2e` (Selenoid, parallel=1) |
 | `reference_github-pyramid.yml` | workflow_dispatch | `ci_pyramid` \| `prod_api` \| `prod_e2e` \| `prod_visual` |
 | `reference_visual_baselines.yml` | workflow_dispatch | refresh Linux PNG baselines |
@@ -66,18 +67,14 @@ Selenide `WebDriver` — **thread-local**. Каждый e2e-тест откры�
 ## Quick start
 
 ```bash
-# Terminal 1 — reference-app preview snapshot (component catalog)
-cd projects/reference-home/reference-app/preview && python -m http.server 3000
-
-# Terminal 2 — app stack
+# App stack
 ./scripts/sync-app-static.sh
 docker compose up -d --build
 
 cd tests
-./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
+./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none
 ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
 ./gradlew testApi -Denv=reference_ci -DallureReportMode=none
-./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none
 ```
 
 ## Pyramid (`reference_ci` stand)
@@ -87,11 +84,9 @@ cd tests
 | unit (backend) | `ItemServiceTest`, `AuthServiceTest`, `JwtServiceTest`, `ApiControllerTest`, `AuthControllerTest`, `JwtAuthFilterTest`, `PageControllerTest`, `ItemEntityTest`, `UserEntityTest`, `UserSeederTest` | `cd backend && ./gradlew test` |
 | unit (tests) | `helpers/*Test`, `config/*Test` | `testUnit` |
 | integration | `LoginFormTests`, `LoginEmbedTests` | `testIntegration` |
-| component | `LangToggleTests`, `PrimitiveSizeTests`, `PlaqueFieldSegTests`, `TabTests`, `SegmentedControlTests`, `ConfiguratorOptionPresetsTests`, `CodeStyleExplorerTests` (`@Tag("component")`, 20 tests) | `testComponent` |
 | api | `ReferenceApiTests`, `AuthApiTests` | `testApi` |
 | e2e smoke | `HomeTests`, `LoginTests`, `RegisterTests`, `LogoutTests` | `testE2e` |
 | e2e visual | `LoginBaselineTests`, `WelcomePanelBaselineTests`, `HomeLayoutBaselineTests` | `testVisual` |
-| component visual | `PlaqueFieldGridMixedBaselineTests` (`@Layer("component")` + `@Tag("visual")` — runs in `testVisual`) | `testVisual` |
 | manual | exploratory stubs (none in `LoginTests`; use `testManual` slice when added) | `testManual` |
 
 Contract: `stacks/_contract/openapi.yaml`, `stacks/_contract/flows/login.md`.
@@ -101,7 +96,6 @@ cd backend && ./gradlew test
 
 cd tests
 ./gradlew testUnit -Denv=reference_ci -DallureReportMode=none
-./gradlew testComponent -Denv=reference_ci -DallureReportMode=none
 ./gradlew testIntegration -Denv=reference_ci -DallureReportMode=none
 ./gradlew testApi -Denv=reference_ci -DallureReportMode=none
 ./gradlew testE2e -Denv=reference_ci_e2e -DallureReportMode=none
@@ -109,7 +103,7 @@ cd tests
 ./gradlew testManual -Denv=reference_ci -DallureReportMode=none
 ```
 
-Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout,plaque-field-grid-mixed}/`.
+Visual baselines: commit PNG under `src/test/resources/screenshots/{login,welcome-panel,home-layout}/`.
 
 **CI SSOT:** Linux headless Chrome 148 (`reference_visual_baselines.yml` workflow_dispatch). macOS local may differ — refresh with `-DupdateBaselines=true` or accept CI as source of truth.
 

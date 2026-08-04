@@ -91,43 +91,19 @@ class ConfigReaderTest {
     @Test
     @DisplayName("resolveWebBaseUrl strips trailing slash from loaded config")
     void resolveWebBaseUrlStripsTrailingSlashFromLoadedConfig() {
-        assertEquals("http://localhost:8080", ConfigReader.resolveWebBaseUrl());
+        assertEquals("http://localhost:8820", ConfigReader.resolveWebBaseUrl());
     }
 
     @Test
     @DisplayName("resolveBaseUrl uses loaded config")
     void resolveBaseUrlUsesLoadedConfig() {
-        assertEquals("http://localhost:8080/", ConfigReader.resolveBaseUrl());
+        assertEquals("http://localhost:8820/", ConfigReader.resolveBaseUrl());
     }
 
     @Test
     @DisplayName("resolveApiBaseUrl uses loaded config")
     void resolveApiBaseUrlUsesLoadedConfig() {
-        assertEquals("http://localhost:8080/", ConfigReader.resolveApiBaseUrl());
-    }
-
-    @Test
-    @DisplayName("resolveComponentCatalogUrl uses loaded config")
-    void resolveComponentCatalogUrlUsesLoadedConfig() {
-        assertEquals("http://localhost:3000", ConfigReader.resolveComponentCatalogUrl());
-    }
-
-    @Test
-    @DisplayName("resolveComponentCatalogUrl uses explicit catalog url")
-    void resolveComponentCatalogUrlUsesExplicitCatalogUrl() {
-        var config = configWith(Map.of(
-                "baseUrl", "http://localhost:8080/",
-                "componentCatalogUrl", "http://catalog.test/"));
-        assertEquals("http://catalog.test", ConfigReader.resolveComponentCatalogUrl(config));
-    }
-
-    @Test
-    @DisplayName("resolveComponentCatalogUrl falls back to web base when catalog url is empty")
-    void resolveComponentCatalogUrlFallsBackToWebBaseUrlWhenEmpty() {
-        var config = configWith(Map.of(
-                "baseUrl", "http://localhost:8080/",
-                "componentCatalogUrl", ""));
-        assertEquals("http://localhost:8080", ConfigReader.resolveComponentCatalogUrl(config));
+        assertEquals("http://localhost:8820/", ConfigReader.resolveApiBaseUrl());
     }
 
     @Test

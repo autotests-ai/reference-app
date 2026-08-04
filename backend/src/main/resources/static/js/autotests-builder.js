@@ -506,17 +506,14 @@ import { highlightJson, highlightShell } from './code-highlight.js';
     if (values.stepsLocation === "po_annotated" && values.testStyle === "raw_selenide") {
       issues.push("raw_selenide + po_annotated — шаги в PO не вызовутся без PO");
     }
-    if (values.testSuite === "lang-toggle" && values.configStand === "reference_prod") {
-      issues.push("LangToggleTests нужен local HTTP (frontend/ на :3000), не prod profile");
-    }
     if (values.testSuite === "login-embed" && values.configStand === "reference_prod") {
-      issues.push("LoginEmbedTests нужен local HTTP (frontend/ на :3000), не prod profile");
+      issues.push("LoginEmbedTests нужен local HTTP (app на :8820), не prod profile");
     }
     if (isVisualSliceSuite() && values.pyramidLayer !== "e2e") {
       issues.push("BaselineTests: Test layer должен быть e2e (@Layer(\"e2e\")), не " + values.pyramidLayer);
     }
     if (isVisualSliceSuite() && values.configStand === "reference_prod") {
-      issues.push("BaselineTests нужен local HTTP (frontend/ на :3000), не prod profile");
+      issues.push("BaselineTests нужен local HTTP (app на :8820), не prod profile");
     }
     if (values.testMethod) {
       var methodOpt = paramById("testMethod").options.find(function (o) {
@@ -710,11 +707,8 @@ import { highlightJson, highlightShell } from './code-highlight.js';
   }
 
   function headerRagChunks() {
-    if (values.testSuite !== "lang-toggle" && values.testSuite !== "login-embed") return [];
-    var chunks = ["hdr-scope-4b"];
-    if (values.testSuite === "lang-toggle") chunks.push("hdr-selectors");
-    if (values.testSuite === "login-embed") chunks.push("hdr-behavior");
-    return Array.from(new Set(chunks)).sort();
+    if (values.testSuite !== "login-embed") return [];
+    return Array.from(new Set(["hdr-scope-4b", "hdr-behavior"])).sort();
   }
 
   function ragChunksForSelection() {
@@ -806,14 +800,12 @@ import { highlightJson, highlightShell } from './code-highlight.js';
       );
     }
 
-    if (values.testSuite === "lang-toggle" || values.testSuite === "login-embed") {
+    if (values.testSuite === "login-embed") {
       lines.push(
         "",
         "## Header coverage (ADR 003)",
-        "- Preview `frontend/header.html` — не target PO",
-        "- Component: `LangToggleTests` на `components.html` — hit area 36px, icon 18px",
         "- Integration: `LoginEmbedTests` на `/login` — visible `#app-header` после mount",
-        "- Slices: `./gradlew testComponent` / `./gradlew testIntegration`",
+        "- Slice: `./gradlew testIntegration`",
         "",
         "## Header RAG",
         headerRagChunks()

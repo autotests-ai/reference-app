@@ -332,7 +332,7 @@ if (allureReportMode == 'none') {
     }
 }
 
-def knownPyramidLayers = ['unit', 'component', 'integration', 'api', 'e2e', 'visual', 'manual'] as Set
+def knownPyramidLayers = ['unit', 'integration', 'api', 'e2e', 'visual', 'manual'] as Set
 def layerEnvName = { String layer ->
     def env = System.getProperty('env')
     if (!env) {
@@ -353,9 +353,6 @@ def layerTestSlices = [
         [name: 'testUnit',        layer: 'unit',
          description: 'Pyramid unit — helpers.*Test + config.*Test',
          testPatterns: ['helpers.*Test', 'config.*Test']],
-        [name: 'testComponent',   layer: 'component',
-         description: 'Pyramid component — @Tag(component)',
-         includeTags: 'component'],
         [name: 'testIntegration', layer: 'integration',
          description: 'Pyramid integration — @Tag(layout,mount)',
          includeTags: 'layout,mount'],

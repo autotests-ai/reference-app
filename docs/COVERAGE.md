@@ -34,6 +34,6 @@ open build/reports/jacoco/jacocoTestUnitReport/html/index.html
 
 Canon: monorepo `docs/sonar/SONAR-CANON.md` · QG thresholds: `docs/sonar/QUALITY-GATE-PROFILE.md` (`qa-guru-canon`).
 
-Stable tag: `v0.2.1` (CI pyramid + prod pyramid green, 20 component tests, `reference_ci` stands).
+Stable tag: `v0.2.1` (CI pyramid + prod pyramid green, `reference_ci` stands).
 
 Previous: `v0.2.0-coverage` (JaCoCo 100% gates only).

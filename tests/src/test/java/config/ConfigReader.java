@@ -20,18 +20,6 @@ public final class ConfigReader {
         return resolveBaseUrl(config).replaceAll("/+$", "");
     }
 
-    public static String resolveComponentCatalogUrl() {
-        return resolveComponentCatalogUrl(testConfig);
-    }
-
-    static String resolveComponentCatalogUrl(TestConfig config) {
-        var url = config.componentCatalogUrl().trim();
-        if (!url.isEmpty()) {
-            return url.replaceAll("/+$", "");
-        }
-        return resolveWebBaseUrl(config);
-    }
-
     public static String resolveBaseUrl() {
         return resolveBaseUrl(testConfig);
     }

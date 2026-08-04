@@ -49,17 +49,6 @@ jobs:
         working-directory: .
         run: docker compose up -d --build --wait
 
-      - name: Start component preview
-        working-directory: preview
-        run: |
-          python -m http.server 3000 &
-          for i in $(seq 1 30); do
-            curl -sf http://localhost:3000/components.html >/dev/null && exit 0
-            sleep 1
-          done
-          echo "component preview failed to start on :3000" >&2
-          exit 1
-
       - name: Update visual baselines
         run: ./gradlew testVisual -Denv=reference_ci_visual -DupdateBaselines=true -DallureReportMode=none -Dheadless=true
 

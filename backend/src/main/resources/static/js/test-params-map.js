@@ -82,8 +82,8 @@ window.testParamsMap = {
       label: "Header smoke",
       values: {
         configStand: "local",
-        pyramidLayer: "component",
-        testSuite: "lang-toggle",
+        pyramidLayer: "integration",
+        testSuite: "login-embed",
         headless: "true",
         parallelism: "1",
       },
@@ -384,7 +384,7 @@ window.testParamsMap = {
       default: "local",
       gradle: false,
       options: [
-        { value: "local", label: "local", hint: "frontend/ on :3000" },
+        { value: "local", label: "local", hint: "app on :8820" },
         { value: "header-local", label: "header-local", hint: "alias local" },
         { value: "one-page-form_local", label: "one-page-form_local", hint: "frontend/ + Selenoid hub" },
         { value: "one-page-form_prod", label: "one-page-form_prod", hint: "GitHub Pages + cloud hub" },
@@ -406,8 +406,7 @@ window.testParamsMap = {
       gradle: false,
       options: [
         { value: "unit", label: "unit", hint: "helpers/*Test, config/*Test" },
-        { value: "component", label: "component", hint: "@Layer(component)" },
-        { value: "integration", label: "integration", hint: "@Layer(integration)" },
+        { value: "integration", label: "integration", hint: "@Layer(integration) — SPA mount" },
         { value: "api", label: "api", hint: "@Layer(api) @Tag(api)" },
         { value: "e2e", label: "e2e", hint: "@Layer(e2e) — smoke, visual baselines" },
         { value: "manual", label: "manual", hint: "@Layer(manual) на методе exploratory" },
@@ -422,16 +421,10 @@ window.testParamsMap = {
       options: [
         { value: "login", label: "LoginTests", hint: "positive + negative (RAG)" },
         { value: "logout", label: "LogoutTests", hint: "form + localStorage shortcut" },
-        { value: "lang-toggle", label: "LangToggleTests", hint: "component catalog, ADR 003" },
         { value: "login-embed", label: "LoginEmbedTests", hint: "header embed integration" },
         { value: "login-baseline", label: "LoginBaselineTests", hint: "login form pixel diff; env *_visual" },
         { value: "welcome-panel-baseline", label: "WelcomePanelBaselineTests", hint: "welcome panel на /; env *_visual" },
         { value: "home-layout-baseline", label: "HomeLayoutBaselineTests", hint: "home layout на /; env *_visual" },
-        {
-          value: "plaque-field-grid-mixed-baseline",
-          label: "PlaqueFieldGridMixedBaselineTests",
-          hint: "component catalog baseline; env *_visual",
-        },
         { value: "all", label: "tests.*", hint: "весь пакет tests" },
       ],
     },
@@ -1129,17 +1122,14 @@ window.testParamsMap = {
     "login-baseline",
     "welcome-panel-baseline",
     "home-layout-baseline",
-    "plaque-field-grid-mixed-baseline",
   ],
   suiteClassMap: {
     login: "LoginTests",
     logout: "LogoutTests",
-    "lang-toggle": "component.LangToggleTests",
     "login-embed": "integration.LoginEmbedTests",
     "login-baseline": "e2e.LoginBaselineTests",
     "welcome-panel-baseline": "e2e.WelcomePanelBaselineTests",
     "home-layout-baseline": "e2e.HomeLayoutBaselineTests",
-    "plaque-field-grid-mixed-baseline": "component.PlaqueFieldGridMixedBaselineTests",
     all: "*",
   },
   ragChunkHints: {
@@ -1149,7 +1139,6 @@ window.testParamsMap = {
       "login-baseline": "visual-baseline",
       "welcome-panel-baseline": "visual-baseline",
       "home-layout-baseline": "visual-baseline",
-      "plaque-field-grid-mixed-baseline": "visual-baseline",
     },
     testStyle: { style_ladder: "test-style-ladder", page_object: "po-fluent" },
     stepsLocation: {

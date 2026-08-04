@@ -29,7 +29,7 @@ sets `window.headerConfig` and `main.tsx` injects `/js/header.js` at runtime.
 |--|--|
 | Matrix id | `react-vitest-rtl` ([`generators/matrix-capabilities.yaml`](../../../../generators/matrix-capabilities.yaml)) |
 | Pyramid layer | `frontend_rtl` in [`stacks/_contract/pyramid-map.yaml`](../../../../stacks/_contract/pyramid-map.yaml) |
-| Not the same as | Selenide `@Tag("component")` in [`../tests/`](../tests/) (`testComponent`) |
+| Not the same as | Selenide integration mount in [`../tests/`](../tests/) (`testIntegration`) |
 
 Allure labels from `npm test`: `layer=component`, `scope=react`, `framework=react-testing-library` — React component scope, not the browser component slice.
 
@@ -45,7 +45,7 @@ npm test           # Vitest + React Testing Library (= pyramid frontend_rtl)
 ## Build notes
 
 - `outDir` is the backend static dir with `emptyOutDir: false` so the design-system
-  embed (`css/`, `js/`, `templates/`) and `preview/` catalog are preserved.
+  embed (`css/`, `js/`, `templates/`) is preserved.
 - Asset filenames are stable (unhashed) to keep the committed static output diff-clean.
 - Peer CSS (design-system primitives + app styles) is bundled from the committed
   `../backend/.../static/css` so the build is self-contained and visual baselines hold.
