@@ -21,7 +21,6 @@
  */
 
 buildscript {
-    // Shared pins (java/junit/slf4j) — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
     ext {
         javaVersion         = 21
         junitVersion        = '5.11.4'
