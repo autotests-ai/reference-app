@@ -21,6 +21,7 @@
  */
 
 buildscript {
+    // Shared pins (junit/slf4j/java) — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
     ext {
         allurePluginVersion = '4.1.0'
         allureVersion       = '3.13.0'
@@ -40,6 +41,12 @@ plugins {
     id 'jacoco'
     id 'io.qameta.allure' version "${allurePluginVersion}"
     id 'org.sonarqube' version '6.2.0.5505'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 sonar {

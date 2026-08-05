@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    // spring-boot / dependency-management — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.sonarqube' version '6.2.0.5505'
@@ -23,6 +24,9 @@ sonar {
 
 group = 'dev.reference'
 version = '0.1.0'
+
+// Shared pins — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
+ext['slf4j.version'] = '2.0.17'
 
 java {
     toolchain {
