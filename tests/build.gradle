@@ -21,16 +21,17 @@
  */
 
 buildscript {
-    // Shared pins (junit/slf4j/java) — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
+    // Shared pins (java/junit/slf4j) — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
     ext {
+        javaVersion         = 21
+        junitVersion        = '5.11.4'
+        slf4jVersion        = '2.0.17'
         allurePluginVersion = '4.1.0'
         allureVersion       = '3.13.0'
         allureBomVersion    = '2.35.2'
         selenideVersion     = '7.17.0'
         restAssuredVersion  = '5.5.7'
         ownerVersion        = '1.0.12'
-        junitVersion        = '5.11.4'
-        slf4jVersion        = '2.0.17'
         testParallelForks   = 1
         defaultEnv          = 'reference_ci_e2e'
     }
@@ -45,7 +46,7 @@ plugins {
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(javaVersion)
     }
 }
 

@@ -1,10 +1,21 @@
+buildscript {
+    // Shared pins — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
+    ext {
+        javaVersion                       = 21
+        springBootVersion                 = '3.4.1'
+        springDependencyManagementVersion = '1.1.7'
+        slf4jVersion                      = '2.0.17'
+        sonarPluginVersion                = '6.2.0.5505'
+        jjwtVersion                       = '0.12.6'
+    }
+}
+
 plugins {
     id 'java'
     id 'jacoco'
-    // spring-boot / dependency-management — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
-    id 'org.springframework.boot' version '3.4.1'
-    id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.sonarqube' version '6.2.0.5505'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+    id 'org.sonarqube' version "${sonarPluginVersion}"
 }
 
 sonar {
@@ -25,12 +36,12 @@ sonar {
 group = 'dev.reference'
 version = '0.1.0'
 
-// Shared pins — SSOT: generators/ethalon/tests-java/_ethalon/versions.yaml
-ext['slf4j.version'] = '2.0.17'
+// Spring Boot BOM property name is fixed
+ext['slf4j.version'] = slf4jVersion
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(javaVersion)
     }
 }
 
@@ -45,9 +56,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+    implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
