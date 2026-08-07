@@ -21,14 +21,11 @@ const DASHBOARD_THEME_PLUGIN = fileURLToPath(
  * @param {string} profile.slug - repo slug → `{slug} Tests`
  * @param {string[]} [profile.epicCharts] - optional per-epic statusDynamics tiles
  * @param {object} [profile.variables] - Allure variables override
- * @param {object} [profile.publish] - CI publish plugins (notifications)
- * @param {object} [profile.publish.notifications] - `@allure-notifications/plugin` options
  */
 export function createAllureConfig({
   slug,
   epicCharts = [],
   variables,
-  publish,
 } = {}) {
   if (!slug || typeof slug !== "string") {
     throw new Error("createAllureConfig: profile.slug is required");
@@ -68,18 +65,10 @@ export function createAllureConfig({
           fileName: `${slug}.csv`,
         },
       },
-      // Intermediate: after generate, before notifications (publish pass).
+      // Palette on HTML; Telegram is a separate post-generate Action/CLI step.
       dashboardTheme: {
         import: DASHBOARD_THEME_PLUGIN,
       },
-      ...(publish?.notifications
-        ? {
-            notifications: {
-              import: "@allure-notifications/plugin",
-              options: publish.notifications,
-            },
-          }
-        : {}),
     },
   };
 }

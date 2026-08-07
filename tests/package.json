@@ -1,10 +1,12 @@
 {
   "private": true,
   "name": "reference-app-tests-allure",
-  "description": "Allure 3 CLI + notifications plugin for reference-app tests",
+  "description": "Allure 3 CLI + allure-notifications send for reference-app tests CI",
+  "engines": {
+    "node": ">=26"
+  },
   "dependencies": {
-    "@allure-notifications/plugin": "6.0.12",
-    "@allure-notifications/pyramid": "^6.0.12",
-    "allure": "3.13.0"
+    "allure": "3.14.3",
+    "allure-notifications": "6.0.13"
   }
 }

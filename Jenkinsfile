@@ -195,22 +195,14 @@ pipeline {
           EOF
         """
         catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-          script {
-            // Plugin looks up `allure` on agent PATH (baked into java-jdk21 image)
-            allure(
-              allureVersion: '3',
-              includeProperties: false,
-              results: [[path: 'tests/build/allure-results']],
-              configPath: 'tests/allurerc.mjs'
-            )
-          }
+          sh '''
+            cd tests
+            npm ci
+            npx --no-install allure generate build/allure-results \
+              -o build/reports/allure-report/allureReport \
+              --config allurerc.mjs
+          '''
         }
-        sh '''
-          set +e
-          if [ ! -f tests/build/reports/allure-report/allureReport/awesome/index.html ]; then
-            (cd tests && ./gradlew allureReport) || true
-          fi
-        '''
         publishHTML(target: [
           allowMissing         : true,
           alwaysLinkToLastBuild: true,
@@ -256,47 +248,12 @@ pipeline {
               set -eu
 
               AWESOME="tests/build/reports/allure-report/allureReport/awesome"
-              if [ ! -f "$AWESOME/summary.json" ] && [ -f allure-report/awesome/summary.json ]; then
-                mkdir -p tests/build/reports/allure-report/allureReport
-                cp -a allure-report/. tests/build/reports/allure-report/allureReport/
-              fi
-              if [ ! -f "$AWESOME/summary.json" ] && command -v allure >/dev/null 2>&1; then
-                mkdir -p tests/build/reports/allure-report/allureReport
-                allure generate tests/build/allure-results \
-                  -o tests/build/reports/allure-report/allureReport \
-                  --config tests/allurerc.mjs
-              fi
               test -f "$AWESOME/summary.json"
 
-              JAR=allure-notifications-5.0.8.jar
-              if [ ! -f "$JAR" ]; then
-                curl -fsSL -o "$JAR" \
-                  "https://github.com/qa-guru/allure-notifications/releases/download/v5.0.8/$JAR"
-              fi
-              export REPORT_URL="${BUILD_URL}allure/"
-              export DASHBOARD_URL="${BUILD_URL}allure/"
-              export TESTOPS_URL="${ALLURE_ENDPOINT}/project/${ALLURE_PROJECT_ID}"
-              CONFIG=notifications/config.runtime.json
-              node <<'JS'
-const fs = require("fs");
-const cfg = JSON.parse(fs.readFileSync("notifications/config.json", "utf8"));
-cfg.base.project = `Reference App Jenkins #${process.env.BUILD_NUMBER}`;
-cfg.base.links = {
-  report: process.env.REPORT_URL,
-  dashboard: process.env.DASHBOARD_URL,
-  testops: process.env.TESTOPS_URL,
-  build: process.env.BUILD_URL,
-};
-cfg.telegram.token = process.env.TELEGRAM_BOT_TOKEN;
-cfg.telegram.chat = process.env.TELEGRAM_CHAT_ID;
-cfg.telegram.topic = process.env.TELEGRAM_TOPIC_ID || "";
-cfg.telegram.replyTo = "";
-fs.writeFileSync("notifications/config.runtime.json", JSON.stringify(cfg, null, 2));
-JS
-
+              cd tests
               PROXY_IP="$(getent ahostsv4 proxy.qaguru.school | awk 'NR == 1 { print $1; exit }')"
               test -n "$PROXY_IP"
-              PROXYCHAINS_CONFIG=.proxychains-telegram.conf
+              PROXYCHAINS_CONFIG=../.proxychains-telegram.conf
               printf '%s\n' \
                 strict_chain \
                 proxy_dns \
@@ -307,8 +264,18 @@ JS
                 > "$PROXYCHAINS_CONFIG"
 
               proxychains4 -q -f "$PROXYCHAINS_CONFIG" \
-                java "-DconfigFile=${CONFIG}" -jar "$JAR"
-              echo "Telegram proxy send OK"
+                npx --no-install allure-notifications send \
+                  --config notifications/config.json \
+                  --allure-folder build/reports/allure-report/allureReport/awesome \
+                  --allure-results-folder build/allure-results \
+                  --project "Reference App Jenkins #${BUILD_NUMBER}" \
+                  --report-url "${BUILD_URL}allure/" \
+                  --dashboard-url "${BUILD_URL}allure/" \
+                  --testops-url "${ALLURE_ENDPOINT}/project/${ALLURE_PROJECT_ID}" \
+                  --build-url "${BUILD_URL}" \
+                  --live \
+                  --out collage.png
+              echo "Telegram CLI notify OK"
             '''
           }
         }

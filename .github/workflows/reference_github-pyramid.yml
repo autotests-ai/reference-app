@@ -207,6 +207,8 @@ jobs:
       TEST_CLASS: ${{ github.event.inputs.test_class || '' }}
       TEST_CASE_ID: ${{ github.event.inputs.test_case_id || '' }}
       PROD_TARGET: ${{ github.event_name == 'workflow_run' && 'prod_pyramid' || github.event.inputs.target }}
+      QUALITY_GATE_EXIT: "0"
+      TESTOPS_LAUNCH_URL: ""
 
     steps:
       - name: Checkout
@@ -355,6 +357,16 @@ jobs:
             echo "VIDEO_URL=$VIDEO_URL" >> "$GITHUB_ENV"
           fi
 
+      - name: Setup Node
+        if: always() && hashFiles('tests/build/allure-results/**') != ''
+        uses: actions/setup-node@v6
+        with:
+          node-version: 26
+
+      - name: Install pinned Allure CLI
+        if: always() && hashFiles('tests/build/allure-results/**') != ''
+        run: npm ci
+
       - name: Generate Allure 3 report
         if: always() && hashFiles('tests/build/allure-results/**') != ''
         id: allure-report
@@ -369,36 +381,30 @@ jobs:
             "buildUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }
           EOF
-          ./gradlew allureReport
+          npx --no-install allure generate build/allure-results \
+            -o build/reports/allure-report/allureReport \
+            --config allurerc.mjs
 
-      - name: Install Allure publish deps
-        if: always() && steps.allure-report.outcome == 'success'
-        uses: actions/setup-node@v6
-        with:
-          node-version: 26
-
-      - name: Publish Allure (theme + Telegram plugin)
-        if: always() && steps.allure-report.outcome == 'success'
+      - name: Send Allure Telegram notification
+        if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/build/reports/allure-report/allureReport/awesome/summary.json') != ''
         continue-on-error: true
-        working-directory: tests
+        uses: qa-guru/allure-notifications@v6
+        with:
+          config: notifications/config.json
+          allure-folder: build/reports/allure-report/allureReport/awesome
+          allure-results-folder: build/allure-results
+          project: "Reference App #${{ github.run_number }}"
+          report-url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/awesome/index.html
+          dashboard-url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/dashboard/index.html
+          testops-url: ${{ env.TESTOPS_LAUNCH_URL }}
+          build-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          mode: ${{ github.event_name == 'pull_request' && 'dry-run' || 'live' }}
+          out: collage.png
+          working-directory: tests
         env:
-          NOTIFICATION_MODE: ${{ github.event_name == 'pull_request' && 'dry-run' || 'live' }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN || secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID || '-1004381150566' }}
           TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_REFERENCE_APP_TOPIC_ID || vars.TELEGRAM_REFERENCE_APP_TOPIC_ID || secrets.TELEGRAM_TOPIC_ID || vars.TELEGRAM_TOPIC_ID }}
-          ALLURE_REPORT_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/awesome/index.html
-          ALLURE_DASHBOARD_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/reports/latest/dashboard/index.html
-          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          TESTOPS_LAUNCH_URL: ${{ env.TESTOPS_LAUNCH_URL }}
-          NOTIFICATION_PROJECT: Reference App #${{ github.run_number }}
-        run: |
-          AWESOME="build/reports/allure-report/allureReport/awesome"
-          if [ ! -f "$AWESOME/summary.json" ]; then
-            echo "No Allure summary — skip publish"
-            exit 0
-          fi
-          npm install --no-save
-          node scripts/allure-publish.mjs
 
       - name: Generate README dashboard assets
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/build/allure-results/**') != ''
@@ -423,12 +429,6 @@ jobs:
           fi
           echo "${REPORT_ID}" > pages/latest-run-id.txt
           touch pages/.nojekyll
-
-      - name: Setup Node for dashboard preview capture
-        if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
-        uses: actions/setup-node@v6
-        with:
-          node-version: 26
 
       - name: Capture dashboard preview for README
         if: always() && steps.allure-report.outcome == 'success' && hashFiles('tests/pages/reports/latest/dashboard/index.html') != ''
