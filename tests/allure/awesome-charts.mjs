@@ -1,13 +1,16 @@
 import {
   PYRAMID_LAYERS,
   STABILITY_SKIP_STATUSES,
+  STABILITY_STABILIZATION_PERIOD,
   STABILITY_THRESHOLD,
   TITLES,
 } from "./constants.mjs";
 
 /**
  * Awesome plugin charts.
- * Invariant: index 0 = currentStatus, index 1 = testingPyramid.
+ * Locked 2×2 (indices 0–3):
+ *   [0] currentStatus     [1] durationDynamics
+ *   [2] testingPyramid    [3] durations (groupBy: layer)
  */
 export function buildAwesomeCharts() {
   return [
@@ -16,9 +19,19 @@ export function buildAwesomeCharts() {
       title: TITLES.currentStatus,
     },
     {
+      type: "durationDynamics",
+      title: TITLES.durationDynamics,
+      limit: 20,
+    },
+    {
       type: "testingPyramid",
       title: TITLES.testingPyramid,
       layers: [...PYRAMID_LAYERS],
+    },
+    {
+      type: "durations",
+      title: TITLES.durationsByLayer,
+      groupBy: "layer",
     },
     {
       type: "testResultSeverities",
@@ -56,6 +69,7 @@ export function buildAwesomeCharts() {
       type: "stabilityDistribution",
       title: TITLES.stabilityByComponent,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "label-name:component",
     },
@@ -63,6 +77,7 @@ export function buildAwesomeCharts() {
       type: "stabilityDistribution",
       title: TITLES.stabilityByFeature,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "feature",
     },
@@ -70,6 +85,7 @@ export function buildAwesomeCharts() {
       type: "stabilityDistribution",
       title: TITLES.stabilityByEpic,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "epic",
     },
@@ -77,6 +93,7 @@ export function buildAwesomeCharts() {
       type: "stabilityDistribution",
       title: TITLES.stabilityByStory,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "story",
     },
@@ -84,16 +101,6 @@ export function buildAwesomeCharts() {
       type: "durations",
       title: TITLES.durations,
       groupBy: "none",
-    },
-    {
-      type: "durations",
-      title: TITLES.durationsByLayer,
-      groupBy: "layer",
-    },
-    {
-      type: "durationDynamics",
-      title: TITLES.durationDynamics,
-      limit: 20,
     },
     {
       type: "statusAgePyramid",

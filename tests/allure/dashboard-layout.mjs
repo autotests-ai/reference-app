@@ -1,13 +1,56 @@
 import {
   PYRAMID_LAYERS,
   STABILITY_SKIP_STATUSES,
+  STABILITY_STABILIZATION_PERIOD,
   STABILITY_THRESHOLD,
   TITLES,
 } from "./constants.mjs";
 
+/** Filter tests by Allure `component` label (hub README dashboard crops). */
+export function componentLabelFilter(component) {
+  return ({ labels }) =>
+    labels.some(({ name, value }) => name === "component" && value === component);
+}
+
+/**
+ * Compact 2×2 dashboard for README PNG — same locked quad as main layout.
+ * Per-widget filter — no sibling components (webdriver vs playwright).
+ */
+export function buildComponentReadmeDashboardLayout(component) {
+  const filter = componentLabelFilter(component);
+
+  return [
+    {
+      type: "currentStatus",
+      title: TITLES.currentStatus,
+      filter,
+    },
+    {
+      type: "durationDynamics",
+      title: TITLES.durationDynamics,
+      limit: 20,
+      filter,
+    },
+    {
+      type: "testingPyramid",
+      title: TITLES.testingPyramid,
+      layers: [...PYRAMID_LAYERS],
+      filter,
+    },
+    {
+      type: "durations",
+      title: TITLES.durationsByLayer,
+      groupBy: "layer",
+      filter,
+    },
+  ];
+}
+
 /**
  * Dashboard plugin layout.
- * Invariant: index 0 = currentStatus, index 1 = testingPyramid.
+ * Locked 2×2 (indices 0–3):
+ *   [0] currentStatus     [1] durationDynamics
+ *   [2] testingPyramid    [3] durations (groupBy: layer)
  */
 export function buildDashboardLayout({ epicCharts = [] } = {}) {
   const epicStatusDynamics = epicCharts.map((epic) => ({
@@ -24,9 +67,19 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       title: TITLES.currentStatus,
     },
     {
+      type: "durationDynamics",
+      title: TITLES.durationDynamics,
+      limit: 20,
+    },
+    {
       type: "testingPyramid",
       title: TITLES.testingPyramid,
       layers: [...PYRAMID_LAYERS],
+    },
+    {
+      type: "durations",
+      title: TITLES.durationsByLayer,
+      groupBy: "layer",
     },
     {
       type: "statusDynamics",
@@ -41,6 +94,7 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "stabilityDistribution",
       title: TITLES.stabilityByComponent,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "label-name:component",
     },
@@ -59,11 +113,6 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       limit: 20,
     },
     {
-      type: "durationDynamics",
-      title: TITLES.durationDynamics,
-      limit: 20,
-    },
-    {
       type: "problemsDistribution",
       title: TITLES.problemsByEnvironment,
       by: "environment",
@@ -72,6 +121,7 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "stabilityDistribution",
       title: TITLES.stabilityByFeature,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "feature",
     },
@@ -79,6 +129,7 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "stabilityDistribution",
       title: TITLES.stabilityByEpic,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "epic",
     },
@@ -86,6 +137,7 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "stabilityDistribution",
       title: TITLES.stabilityByStory,
       threshold: STABILITY_THRESHOLD,
+      stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "story",
     },
@@ -97,11 +149,6 @@ export function buildDashboardLayout({ epicCharts = [] } = {}) {
       type: "durations",
       title: TITLES.durations,
       groupBy: "none",
-    },
-    {
-      type: "durations",
-      title: TITLES.durationsByLayer,
-      groupBy: "layer",
     },
     {
       type: "statusAgePyramid",
