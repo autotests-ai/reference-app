@@ -1,10 +1,26 @@
+import { charts, panels, presets } from "@qa-guru/allure-report-kit";
+
 import {
   PYRAMID_LAYERS,
+  QUALITY_GATE_LABELS,
   STABILITY_SKIP_STATUSES,
   STABILITY_STABILIZATION_PERIOD,
   STABILITY_THRESHOLD,
   TITLES,
 } from "./constants.mjs";
+
+const LOCKED_TITLES = {
+  currentStatus: TITLES.currentStatus,
+  durationDynamics: TITLES.durationDynamics,
+  testingPyramid: TITLES.testingPyramid,
+  durations: TITLES.durationsByLayer,
+};
+
+const LOCKED_RENDERERS = {
+  currentStatus: "stock",
+  durationDynamics: "stock",
+  durations: "stock",
+};
 
 /** Filter tests by Allure `component` label (hub README dashboard crops). */
 export function componentLabelFilter(component) {
@@ -19,31 +35,13 @@ export function componentLabelFilter(component) {
 export function buildComponentReadmeDashboardLayout(component) {
   const filter = componentLabelFilter(component);
 
-  return [
-    {
-      type: "currentStatus",
-      title: TITLES.currentStatus,
-      filter,
-    },
-    {
-      type: "durationDynamics",
-      title: TITLES.durationDynamics,
-      limit: 20,
-      filter,
-    },
-    {
-      type: "testingPyramid",
-      title: TITLES.testingPyramid,
-      layers: [...PYRAMID_LAYERS],
-      filter,
-    },
-    {
-      type: "durations",
-      title: TITLES.durationsByLayer,
-      groupBy: "layer",
-      filter,
-    },
-  ];
+  return presets.lockedQuad({
+    layers: [...PYRAMID_LAYERS],
+    titles: LOCKED_TITLES,
+    limit: 20,
+    renderers: LOCKED_RENDERERS,
+    filter,
+  });
 }
 
 /**
@@ -53,108 +51,68 @@ export function buildComponentReadmeDashboardLayout(component) {
  *   [2] testingPyramid    [3] durations (groupBy: layer)
  */
 export function buildDashboardLayout({ epicCharts = [] } = {}) {
-  const epicStatusDynamics = epicCharts.map((epic) => ({
-    type: "statusDynamics",
-    title: `Динамика — ${epic}`,
-    limit: 20,
-    filter: ({ labels }) =>
-      labels.some(({ name, value }) => name === "epic" && value === epic),
-  }));
+  const epicStatusDynamics = epicCharts.map((epic) =>
+    charts.statusDynamics({
+      title: `Динамика — ${epic}`,
+      limit: 20,
+      filter: ({ labels }) =>
+        labels.some(({ name, value }) => name === "epic" && value === epic),
+    }),
+  );
 
   return [
-    {
-      type: "currentStatus",
-      title: TITLES.currentStatus,
-    },
-    {
-      type: "durationDynamics",
-      title: TITLES.durationDynamics,
-      limit: 20,
-    },
-    {
-      type: "testingPyramid",
-      title: TITLES.testingPyramid,
+    ...presets.lockedQuad({
       layers: [...PYRAMID_LAYERS],
-    },
-    {
-      type: "durations",
-      title: TITLES.durationsByLayer,
-      groupBy: "layer",
-    },
-    {
-      type: "statusDynamics",
-      title: TITLES.statusDynamics,
+      titles: LOCKED_TITLES,
       limit: 20,
-    },
-    {
-      type: "successRateDistribution",
-      title: TITLES.successRateDistribution,
-    },
-    {
-      type: "stabilityDistribution",
+      renderers: LOCKED_RENDERERS,
+    }),
+    panels.qualityGate({
+      id: "qualityGate",
+      title: TITLES.qualityGate,
+      layout: "4x1",
+      labels: QUALITY_GATE_LABELS,
+    }),
+    charts.statusDynamics({ title: TITLES.statusDynamics, limit: 20 }),
+    charts.successRateDistribution({ title: TITLES.successRateDistribution }),
+    charts.stabilityDistribution({
       title: TITLES.stabilityByComponent,
       threshold: STABILITY_THRESHOLD,
       stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "label-name:component",
-    },
-    {
-      type: "coverageDiff",
-      title: TITLES.coverageDiff,
-    },
-    {
-      type: "statusTransitions",
-      title: TITLES.statusTransitions,
-      limit: 20,
-    },
-    {
-      type: "testBaseGrowthDynamics",
+    }),
+    charts.coverageDiff({ title: TITLES.coverageDiff }),
+    charts.statusTransitions({ title: TITLES.statusTransitions, limit: 20 }),
+    charts.testBaseGrowthDynamics({
       title: TITLES.testBaseGrowthDynamics,
       limit: 20,
-    },
-    {
-      type: "problemsDistribution",
-      title: TITLES.problemsByEnvironment,
-      by: "environment",
-    },
-    {
-      type: "stabilityDistribution",
+    }),
+    charts.problemsDistribution({ title: TITLES.problemsByEnvironment }),
+    charts.stabilityDistribution({
       title: TITLES.stabilityByFeature,
       threshold: STABILITY_THRESHOLD,
       stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "feature",
-    },
-    {
-      type: "stabilityDistribution",
+    }),
+    charts.stabilityDistribution({
       title: TITLES.stabilityByEpic,
       threshold: STABILITY_THRESHOLD,
       stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "epic",
-    },
-    {
-      type: "stabilityDistribution",
+    }),
+    charts.stabilityDistribution({
       title: TITLES.stabilityByStory,
       threshold: STABILITY_THRESHOLD,
       stabilizationPeriod: STABILITY_STABILIZATION_PERIOD,
       skipStatuses: [...STABILITY_SKIP_STATUSES],
       groupBy: "story",
-    },
-    {
-      type: "testResultSeverities",
-      title: TITLES.testResultSeverities,
-    },
-    {
-      type: "durations",
-      title: TITLES.durations,
-      groupBy: "none",
-    },
-    {
-      type: "statusAgePyramid",
-      title: TITLES.statusAgePyramid,
-      limit: 20,
-    },
+    }),
+    charts.testResultSeverities({ title: TITLES.testResultSeverities }),
+    charts.durations({ title: TITLES.durations, groupBy: "none" }),
+    charts.statusAgePyramid({ title: TITLES.statusAgePyramid, limit: 20 }),
     ...epicStatusDynamics,
   ];
 }

@@ -44,4 +44,10 @@ export const TITLES = {
   durationsByLayer: "Длительности по layer",
   durationDynamics: "Динамика длительности",
   statusAgePyramid: "Пирамида возраста статусов",
+  qualityGate: "Quality gate",
+};
+
+export const QUALITY_GATE_LABELS = {
+  passed: { ru: "Quality gate пройден", en: "Quality gate passed" },
+  failed: { ru: "Quality gate не пройден", en: "Quality gate failed" },
 };
